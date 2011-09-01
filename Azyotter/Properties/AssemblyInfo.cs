@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("Azyotter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("アジョブジ星のソフトウェア開発所")]
 [assembly: AssemblyProduct("Azyotter")]
-[assembly: AssemblyCopyright("Copyright c  2011")]
+[assembly: AssemblyCopyright("Copyright (C) 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

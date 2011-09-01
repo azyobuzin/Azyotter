@@ -26,10 +26,34 @@ namespace Azyobuzi.Azyotter.Models
                     if (this.UserStreamChanging != null)
                         this.UserStreamChanging(this, EventArgs.Empty);
 
+                    var oldValue = this.userStream;
                     this.userStream = value;
 
                     if (this.UserStreamChanged != null)
                         this.UserStreamChanged(this, EventArgs.Empty);
+
+                    EventHandler<UserStreamReceivedDeletedEventArgs> deletedStatusHandler = (sender, e) =>
+                    {
+                        if (DeletedStatus != null)
+                            DeletedStatus(sender, e);
+                    };
+                    EventHandler<UserStreamReceivedDeletedEventArgs> deletedDirectMessageHandler = (sender, e) =>
+                    {
+                        if (DeletedDirectMessage != null)
+                            DeletedDirectMessage(sender, e);
+                    };
+
+                    if (oldValue != null)
+                    {
+                        oldValue.ReceivedDeletedStatus -= deletedStatusHandler;
+                        oldValue.ReceivedDeletedDirectMessage -= deletedDirectMessageHandler;
+                    }
+
+                    if (value != null)
+                    {
+                        value.ReceivedDeletedStatus += deletedStatusHandler;
+                        value.ReceivedDeletedDirectMessage += deletedDirectMessageHandler;
+                    }
                 }
             }
         }
@@ -73,5 +97,8 @@ namespace Azyobuzi.Azyotter.Models
                 instance.UserStream = null;
             }
         }
+
+        public static event EventHandler<UserStreamReceivedDeletedEventArgs> DeletedStatus;
+        public static event EventHandler<UserStreamReceivedDeletedEventArgs> DeletedDirectMessage;
     }
 }

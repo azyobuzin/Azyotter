@@ -14,6 +14,20 @@
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+        </i:EventTrigger>
+        
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClosingCommand}"/>
+        </i:EventTrigger>
+        
+        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInputPinWindow">
+            <l:TransitionInteractionMessageAction WindowType="v:InputPinWindow" Mode="Modal"/>
+        </l:InteractionMessageTrigger>
+    </i:Interaction.Triggers>
+    
     <Grid>        
         <Grid Margin="0,24,0,0">
             <Grid.RowDefinitions>

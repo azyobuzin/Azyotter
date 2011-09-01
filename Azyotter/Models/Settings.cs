@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Reflection;
 using System.Windows.Markup;
 using Livet;
-using System.Reflection;
-using System.IO;
 
 namespace Azyobuzi.Azyotter.Models
 {
     public class Settings : NotificationObject
     {
         private static readonly string SettingsFileName = Assembly.GetExecutingAssembly() != null
-            ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "Settings.xaml"
+            ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Settings.xaml"
             : "Settings.xaml";
 
         private static bool createdInstance = false;
@@ -55,6 +52,75 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
         
+        #region ConsumerKey変更通知プロパティ
+        string _ConsumerKey = "xx0RBhnHRa0FYfPuDLlBNg";
+
+        public string ConsumerKey
+        {
+            get
+            { return _ConsumerKey; }
+            set
+            {
+                if (_ConsumerKey == value)
+                    return;
+                _ConsumerKey = value;
+                RaisePropertyChanged("ConsumerKey");
+            }
+        }
+        #endregion
+        
+        #region ConsumerSecret変更通知プロパティ
+        string _ConsumerSecret = "TSMrMmc6uIxT2l8o7p9aC3mxHVMDzp17eXInyuSZgk";
+
+        public string ConsumerSecret
+        {
+            get
+            { return _ConsumerSecret; }
+            set
+            {
+                if (_ConsumerSecret == value)
+                    return;
+                _ConsumerSecret = value;
+                RaisePropertyChanged("ConsumerSecret");
+            }
+        }
+        #endregion
+        
+        #region OAuthToken変更通知プロパティ
+        string _OAuthToken;
+
+        public string OAuthToken
+        {
+            get
+            { return _OAuthToken; }
+            set
+            {
+                if (_OAuthToken == value)
+                    return;
+                _OAuthToken = value;
+                RaisePropertyChanged("OAuthToken");
+            }
+        }
+        #endregion
+        
+        #region OAuthTokenSecret変更通知プロパティ
+        string _OAuthTokenSecret;
+
+        public string OAuthTokenSecret
+        {
+            get
+            { return _OAuthTokenSecret; }
+            set
+            {
+                if (_OAuthTokenSecret == value)
+                    return;
+                _OAuthTokenSecret = value;
+                RaisePropertyChanged("OAuthTokenSecret");
+            }
+        }
+        #endregion
+      
+        #region UseUserStream変更通知プロパティ
         bool _UseUserStream = true;
 
         public bool UseUserStream
@@ -69,6 +135,7 @@ namespace Azyobuzi.Azyotter.Models
                 RaisePropertyChanged("UseUserStream");
             }
         }
+        #endregion
       
     }
 }

@@ -51,8 +51,9 @@
       <HintPath>InfrastructureAssemblies\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Interactive">
-      <HintPath>..\packages\Ix_Experimental-Main.1.1.10621\lib\Net4\System.Interactive.dll</HintPath>
+    <Reference Include="System.Interactive, Version=1.1.10823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ix_Experimental-Main.1.1.10823\lib\Net4\System.Interactive.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Interactivity">
       <SpecificVersion>False</SpecificVersion>
@@ -75,6 +76,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\InputPinWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoadingCircle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -88,6 +93,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\Tab.cs" />
     <Compile Include="Models\TimelineReceivers\HomeTimelineReceiver.cs" />
     <Compile Include="Models\TimelineReceivers\ITimelineReceiver.cs" />
     <Compile Include="Models\Model.cs" />
@@ -96,7 +102,11 @@
     <Compile Include="Models\TimelineReceivers\TimelineReceiverBase.cs" />
     <Compile Include="Models\TimelineTypes.cs" />
     <Compile Include="Models\UserStreamManager.cs" />
+    <Compile Include="ViewModels\InputPinWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Views\InputPinWindow.xaml.cs">
+      <DependentUpon>InputPinWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoadingCircle.xaml.cs">
       <DependentUpon>LoadingCircle.xaml</DependentUpon>
     </Compile>

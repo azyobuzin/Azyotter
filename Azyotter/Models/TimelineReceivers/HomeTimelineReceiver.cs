@@ -14,18 +14,25 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
             this.Settings_PropertyChanged(Settings.Instance, new PropertyChangedEventArgs("UseUserStream"));
         }
 
+        public override bool UseUserStream
+        {
+            get { return true; }
+        }
+
         private UserStreamManager userStream;
 
         private void SubscribeEvents()
         {
             this.userStream.UserStreamChanging += this.userStream_UserStreamChanging;
             this.userStream.UserStreamChanged += this.userStream_UserStreamChanged;
+            this.userStream.UserStream.ReceivedStatus += this.userStream_ReceivedStatus;
         }
 
         private void UnsubscribeEvents()
         {
             this.userStream.UserStreamChanging -= this.userStream_UserStreamChanging;
             this.userStream.UserStreamChanged -= this.userStream_UserStreamChanged;
+            this.userStream.UserStream.ReceivedStatus -= this.userStream_ReceivedStatus;
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -36,6 +43,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                 {
                     if (this.userStream != null)
                     {
+                        this.UnsubscribeEvents();
                         this.userStream.Unregister(this);
                         this.userStream = null;
                     }
@@ -82,6 +90,11 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                     this.OnError(ex.Message);
                 }
             });
+        }
+
+        private void userStream_ReceivedStatus(object sender, UserStreamReceivedStatusEventArgs e)
+        {
+            this.OnReceivedTimeline(new TimelineItem[] { TimelineItem.FromStatus(e.Status) });
         }
 
         public override void Dispose()

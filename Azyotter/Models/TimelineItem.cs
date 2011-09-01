@@ -9,11 +9,31 @@ namespace Azyobuzi.Azyotter.Models
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Text { get; set; }
-        public User User { get; set; }
+        public User From { get; set; }
+        public User To { get; set; }
+        public string InReplyToStatusId { get; set; }
+        public string Source { get; set; }
 
         public static TimelineItem FromStatus(Status status)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();//TODO
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as TimelineItem;
+            if (other == null) return false;
+
+            return this.Base.GetType().FullName == other.Base.GetType().FullName
+                && this.Id == other.Id
+                && this.Text == other.Text;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Base.GetType().FullName.GetHashCode()
+                ^ this.Id.GetHashCode()
+                ^ this.Text.GetHashCode();
         }
     }
 }
