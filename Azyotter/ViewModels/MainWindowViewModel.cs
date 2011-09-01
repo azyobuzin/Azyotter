@@ -33,39 +33,39 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void Loaded()
         {
-            if (string.IsNullOrEmpty(Settings.Instance.OAuthToken)
-                || string.IsNullOrEmpty(Settings.Instance.OAuthTokenSecret))
+            var auth = this.model.GetTwitterAuthorizer();
+            if (!auth.IsAuthorized)
             {
-                this.model.StartAuthorize(uri =>
-                {
-                    Process.Start(uri);
+                string token;
+                Process.Start(auth.GetAuthorizationLink(out token));
 
-                    var vm = new InputPinWindowViewModel();
-                    ViewModelHelper.BindNotification(vm.CompleteEvent, this, (sender, e) =>
+                var vm = new InputPinWindowViewModel();
+                ViewModelHelper.BindNotification(vm.CompleteEvent, this, (sender, e) =>
+                {
+                    Task.Factory.StartNew(() =>
                     {
                         if (vm.IsCanceled)
                         {
                             vm.CloseRequest();
-                            return;//TODO:終了させる
+                            //TODO:終了させる
                         }
                         else
                         {
-                            this.model.InputPin(vm.Pin, _ =>
+                            try
                             {
-                                if (_.Error != null)
-                                {
-                                    vm.IsBusy = false;
-                                }
-                                else
-                                {
-                                    this.model.SaveOAuthToken();
-                                    vm.CloseRequest();
-                                }
-                            });
+                                auth.GetAccessToken(token, vm.Pin);
+                                this.model.SaveOAuthToken();
+                                vm.CloseRequest();
+                            }
+                            catch
+                            {
+                                vm.InvalidPin();
+                                vm.IsBusy = false;
+                            }
                         }
                     });
-                    this.Messenger.Raise(new TransitionMessage(vm, "ShowInputPinWindow"));
                 });
+                this.Messenger.Raise(new TransitionMessage(vm, "ShowInputPinWindow"));
             }
         }
         #endregion

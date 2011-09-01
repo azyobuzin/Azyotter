@@ -5,6 +5,7 @@ using System.Text;
 using LinqToTwitter;
 using Livet;
 using System.Collections.ObjectModel;
+using Azyobuzi.Azyotter.LinqToTwitter;
 
 namespace Azyobuzi.Azyotter.Models
 {
@@ -17,7 +18,7 @@ namespace Azyobuzi.Azyotter.Models
 
         private TwitterContext twitter = new TwitterContext()
         {
-            AuthorizedClient = new PinAuthorizer()
+            AuthorizedClient = new Authorizer()
             {
                 Credentials = new InMemoryCredentials()
                 {
@@ -38,24 +39,16 @@ namespace Azyobuzi.Azyotter.Models
             return tab;
         }
 
-        public void StartAuthorize(Action<string> goToTwitterAuthorization)
+        public Authorizer GetTwitterAuthorizer()
         {
-            var auth = (PinAuthorizer)this.twitter.AuthorizedClient;
-            auth.GoToTwitterAuthorization = goToTwitterAuthorization;
-            auth.BeginAuthorize(null);
-        }
-
-        public void InputPin(string pin, Action<TwitterAsyncResponse<UserIdentifier>> callback)
-        {
-            var auth = (PinAuthorizer)this.twitter.AuthorizedClient;
-            auth.CompleteAuthorize(pin, callback);
+            return this.twitter.AuthorizedClient as Authorizer;
         }
 
         public void SaveOAuthToken()
         {
-            var auth = (PinAuthorizer)this.twitter.AuthorizedClient;
-            Settings.Instance.OAuthToken = auth.OAuthTwitter.OAuthToken;
-            Settings.Instance.OAuthTokenSecret = auth.OAuthTwitter.OAuthTokenSecret;
+            var auth = this.GetTwitterAuthorizer();
+            Settings.Instance.OAuthToken = auth.Credentials.OAuthToken;
+            Settings.Instance.OAuthTokenSecret = auth.Credentials.AccessToken;
             Settings.Instance.Save();
         }
     }

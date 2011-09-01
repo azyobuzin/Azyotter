@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows;
 using Livet;
 using Livet.Commands;
 using Livet.Messaging;
@@ -37,7 +38,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                 if (_IsCanceled == value)
                     return;
                 _IsCanceled = value;
-                RaisePropertyChanged("Canceled");
+                RaisePropertyChanged("IsCanceled");
             }
         }
         #endregion
@@ -131,6 +132,12 @@ namespace Azyobuzi.Azyotter.ViewModels
         public void CloseRequest()
         {
             this.Messenger.Raise(new InteractionMessage("Close"));
+        }
+
+        public void InvalidPin()
+        {
+            this.IsCanceled = true;
+            this.Messenger.Raise(new InformationMessage("認証できませんでした。", "失敗", MessageBoxImage.Error, "ShowInfomation"));
         }
     }
 }
