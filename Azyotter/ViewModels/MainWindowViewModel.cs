@@ -47,7 +47,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                         if (vm.IsCanceled)
                         {
                             vm.CloseRequest();
-                            //TODO:終了させる
+                            this.Messenger.Raise(new WindowActionMessage("WindowAction", WindowAction.Close));
                         }
                         else
                         {

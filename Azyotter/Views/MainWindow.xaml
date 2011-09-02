@@ -23,6 +23,10 @@
             <i:InvokeCommandAction Command="{Binding ClosingCommand}"/>
         </i:EventTrigger>
         
+        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="WindowAction">
+            <l:WindowInteractionMessageAction/>
+        </l:InteractionMessageTrigger>
+        
         <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInputPinWindow">
             <l:TransitionInteractionMessageAction WindowType="v:InputPinWindow" Mode="Modal"/>
         </l:InteractionMessageTrigger>
