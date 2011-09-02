@@ -105,6 +105,8 @@
     <Compile Include="Models\UserStreamManager.cs" />
     <Compile Include="ViewModels\InputPinWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\TabViewModel.cs" />
+    <Compile Include="ViewModels\TimelineItemViewModel.cs" />
     <Compile Include="Views\InputPinWindow.xaml.cs">
       <DependentUpon>InputPinWindow.xaml</DependentUpon>
     </Compile>

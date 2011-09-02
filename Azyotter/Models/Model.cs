@@ -11,9 +11,12 @@ namespace Azyobuzi.Azyotter.Models
 {
     public class Model : NotificationObject
     {
-        public Model()
+        public void Init()
         {
+            this.Tabs = new ObservableCollection<Tab>();
             UserStreamManager.Twitter = this.twitter;
+            AddTab(new TabSettings() { Name = "Home", Type = TimelineTypes.Home, GetCount = 20, RefreshSpan = 60 });
+            this.Tabs.ForEach(tab => tab.Refresh());
         }
 
         private TwitterContext twitter = new TwitterContext()
@@ -34,7 +37,7 @@ namespace Azyobuzi.Azyotter.Models
 
         public Tab AddTab(TabSettings settings)
         {
-            var tab = new Tab(settings);
+            var tab = new Tab(settings, this.twitter);
             this.Tabs.Add(tab);
             return tab;
         }

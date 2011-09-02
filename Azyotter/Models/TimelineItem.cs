@@ -16,7 +16,16 @@ namespace Azyobuzi.Azyotter.Models
 
         public static TimelineItem FromStatus(Status status)
         {
-            throw new NotImplementedException();//TODO
+            return new TimelineItem()
+            {
+                Base = status,
+                Id = status.StatusID,
+                CreatedAt = status.CreatedAt.ToLocalTime(),
+                Text = status.Text,
+                From = status.User,
+                InReplyToStatusId = status.InReplyToStatusID,
+                Source = status.Source
+            };
         }
 
         public override bool Equals(object obj)

@@ -17,7 +17,24 @@ namespace Azyobuzi.Azyotter.ViewModels
     public class MainWindowViewModel : ViewModel
     {
         private Model model = new Model();
-        
+                
+        #region Tabs変更通知プロパティ
+        ReadOnlyNotificationDispatcherCollection<TabViewModel> _Tabs;
+
+        public ReadOnlyNotificationDispatcherCollection<TabViewModel> Tabs
+        {
+            get
+            { return _Tabs; }
+            private set
+            {
+                if (_Tabs == value)
+                    return;
+                _Tabs = value;
+                RaisePropertyChanged("Tabs");
+            }
+        }
+        #endregion
+      
         #region LoadedCommand
         ViewModelCommand _LoadedCommand;
 
@@ -56,6 +73,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                                 auth.GetAccessToken(token, vm.Pin);
                                 this.model.SaveOAuthToken();
                                 vm.CloseRequest();
+                                DispatcherHelper.BeginInvoke(this.Loaded2);
                             }
                             catch
                             {
@@ -67,8 +85,23 @@ namespace Azyobuzi.Azyotter.ViewModels
                 });
                 this.Messenger.Raise(new TransitionMessage(vm, "ShowInputPinWindow"));
             }
+            else
+            {
+                Loaded2();
+            }
         }
         #endregion
+
+        private void Loaded2()
+        {
+            this.model.Init();
+
+            this.Tabs = ViewModelHelper.CreateReadOnlyNotificationDispatcherCollection(
+                this.model.Tabs,
+                item => new TabViewModel(item),
+                DispatcherHelper.UIDispatcher
+            );
+        }
         
         #region ClosingCommand
         ViewModelCommand _ClosingCommand;

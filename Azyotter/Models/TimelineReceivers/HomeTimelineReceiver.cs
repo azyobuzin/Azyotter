@@ -39,7 +39,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
         {
             if (e.PropertyName == "UseUserStream")
             {
-                if (Settings.Instance.UseUserStream)
+                if (!Settings.Instance.UseUserStream)
                 {
                     if (this.userStream != null)
                     {
@@ -90,6 +90,8 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                     this.OnError(ex.Message);
                 }
             });
+            t.IsBackground = true;
+            t.Start();
         }
 
         private void userStream_ReceivedStatus(object sender, UserStreamReceivedStatusEventArgs e)

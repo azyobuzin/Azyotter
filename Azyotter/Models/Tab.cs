@@ -4,23 +4,25 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using Azyobuzi.Azyotter.Models.TimelineReceivers;
+using LinqToTwitter;
 using Livet;
 
 namespace Azyobuzi.Azyotter.Models
 {
     public class Tab : NotificationObject, IDisposable
     {
-        public Tab(TabSettings settings)
+        public Tab(TabSettings settings, TwitterContext twitter)
         {
+            this.twitter = twitter;
             this.Items = new ObservableCollection<TimelineItem>();
             this.Settings = settings;
             settings.PropertyChanged += this.Settings_PropertyChanged;
             this.timer = new Timer(_ => { if (!this.receiver.UseUserStream) this.Refresh(); });
             this.RaiseSettingsPropertyChanged();
-            this.Refresh();
         }
 
         public TabSettings Settings { get; private set; }
+        private TwitterContext twitter;
         private Timer timer;
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -33,6 +35,7 @@ namespace Azyobuzi.Azyotter.Models
                 case "Type":
                     var oldReceiver = this.receiver;//UserStream再接続防止
                     this.receiver = TimelineReceiverBase.CreateTimelineReceiver(this.Settings.Type);
+                    this.receiver.Twitter = this.twitter;
                     this.receiver.Args = this.Settings.Args;
                     this.receiver.ReceivedTimeline += this.receiver_ReceivedTimeline;
                     if (oldReceiver != null)
@@ -97,7 +100,7 @@ namespace Azyobuzi.Azyotter.Models
 
         public void Refresh()
         {
-            this.receiver.Receive(1, this.Settings.GetCount);
+            this.receiver.Receive(this.Settings.GetCount, 1);
         }
     }
 }
