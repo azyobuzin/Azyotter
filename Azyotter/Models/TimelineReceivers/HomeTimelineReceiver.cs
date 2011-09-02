@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using Azyobuzi.Azyotter.Util;
 using LinqToTwitter;
 
 namespace Azyobuzi.Azyotter.Models.TimelineReceivers
@@ -81,13 +82,9 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                             .ToArray()
                     );
                 }
-                catch (TwitterQueryException ex)
-                {
-                    this.OnError(ex.Response.Error);
-                }
                 catch (Exception ex)
                 {
-                    this.OnError(ex.Message);
+                    this.OnError(ex.GetMessage());
                 }
             });
             t.IsBackground = true;

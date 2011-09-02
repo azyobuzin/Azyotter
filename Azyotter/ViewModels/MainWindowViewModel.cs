@@ -11,6 +11,7 @@ using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models;
+using Azyobuzi.Azyotter.Util;
 
 namespace Azyobuzi.Azyotter.ViewModels
 {
@@ -120,6 +121,79 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             this.model.CloseUserStream();
             Settings.Instance.Save();
+        }
+        #endregion
+        
+        #region PostText変更通知プロパティ
+        string _PostText;
+
+        public string PostText
+        {
+            get
+            { return _PostText; }
+            set
+            {
+                if (_PostText == value)
+                    return;
+                _PostText = value;
+                RaisePropertyChanged("PostText");
+                this.PostCommand.RaiseCanExecuteChanged();
+            }
+        }
+        #endregion
+        
+        #region IsPosting変更通知プロパティ
+        bool _IsPosting;
+
+        public bool IsPosting
+        {
+            get
+            { return _IsPosting; }
+            set
+            {
+                if (_IsPosting == value)
+                    return;
+                _IsPosting = value;
+                RaisePropertyChanged("IsPosting");
+            }
+        }
+        #endregion
+      
+        #region PostCommand
+        ViewModelCommand _PostCommand;
+
+        public ViewModelCommand PostCommand
+        {
+            get
+            {
+                if (_PostCommand == null)
+                    _PostCommand = new ViewModelCommand(Post, CanPost);
+                return _PostCommand;
+            }
+        }
+
+        private bool CanPost()
+        {
+            return !string.IsNullOrWhiteSpace(this.PostText);
+        }
+
+        private void Post()
+        {
+            this.IsPosting = true;
+            this.model.Post(this.PostText, null)
+                .ContinueWith(t =>
+                {
+                    if (t.Exception != null)
+                    {
+                        this.Messenger.Raise(new InformationMessage(t.Exception.InnerException.GetMessage(), "投稿失敗", "ShowInfomation"));
+                    }
+                    else
+                    {
+                        this.PostText = string.Empty;
+                    }
+
+                    this.IsPosting = false;
+                });
         }
         #endregion
       

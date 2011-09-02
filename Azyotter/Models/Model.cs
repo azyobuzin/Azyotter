@@ -6,6 +6,7 @@ using LinqToTwitter;
 using Livet;
 using System.Collections.ObjectModel;
 using Azyobuzi.Azyotter.LinqToTwitter;
+using System.Threading.Tasks;
 
 namespace Azyobuzi.Azyotter.Models
 {
@@ -61,6 +62,11 @@ namespace Azyobuzi.Azyotter.Models
             {
                 UserStreamManager.Register(null).UserStream.Close();
             }
+        }
+
+        public Task<Status> Post(string text, string inReplyToStatusId)
+        {
+            return Task.Factory.StartNew(() => this.twitter.UpdateStatus(text, inReplyToStatusId));
         }
     }
 }

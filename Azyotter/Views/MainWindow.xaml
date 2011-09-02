@@ -30,6 +30,10 @@
         <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInputPinWindow">
             <l:TransitionInteractionMessageAction WindowType="v:InputPinWindow" Mode="Modal"/>
         </l:InteractionMessageTrigger>
+        
+        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInfomation">
+            <l:InformationDialogInteractionMessageAction/>
+        </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
     
     <Grid>        
@@ -109,11 +113,13 @@
             <TextBox Grid.Column="0"
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto"/>
+                     VerticalScrollBarVisibility="Auto"
+                     Text="{Binding PostText, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Button Grid.Column="1"
                     Content="投稿"
-                    IsTabStop="False" />
+                    IsTabStop="False"
+                    Command="{Binding PostCommand}"/>
             
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
