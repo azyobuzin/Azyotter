@@ -54,5 +54,13 @@ namespace Azyobuzi.Azyotter.Models
             Settings.Instance.OAuthTokenSecret = auth.Credentials.AccessToken;
             Settings.Instance.Save();
         }
+
+        public void CloseUserStream()
+        {
+            if (UserStreamManager.SubscribersCount != 0)
+            {
+                UserStreamManager.Register(null).UserStream.Close();
+            }
+        }
     }
 }

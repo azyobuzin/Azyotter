@@ -118,6 +118,7 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void Closing()
         {
+            this.model.CloseUserStream();
             Settings.Instance.Save();
         }
         #endregion

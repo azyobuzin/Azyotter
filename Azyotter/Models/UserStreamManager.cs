@@ -63,11 +63,11 @@ namespace Azyobuzi.Azyotter.Models
 
         private List<ITimelineReceiver> subscribers = new List<ITimelineReceiver>();
 
-        public int SubscribersCount
+        public static int SubscribersCount
         {
             get
             {
-                return this.subscribers.Count;
+                return instance.subscribers.Count;
             }
         }
 
