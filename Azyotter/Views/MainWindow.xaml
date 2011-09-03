@@ -117,10 +117,26 @@
                      Text="{Binding PostText, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Button Grid.Column="1"
-                    Content="投稿"
                     IsTabStop="False"
-                    Command="{Binding PostCommand}"/>
-            
+                    Command="{Binding PostCommand}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPosting}" Value="False">
+                                <Setter Property="Content" Value="投稿"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsPosting}" Value="True">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <v:LoadingCircle Width="16" Height="16"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="GotFocus">
                     <ei:ChangePropertyAction PropertyName="Height" Value="48"/>
@@ -129,6 +145,16 @@
                     <ei:ChangePropertyAction PropertyName="Height" Value="24"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsPosting}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
         </Grid>
     </Grid>
 </Window>
