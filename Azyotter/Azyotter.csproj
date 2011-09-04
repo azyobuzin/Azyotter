@@ -66,7 +66,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UserStreamsParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="UserStreamsParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\userstreamex.1.0\lib\net40\UserStreamsParser.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -152,8 +154,6 @@
     <Content Include="InfrastructureAssemblies\Design\Livet.Design.dll" />
     <Content Include="InfrastructureAssemblies\Design\Livet.Expression.Design.dll" />
     <Content Include="InfrastructureAssemblies\Livet.dll" />
-    <Content Include="InfrastructureAssemblies\UserStreamsParser.dll" />
-    <Content Include="InfrastructureAssemblies\UserStreamsParser.pdb" />
     <Resource Include="InfrastructureAssemblies\Livet.XML" />
     <Content Include="InfrastructureAssemblies\Microsoft.Expression.Interactions.dll" />
     <Content Include="InfrastructureAssemblies\System.Windows.Interactivity.dll" />
