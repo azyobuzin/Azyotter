@@ -13,9 +13,30 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public abstract void Receive(int count, int page);
 
+        private bool isRefreshing;
+        public bool IsRefreshing
+        {
+            get
+            {
+                return this.isRefreshing;
+            }
+            protected set
+            {
+                if (this.isRefreshing != value)
+                {
+                    this.isRefreshing = value;
+
+                    if (this.IsRefreshingChanged != null)
+                        this.IsRefreshingChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
         public event ReceivedTimelineEventHandler ReceivedTimeline;
 
         public event ErrorEventHandler Error;
+
+        public event EventHandler IsRefreshingChanged;
 
         protected virtual void OnReceivedTimeline(TimelineItem[] gotItems)
         {

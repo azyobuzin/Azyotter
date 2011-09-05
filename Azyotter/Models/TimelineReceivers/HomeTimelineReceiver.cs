@@ -71,6 +71,8 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
         {
             var t = new Thread(() =>
             {
+                this.IsRefreshing = true;
+
                 try
                 {
                     this.OnReceivedTimeline(
@@ -85,6 +87,10 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                 catch (Exception ex)
                 {
                     this.OnError(ex.GetMessage());
+                }
+                finally
+                {
+                    this.IsRefreshing = false;
                 }
             });
             t.IsBackground = true;

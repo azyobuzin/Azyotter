@@ -12,6 +12,17 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             this.Model = model;
 
+            ViewModelHelper.BindNotifyChanged(model, this, (sender, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case "Name":
+                    case "IsRefreshing":
+                        this.RaisePropertyChanged(e.PropertyName);
+                        break;
+                }
+            });
+
             var source = new CollectionViewSource();
             source.Source = ViewModelHelper.CreateReadOnlyNotificationDispatcherCollection(
                 model.Items,
@@ -29,6 +40,14 @@ namespace Azyobuzi.Azyotter.ViewModels
             get
             {
                 return this.Model.Name;
+            }
+        }
+
+        public bool IsRefreshing
+        {
+            get
+            {
+                return this.Model.IsRefreshing;
             }
         }
 

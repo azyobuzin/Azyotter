@@ -17,7 +17,11 @@ namespace Azyobuzi.Azyotter.Models
             this.Items = new ObservableCollection<TimelineItem>();
             this.Settings = settings;
             settings.PropertyChanged += this.Settings_PropertyChanged;
-            this.timer = new Timer(_ => { if (!this.receiver.UseUserStream) this.Refresh(); });
+            this.timer = new Timer(_ =>
+            {
+                if (!Models.Settings.Instance.UseUserStream)
+                    this.Refresh();
+            });
             this.RaiseSettingsPropertyChanged();
         }
 
@@ -38,9 +42,11 @@ namespace Azyobuzi.Azyotter.Models
                     this.receiver.Twitter = this.twitter;
                     this.receiver.Args = this.Settings.Args;
                     this.receiver.ReceivedTimeline += this.receiver_ReceivedTimeline;
+                    this.receiver.IsRefreshingChanged += this.receiver_IsRefreshingChanged;
                     if (oldReceiver != null)
                     {
                         oldReceiver.ReceivedTimeline -= this.receiver_ReceivedTimeline;
+                        oldReceiver.IsRefreshingChanged -= this.receiver_IsRefreshingChanged;
                         oldReceiver.Dispose();
                     }
                     break;
@@ -68,6 +74,7 @@ namespace Azyobuzi.Azyotter.Models
             this.timer.Dispose();
             this.timer = null;
             this.receiver.ReceivedTimeline -= this.receiver_ReceivedTimeline;
+            this.receiver.IsRefreshingChanged -= this.receiver_IsRefreshingChanged;
             this.receiver.Dispose();
             this.receiver = null;
             this.Items = null;
@@ -101,6 +108,21 @@ namespace Azyobuzi.Azyotter.Models
         public void Refresh()
         {
             this.receiver.Receive(this.Settings.GetCount, 1);
+        }
+
+        public bool IsRefreshing
+        {
+            get
+            {
+                return this.receiver != null
+                    ? this.receiver.IsRefreshing
+                    : false;
+            }
+        }
+
+        private void receiver_IsRefreshingChanged(object sender, EventArgs e)
+        {
+            this.RaisePropertyChanged(() => this.IsRefreshing);
         }
     }
 }

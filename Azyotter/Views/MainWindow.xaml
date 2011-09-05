@@ -47,7 +47,21 @@
             <TabControl Grid.Row="0" ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <v:LoadingCircle Width="16" Height="16">
+                                <v:LoadingCircle.Style>
+                                    <Style TargetType="v:LoadingCircle">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsRefreshing}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </v:LoadingCircle.Style>
+                            </v:LoadingCircle>
+                            
+                            <TextBlock Text="{Binding Name}"/>
+                        </StackPanel>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 
