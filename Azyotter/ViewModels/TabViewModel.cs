@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 using System.Windows.Data;
 using Azyobuzi.Azyotter.Models;
 using Livet;
@@ -32,5 +33,23 @@ namespace Azyobuzi.Azyotter.ViewModels
         }
 
         public ICollectionView Items { get; private set; }
+
+        #region SelectedItems変更通知プロパティ
+        IList _SelectedItems;
+
+        public IList SelectedItems
+        {
+            get
+            { return _SelectedItems; }
+            set
+            {
+                if (_SelectedItems == value)
+                    return;
+                _SelectedItems = value;
+                RaisePropertyChanged("SelectedItems");
+            }
+        }
+        #endregion
+      
     }
 }

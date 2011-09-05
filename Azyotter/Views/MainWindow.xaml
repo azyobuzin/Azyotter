@@ -6,13 +6,14 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:v="clr-namespace:Azyobuzi.Azyotter.Views"
         xmlns:vm="clr-namespace:Azyobuzi.Azyotter.ViewModels"
+        DataContext="{DynamicResource MainWindowViewModel}"
         Title="Azyotter"
         Height="500" Width="650"
         Icon="/Azyotter;component/Icon/tw_azyobuzi.ico">
     
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
+    <Window.Resources>
+        <vm:MainWindowViewModel x:Key="MainWindowViewModel"/>
+    </Window.Resources>
     
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -43,7 +44,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             
-            <TabControl Grid.Row="0" ItemsSource="{Binding Tabs}">
+            <TabControl Grid.Row="0" ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Name}"/>
@@ -56,6 +57,17 @@
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  HorizontalContentAlignment="Stretch"
                                  SelectionMode="Extended">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <l:ListBoxSetStateToSourceAction Property="SelectedItems"
+                                                                     Source="{Binding SelectedItems}"/>
+                                </i:EventTrigger>
+
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <i:InvokeCommandAction Command="{Binding Source={StaticResource MainWindowViewModel}, Path=ReplyCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="LightGray" BorderThickness="0,0,0,1">

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using LinqToTwitter;
 
 namespace Azyobuzi.Azyotter.Models
@@ -21,7 +22,7 @@ namespace Azyobuzi.Azyotter.Models
                 Base = status,
                 Id = status.StatusID,
                 CreatedAt = status.CreatedAt.ToLocalTime(),
-                Text = status.Text,
+                Text = HttpUtility.HtmlDecode(status.Text),
                 From = status.User,
                 InReplyToStatusId = status.InReplyToStatusID,
                 Source = status.Source

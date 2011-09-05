@@ -35,6 +35,25 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
         #endregion
+        
+        #region SelectedTab変更通知プロパティ
+        TabViewModel _SelectedTab;
+
+        public TabViewModel SelectedTab
+        {
+            get
+            { return _SelectedTab; }
+            set
+            {
+                if (_SelectedTab == value)
+                    return;
+                _SelectedTab = value;
+                RaisePropertyChanged("SelectedTab");
+
+                this.ReplyCommand.RaiseCanExecuteChanged();
+            }
+        }
+        #endregion
       
         #region LoadedCommand
         ViewModelCommand _LoadedCommand;
@@ -93,15 +112,30 @@ namespace Azyobuzi.Azyotter.ViewModels
         }
         #endregion
 
+        private TabViewModel CreateTabViewModel(Tab model)
+        {
+            var re = new TabViewModel(model);
+            ViewModelHelper.BindNotifyChanged(re, this, (sender, e) =>
+            {
+                if (e.PropertyName == "SelectedItems")
+                {
+                    this.ReplyCommand.RaiseCanExecuteChanged();
+                }
+            });
+            return re;
+        }
+
         private void Loaded2()
         {
             this.model.Init();
 
             this.Tabs = ViewModelHelper.CreateReadOnlyNotificationDispatcherCollection(
                 this.model.Tabs,
-                item => new TabViewModel(item),
+                this.CreateTabViewModel,
                 DispatcherHelper.UIDispatcher
             );
+
+            this.SelectedTab = this.Tabs.FirstOrDefault();
         }
         
         #region ClosingCommand
@@ -142,6 +176,23 @@ namespace Azyobuzi.Azyotter.ViewModels
         }
         #endregion
         
+        #region ReplyToStatus変更通知プロパティ
+        TimelineItemViewModel _ReplyToStatus;
+
+        public TimelineItemViewModel ReplyToStatus
+        {
+            get
+            { return _ReplyToStatus; }
+            set
+            {
+                if (_ReplyToStatus == value)
+                    return;
+                _ReplyToStatus = value;
+                RaisePropertyChanged("ReplyToStatus");
+            }
+        }
+        #endregion
+      
         #region IsPosting変更通知プロパティ
         bool _IsPosting;
 
@@ -180,20 +231,56 @@ namespace Azyobuzi.Azyotter.ViewModels
         private void Post()
         {
             this.IsPosting = true;
-            this.model.Post(this.PostText, null)
+            this.model.Post(this.PostText, this.ReplyToStatus != null ? this.ReplyToStatus.Model.Id : null)
                 .ContinueWith(t =>
                 {
                     if (t.Exception != null)
                     {
-                        this.Messenger.Raise(new InformationMessage(t.Exception.InnerException.GetMessage(), "投稿失敗", "ShowInfomation"));
+                        this.Messenger.Raise(new InformationMessage(
+                            t.Exception.InnerException.GetMessage(),
+                            "投稿失敗",
+                            "ShowInfomation"));
                     }
                     else
                     {
                         this.PostText = string.Empty;
+                        this.ReplyToStatus = null;
                     }
 
                     this.IsPosting = false;
                 });
+        }
+        #endregion
+        
+        #region ReplyCommand
+        ViewModelCommand _ReplyCommand;
+
+        public ViewModelCommand ReplyCommand
+        {
+            get
+            {
+                if (_ReplyCommand == null)
+                    _ReplyCommand = new ViewModelCommand(Reply, CanReply);
+                return _ReplyCommand;
+            }
+        }
+
+        private bool CanReply()
+        {
+            return this.SelectedTab != null
+                && this.SelectedTab.SelectedItems != null
+                && this.SelectedTab.SelectedItems.Cast<TimelineItemViewModel>()
+                    .Any(item => item.Model.Base is global::LinqToTwitter.Status);
+        }
+
+        private void Reply()
+        {
+            var replyTo = this.SelectedTab.SelectedItems
+                .Cast<TimelineItemViewModel>()
+                .Where(item => item.Model.Base is global::LinqToTwitter.Status);
+            this.ReplyToStatus = replyTo.FirstOrDefault();
+            this.PostText = string.Join(" ", replyTo.Select(status => "@" + status.FromScreenName))
+                + " " + this.PostText;
         }
         #endregion
       
