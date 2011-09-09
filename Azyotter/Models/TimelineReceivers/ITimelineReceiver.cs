@@ -10,11 +10,28 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
         string Args { get; set; }
         void Receive(int count, int page);
         bool IsRefreshing { get; }
-        event ReceivedTimelineEventHandler ReceivedTimeline;
-        event ErrorEventHandler Error;
+        event EventHandler<ReceivedTimelineEventArgs> ReceivedTimeline;
+        event EventHandler<ErrorEventArgs> Error;
         event EventHandler IsRefreshingChanged;
     }
+    
+    public class ReceivedTimelineEventArgs : EventArgs
+    {
+        public ReceivedTimelineEventArgs(TimelineItem[] receivedItems)
+        {
+            this.ReceivedItems = receivedItems;
+        }
 
-    public delegate void ReceivedTimelineEventHandler(object sender, TimelineItem[] gotItems);
-    public delegate void ErrorEventHandler(object sender, string errorMessage);
+        public TimelineItem[] ReceivedItems { get; private set; }
+    }
+
+    public class ErrorEventArgs : EventArgs
+    {
+        public ErrorEventArgs(string errorMessage)
+        {
+            this.ErrorMessage = errorMessage;
+        }
+
+        public string ErrorMessage { get; private set; }
+    }
 }

@@ -43,10 +43,12 @@ namespace Azyobuzi.Azyotter.Models
                     this.receiver.Args = this.Settings.Args;
                     this.receiver.ReceivedTimeline += this.receiver_ReceivedTimeline;
                     this.receiver.IsRefreshingChanged += this.receiver_IsRefreshingChanged;
+                    this.receiver.Error += this.receiver_Error;
                     if (oldReceiver != null)
                     {
                         oldReceiver.ReceivedTimeline -= this.receiver_ReceivedTimeline;
                         oldReceiver.IsRefreshingChanged -= this.receiver_IsRefreshingChanged;
+                        oldReceiver.Error -= this.receiver_Error;
                         oldReceiver.Dispose();
                     }
                     break;
@@ -75,6 +77,7 @@ namespace Azyobuzi.Azyotter.Models
             this.timer = null;
             this.receiver.ReceivedTimeline -= this.receiver_ReceivedTimeline;
             this.receiver.IsRefreshingChanged -= this.receiver_IsRefreshingChanged;
+            this.receiver.Error -= this.receiver_Error;
             this.receiver.Dispose();
             this.receiver = null;
             this.Items = null;
@@ -99,9 +102,10 @@ namespace Azyobuzi.Azyotter.Models
 
         public ObservableCollection<TimelineItem> Items { get; private set; }
 
-        private void receiver_ReceivedTimeline(object sender, TimelineItem[] gotItems)
+        private void receiver_ReceivedTimeline(object sender, ReceivedTimelineEventArgs e)
         {
-            gotItems.Where(item => !Items.Contains(item))
+            e.ReceivedItems
+                .Where(item => !Items.Contains(item))
                 .ForEach(this.Items.Add);
         }
 
@@ -123,6 +127,33 @@ namespace Azyobuzi.Azyotter.Models
         private void receiver_IsRefreshingChanged(object sender, EventArgs e)
         {
             this.RaisePropertyChanged(() => this.IsRefreshing);
+        }
+        
+        #region LastErrorMessage変更通知プロパティ
+        string _LastErrorMessage;
+
+        public string LastErrorMessage
+        {
+            get
+            { return _LastErrorMessage; }
+            private set
+            {
+                if (_LastErrorMessage == value)
+                    return;
+                _LastErrorMessage = value;
+                RaisePropertyChanged("LastErrorMessage");
+            }
+        }
+        #endregion
+
+        private void receiver_Error(object sender, ErrorEventArgs e)
+        {
+            this.LastErrorMessage = e.ErrorMessage;
+        }
+
+        public void ClearErrorMessage()
+        {
+            this.LastErrorMessage = null;
         }
     }
 }

@@ -32,22 +32,22 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
             }
         }
 
-        public event ReceivedTimelineEventHandler ReceivedTimeline;
+        public event EventHandler<ReceivedTimelineEventArgs> ReceivedTimeline;
 
-        public event ErrorEventHandler Error;
+        public event EventHandler<ErrorEventArgs> Error;
 
         public event EventHandler IsRefreshingChanged;
 
-        protected virtual void OnReceivedTimeline(TimelineItem[] gotItems)
+        protected virtual void OnReceivedTimeline(TimelineItem[] receivedItems)
         {
             if (this.ReceivedTimeline != null)
-                this.ReceivedTimeline(this, gotItems);
+                this.ReceivedTimeline(this, new ReceivedTimelineEventArgs(receivedItems));
         }
 
         protected virtual void OnError(string errorMessage)
         {
             if (this.Error != null)
-                this.Error(this, errorMessage);
+                this.Error(this, new ErrorEventArgs(errorMessage));
         }
 
         public virtual void Dispose()

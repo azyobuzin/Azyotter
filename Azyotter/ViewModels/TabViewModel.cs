@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Data;
 using Azyobuzi.Azyotter.Models;
 using Livet;
+using Livet.Commands;
 
 namespace Azyobuzi.Azyotter.ViewModels
 {
@@ -19,6 +20,10 @@ namespace Azyobuzi.Azyotter.ViewModels
                     case "Name":
                     case "IsRefreshing":
                         this.RaisePropertyChanged(e.PropertyName);
+                        break;
+                    case "LastErrorMessage":
+                        this.RaisePropertyChanged(e.PropertyName);
+                        this.RaisePropertyChanged(() => this.LastErrorMessageIsNotEmpty);
                         break;
                 }
             });
@@ -69,6 +74,41 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
         #endregion
-      
+
+        public string LastErrorMessage
+        {
+            get
+            {
+                return "タイムラインの取得に失敗しました："
+                    + this.Model.LastErrorMessage;
+            }
+        }
+        
+        #region ClearErrorMessageCommand
+        ViewModelCommand _ClearErrorMessageCommand;
+
+        public ViewModelCommand ClearErrorMessageCommand
+        {
+            get
+            {
+                if (_ClearErrorMessageCommand == null)
+                    _ClearErrorMessageCommand = new ViewModelCommand(ClearErrorMessage);
+                return _ClearErrorMessageCommand;
+            }
+        }
+
+        private void ClearErrorMessage()
+        {
+            this.Model.ClearErrorMessage();
+        }
+        #endregion
+
+        public bool LastErrorMessageIsNotEmpty
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(this.Model.LastErrorMessage);
+            }
+        }
     }
 }

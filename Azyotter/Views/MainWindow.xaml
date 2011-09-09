@@ -60,6 +60,27 @@
                                 </v:LoadingCircle.Style>
                             </v:LoadingCircle>
                             
+                            <Button Name="notifyError"
+                                    Width="16" Height="16"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Command="{Binding ClearErrorMessageCommand}"
+                                    ToolTip="{Binding LastErrorMessage}"
+                                    ToolTipService.InitialShowDelay="0"
+                                    ToolTipService.BetweenShowDelay="0">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding LastErrorMessageIsNotEmpty}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <Image Source="/Azyotter;component/Images/009_HighPriority_16x16_72.png" />
+                            </Button>
+                            
                             <TextBlock Text="{Binding Name}"/>
                         </StackPanel>
                     </DataTemplate>
