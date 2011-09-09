@@ -16,7 +16,7 @@ namespace Azyobuzi.Azyotter.Models
         {
             this.Tabs = new ObservableCollection<Tab>();
             UserStreamManager.Twitter = this.twitter;
-            AddTab(new TabSettings() { Name = "Home", Type = TimelineTypes.Home, GetCount = 20, RefreshSpan = 20 });
+            Settings.Instance.Tabs.ForEach(tab => AddTab(tab));
             this.Tabs.ForEach(tab => tab.Refresh());
         }
 

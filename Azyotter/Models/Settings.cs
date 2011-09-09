@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Windows.Markup;
+using System.Xaml;
 using Livet;
 
 namespace Azyobuzi.Azyotter.Models
@@ -32,10 +33,7 @@ namespace Azyobuzi.Azyotter.Models
                 {
                     try
                     {
-                        using (var fs = new FileStream(SettingsFileName, FileMode.Open, FileAccess.Read))
-                        {
-                            instance = (Settings)XamlReader.Load(fs);
-                        }
+                        instance = (Settings)XamlServices.Load(SettingsFileName);
                     }
                     catch { }
                 }
@@ -46,10 +44,7 @@ namespace Azyobuzi.Azyotter.Models
 
         public void Save()
         {
-            using (var fs = new FileStream(SettingsFileName, FileMode.Create, FileAccess.Write))
-            {
-                XamlWriter.Save(this, fs);
-            }
+            XamlServices.Save(SettingsFileName, this);
         }
         
         #region ConsumerKey変更通知プロパティ
@@ -133,6 +128,26 @@ namespace Azyobuzi.Azyotter.Models
                     return;
                 _UseUserStream = value;
                 RaisePropertyChanged("UseUserStream");
+            }
+        }
+        #endregion
+        
+        #region Tabs変更通知プロパティ
+        List<TabSettings> _Tabs = new List<TabSettings>()
+        {
+            new TabSettings() { Name = "Home", Type = TimelineTypes.Home, GetCount = 20, RefreshSpan = 20 }
+        };
+
+        public List<TabSettings> Tabs
+        {
+            get
+            { return _Tabs; }
+            set
+            {
+                if (_Tabs == value)
+                    return;
+                _Tabs = value;
+                RaisePropertyChanged("Tabs");
             }
         }
         #endregion
