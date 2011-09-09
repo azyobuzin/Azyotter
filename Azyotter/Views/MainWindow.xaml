@@ -78,7 +78,7 @@
                                                     BorderBrush="#FFE68B2C"
                                                     Visibility="Collapsed">
                                                 <Rectangle Fill="#FFFFC73C"
-                                                           Height="3"/>
+                                                           Height="2"/>
                                             </Border>
 
                                             <ContentPresenter Grid.Row="1"
