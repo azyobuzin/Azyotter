@@ -103,7 +103,7 @@
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\TabSettings.cs" />
     <Compile Include="Models\TimelineItem.cs" />
-    <Compile Include="Models\TimelineReceivers\TimelineReceiverBase.cs" />
+    <Compile Include="Models\TimelineReceivers\TimelineReceiver.cs" />
     <Compile Include="Models\TimelineTypes.cs" />
     <Compile Include="Models\UserStreamManager.cs" />
     <Compile Include="Util\ExceptionUtil.cs" />

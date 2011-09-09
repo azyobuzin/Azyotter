@@ -38,7 +38,7 @@ namespace Azyobuzi.Azyotter.Models
                     break;
                 case "Type":
                     var oldReceiver = this.receiver;//UserStream再接続防止
-                    this.receiver = TimelineReceiverBase.CreateTimelineReceiver(this.Settings.Type);
+                    this.receiver = TimelineReceiver.CreateTimelineReceiver(this.Settings.Type);
                     this.receiver.Twitter = this.twitter;
                     this.receiver.Args = this.Settings.Args;
                     this.receiver.ReceivedTimeline += this.receiver_ReceivedTimeline;

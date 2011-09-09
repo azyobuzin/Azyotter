@@ -7,7 +7,7 @@ using LinqToTwitter;
 
 namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 {
-    public class HomeTimelineReceiver : TimelineReceiverBase
+    public class HomeTimelineReceiver : TimelineReceiver
     {
         public HomeTimelineReceiver()
         {

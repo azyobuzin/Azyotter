@@ -3,7 +3,7 @@ using LinqToTwitter;
 
 namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 {
-    public abstract class TimelineReceiverBase : ITimelineReceiver
+    public abstract class TimelineReceiver : ITimelineReceiver
     {
         public abstract bool UseUserStream { get; }
 
