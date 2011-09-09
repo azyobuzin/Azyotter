@@ -45,6 +45,63 @@
             </Grid.RowDefinitions>
             
             <TabControl Grid.Row="0" ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Focusable" Value="False"/>
+                        <EventSetter Event="PreviewMouseDown" Handler="TabItem_PreviewMouseDown"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="border"
+                                            Margin="0,3,0,0"
+                                            Focusable="False"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1"
+                                            CornerRadius="3,3,0,0">
+                                        <Border.Background>
+                                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                <GradientStop Color="White" Offset="0" />
+                                                <GradientStop Color="#FFEDECE7" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+
+                                            <Border Name="selectedBorder"
+                                                    Grid.Row="0"
+                                                    BorderThickness="1,1,1,0"
+                                                    CornerRadius="3,3,0,0"
+                                                    BorderBrush="#FFE68B2C"
+                                                    Visibility="Collapsed">
+                                                <Rectangle Fill="#FFFFC73C"
+                                                           Height="3"/>
+                                            </Border>
+
+                                            <ContentPresenter Grid.Row="1"
+                                                              ContentSource="Header"
+                                                              Margin="10,2,10,2"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Panel.ZIndex" Value="100" />
+                                            <Setter TargetName="border" Property="Background" Value="White" />
+                                            <Setter TargetName="border" Property="BorderThickness" Value="1,0,1,0" />
+                                            <Setter TargetName="border" Property="Margin" Value="-1,0,-1,0"/>
+                                            <Setter TargetName="selectedBorder" Property="Visibility" Value="Visible"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+                
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">

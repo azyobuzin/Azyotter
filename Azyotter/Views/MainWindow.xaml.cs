@@ -24,5 +24,14 @@ namespace Azyobuzi.Azyotter.Views
         {
             InitializeComponent();
         }
+
+        private void TabItem_PreviewMouseDown(object sender, MouseEventArgs e)
+        {
+            var tabItem = sender as TabItem;
+            if (e.LeftButton == MouseButtonState.Pressed && tabItem != null)
+            {
+                tabItem.IsSelected = true;
+            }
+        }
     }
 }
