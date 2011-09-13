@@ -6,7 +6,7 @@ namespace Azyobuzi.Azyotter.Models
     public class TabSettings : NotificationObject
     {
         #region Name変更通知プロパティ
-        string _Name;
+        string _Name = "新しいタブ";
 
         public string Name
         {
@@ -57,7 +57,7 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
                 
         #region RefreshSpan変更通知プロパティ
-        int _RefreshSpan;
+        int _RefreshSpan = 60;
 
         public int RefreshSpan
         {
@@ -74,7 +74,7 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
         
         #region GetCount変更通知プロパティ
-        int _GetCount;
+        int _GetCount = 20;
 
         public int GetCount
         {

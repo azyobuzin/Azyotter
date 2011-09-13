@@ -30,7 +30,7 @@ namespace Azyobuzi.Azyotter.Models
                     catch
                     {
                         instance = new Settings();
-                        instance.Tabs.Add(new TabSettings() { Name = "Home", Type = TimelineTypes.Home, GetCount = 20, RefreshSpan = 20 });
+                        instance.Tabs.Add(new TabSettings() { Name = "Home", Type = TimelineTypes.Home });
                     }
                 }
 

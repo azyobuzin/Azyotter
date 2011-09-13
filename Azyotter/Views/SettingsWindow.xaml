@@ -28,42 +28,87 @@
             </TabItem>
             
             <TabItem Header="タブ">
-                <TabControl ItemsSource="{Binding Tabs}">
-                    <TabControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"/>
-                        </DataTemplate>
-                    </TabControl.ItemTemplate>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
                     
-                    <TabControl.ContentTemplate>
-                        <DataTemplate>
-                            <Grid Margin="6">
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="VerticalAlignment" Value="Center"/>
-                                    </Style>
-                                </Grid.Resources>
-                                
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                
-                                <TextBlock Grid.Column="0" Grid.Row="0" Text="名前 : "/>
-                                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Name}"/>
-                                
-                                <TextBlock Grid.Column="0" Grid.Row="1" Text="種類 : "/>
-                                <ComboBox Grid.Column="1" Grid.Row="1"
-                                          ItemsSource="{Binding Source={x:Type m:TimelineTypes}, Converter={StaticResource TypeToEnumValuesConverter}}"
-                                          SelectedItem="{Binding Type}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </TabControl.ContentTemplate>
-                </TabControl>
+                    <Button Grid.Row="0"
+                            HorizontalAlignment="Left"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Margin="0,0,0,3"
+                            Click="addTabButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Azyotter;component/Images/112_Plus_Green_16x16_72.png"
+                                   Height="16"/>
+                            <TextBlock Text="タブを追加" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <TabControl Grid.Row="1" ItemsSource="{Binding Tabs}">
+                        <TabControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </TabControl.ItemTemplate>
+
+                        <TabControl.ContentTemplate>
+                            <DataTemplate>
+                                <Grid Margin="6">
+                                    <Grid.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </Grid.Resources>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Column="0" Grid.Row="0" Text="名前 : "/>
+                                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Name}"/>
+
+                                    <TextBlock Grid.Column="0" Grid.Row="1" Text="種類 : "/>
+                                    <ComboBox Grid.Column="1" Grid.Row="1"
+                                              ItemsSource="{Binding Source={x:Type m:TimelineTypes}, Converter={StaticResource TypeToEnumValuesConverter}}"
+                                              SelectedItem="{Binding Type}"/>
+
+                                    <TextBlock Grid.Column="0" Grid.Row="2" Text="取得間隔（秒） : "/>
+                                    <TextBox Grid.Column="1" Grid.Row="2"
+                                             Text="{Binding RefreshSpan, ValidatesOnExceptions=True, NotifyOnValidationError=True}"/>
+
+                                    <TextBlock Grid.Column="0" Grid.Row="3" Text="取得件数 : "/>
+                                    <TextBox Grid.Column="1" Grid.Row="3"
+                                             Text="{Binding GetCount, ValidatesOnExceptions=True, NotifyOnValidationError=True}"/>
+
+                                    <Button Grid.ColumnSpan="2" Grid.Row="5"
+                                            HorizontalAlignment="Right"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            Click="deleteTabButton_Click">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="/Azyotter;component/Images/delete.png"
+                                                   Height="16"/>
+                                            <TextBlock Text="このタブを削除"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </TabControl.ContentTemplate>
+                    </TabControl>
+                </Grid>
             </TabItem>
         </TabControl>
         

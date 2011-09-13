@@ -162,6 +162,8 @@
     <Resource Include="Icon\tw_azyobuzi.ico" />
     <Resource Include="Images\loading_circle.png" />
     <Resource Include="Images\009_HighPriority_16x16_72.png" />
+    <Resource Include="Images\delete.png" />
+    <Resource Include="Images\112_Plus_Green_16x16_72.png" />
     <Content Include="InfrastructureAssemblies\Design\Livet.Design.dll" />
     <Content Include="InfrastructureAssemblies\Design\Livet.Expression.Design.dll" />
     <Content Include="InfrastructureAssemblies\Livet.dll" />

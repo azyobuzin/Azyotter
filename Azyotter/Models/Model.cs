@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
+using Azyobuzi.Azyotter.LinqToTwitter;
 using LinqToTwitter;
 using Livet;
-using System.Collections.ObjectModel;
-using Azyobuzi.Azyotter.LinqToTwitter;
-using System.Threading.Tasks;
 
 namespace Azyobuzi.Azyotter.Models
 {
@@ -16,8 +15,16 @@ namespace Azyobuzi.Azyotter.Models
         {
             this.Tabs = new ObservableCollection<Tab>();
             UserStreamManager.Twitter = this.twitter;
-            Settings.Instance.Tabs.ForEach(tab => AddTab(tab));
-            this.Tabs.ForEach(tab => tab.Refresh());
+            Settings.Instance.Tabs.CollectionChanged += this.Settings_Tabs_CollectionChanged;
+            Settings.Instance.Tabs.Select(Tuple.Create<TabSettings, int>)
+                .ForEach(tab => this.Settings_Tabs_CollectionChanged(
+                    Settings.Instance.Tabs,
+                    new NotifyCollectionChangedEventArgs(
+                        NotifyCollectionChangedAction.Add,
+                        tab.Item1,
+                        tab.Item2
+                    )
+                ));
         }
 
         private TwitterContext twitter = new TwitterContext()
@@ -36,11 +43,31 @@ namespace Azyobuzi.Azyotter.Models
 
         public ObservableCollection<Tab> Tabs { get; private set; }
 
-        public Tab AddTab(TabSettings settings)
+        private void Settings_Tabs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    this.AddTab(e.NewItems.Cast<TabSettings>().FirstOrDefault(),
+                        e.NewStartingIndex);
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    this.Tabs.Move(e.OldStartingIndex, e.NewStartingIndex);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    this.Tabs.RemoveAt(e.OldStartingIndex);
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    this.Tabs.Clear();
+                    break;
+            }
+        }
+
+        public void AddTab(TabSettings settings, int index)
         {
             var tab = new Tab(settings, this.twitter);
-            this.Tabs.Add(tab);
-            return tab;
+            this.Tabs.Insert(index, tab);
+            tab.Refresh();
         }
 
         public Authorizer GetTwitterAuthorizer()
