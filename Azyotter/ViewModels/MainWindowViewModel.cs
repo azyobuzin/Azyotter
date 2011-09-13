@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.ComponentModel;
-using System.Diagnostics;
-using Livet;
-using Livet.Commands;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+using System.Reflection;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models;
 using Azyobuzi.Azyotter.Util;
+using Livet;
+using Livet.Commands;
+using Livet.Messaging;
+using Livet.Messaging.Windows;
 
 namespace Azyobuzi.Azyotter.ViewModels
 {
@@ -157,6 +153,17 @@ namespace Azyobuzi.Azyotter.ViewModels
             Settings.Instance.Save();
         }
         #endregion
+
+        public string Version
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetCustomAttributes(false)
+                    .OfType<AssemblyInformationalVersionAttribute>()
+                    .Select(_ => _.InformationalVersion)
+                    .Single();
+            }
+        }
         
         #region PostText変更通知プロパティ
         string _PostText;
