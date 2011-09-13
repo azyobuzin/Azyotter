@@ -6,7 +6,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:v="clr-namespace:Azyobuzi.Azyotter.Views"
         xmlns:vm="clr-namespace:Azyobuzi.Azyotter.ViewModels"
-        Title="Azyotter 認証" Height="150" Width="380"
+        Title="認証" Height="150" Width="380"
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
@@ -59,17 +59,15 @@
               Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="80"/>
-                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="6"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="6"/>
-            </Grid.RowDefinitions>
             
-            <Button Grid.Column="1" Grid.Row="1" IsDefault="True" Command="{Binding OkCommand}">
+            <Button Grid.Column="1" Grid.Row="1"
+                    IsDefault="True"
+                    Command="{Binding OkCommand}"
+                    Margin="6"
+                    Width="80">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Style.Triggers>
@@ -92,7 +90,9 @@
                     Grid.Row="1"
                     IsCancel="True"
                     Content="Cancel"
-                    Command="{Binding CancelCommand}"/>
+                    Command="{Binding CancelCommand}"
+                    Margin="0,6,6,6"
+                    Width="80"/>
         </Grid>
     </Grid>
 </Window>

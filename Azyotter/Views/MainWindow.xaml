@@ -9,7 +9,7 @@
         DataContext="{DynamicResource MainWindowViewModel}"
         Title="Azyotter"
         Height="500" Width="650"
-        Icon="/Azyotter;component/Icon/tw_azyobuzi.ico">
+        Icon="/Azyotter;component/Icon/tw_azyobuzi.ico" Loaded="Window_Loaded">
     
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="MainWindowViewModel"/>

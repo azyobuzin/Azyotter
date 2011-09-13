@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Azyobuzi.Azyotter.Views
 {
@@ -32,6 +22,25 @@ namespace Azyobuzi.Azyotter.Views
             {
                 tabItem.IsSelected = true;
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            SystemMenuManager.AddSeparator(this);
+            SystemMenuManager.AddMenuItem(this, 1, "設定(&S)...", () =>
+            {
+                var w = Application.Current.Windows.OfType<SettingsWindow>().FirstOrDefault();
+                if (w != null)
+                {
+                    w.Activate();
+                }
+                else
+                {
+                    w = new SettingsWindow();
+                    w.Owner = this;
+                    w.Show();
+                }
+            });
         }
     }
 }

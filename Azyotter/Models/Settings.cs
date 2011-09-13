@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Xaml;
@@ -13,15 +12,8 @@ namespace Azyobuzi.Azyotter.Models
             ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Settings.xaml"
             : "Settings.xaml";
 
-        private static bool createdInstance = false;
         public Settings()
         {
-            if (createdInstance)
-            {
-                throw new InvalidOperationException("既にインスタンスが作成されています。");
-            }
-
-            createdInstance = true;
         }
 
         private static Settings instance;
@@ -35,10 +27,14 @@ namespace Azyobuzi.Azyotter.Models
                     {
                         instance = (Settings)XamlServices.Load(SettingsFileName);
                     }
-                    catch { }
+                    catch
+                    {
+                        instance = new Settings();
+                        instance.Tabs.Add(new TabSettings() { Name = "Home", Type = TimelineTypes.Home, GetCount = 20, RefreshSpan = 20 });
+                    }
                 }
 
-                return instance = instance ?? new Settings();
+                return instance;
             }
         }
 
@@ -133,12 +129,9 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
         
         #region Tabs変更通知プロパティ
-        List<TabSettings> _Tabs = new List<TabSettings>()
-        {
-            new TabSettings() { Name = "Home", Type = TimelineTypes.Home, GetCount = 20, RefreshSpan = 20 }
-        };
+        ObservableCollection<TabSettings> _Tabs = new ObservableCollection<TabSettings>();
 
-        public List<TabSettings> Tabs
+        public ObservableCollection<TabSettings> Tabs
         {
             get
             { return _Tabs; }
