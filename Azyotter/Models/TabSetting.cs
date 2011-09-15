@@ -3,7 +3,7 @@ using Livet;
 
 namespace Azyobuzi.Azyotter.Models
 {
-    public class TabSettings : NotificationObject
+    public class TabSetting : NotificationObject
     {
         #region Name変更通知プロパティ
         string _Name = "新しいタブ";

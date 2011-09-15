@@ -11,7 +11,7 @@ namespace Azyobuzi.Azyotter.Models
 {
     public class Tab : NotificationObject, IDisposable
     {
-        public Tab(TabSettings settings, TwitterContext twitter)
+        public Tab(TabSetting settings, TwitterContext twitter)
         {
             this.twitter = twitter;
             this.Items = new ObservableCollection<TimelineItem>();
@@ -25,7 +25,7 @@ namespace Azyobuzi.Azyotter.Models
             this.RaiseSettingsPropertyChanged();
         }
 
-        public TabSettings Settings { get; private set; }
+        public TabSetting Settings { get; private set; }
         private TwitterContext twitter;
         private Timer timer;
 
@@ -67,7 +67,7 @@ namespace Azyobuzi.Azyotter.Models
         /// </summary>
         private void RaiseSettingsPropertyChanged()
         {
-            typeof(TabSettings).GetProperties()
+            typeof(TabSetting).GetProperties()
                 .ForEach(p => this.Settings_PropertyChanged(this.Settings, new PropertyChangedEventArgs(p.Name)));
         }
 

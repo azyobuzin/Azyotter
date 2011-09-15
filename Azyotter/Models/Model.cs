@@ -16,7 +16,7 @@ namespace Azyobuzi.Azyotter.Models
             this.Tabs = new ObservableCollection<Tab>();
             UserStreamManager.Twitter = this.twitter;
             Settings.Instance.Tabs.CollectionChanged += this.Settings_Tabs_CollectionChanged;
-            Settings.Instance.Tabs.Select(Tuple.Create<TabSettings, int>)
+            Settings.Instance.Tabs.Select(Tuple.Create<TabSetting, int>)
                 .ForEach(tab => this.Settings_Tabs_CollectionChanged(
                     Settings.Instance.Tabs,
                     new NotifyCollectionChangedEventArgs(
@@ -35,8 +35,8 @@ namespace Azyobuzi.Azyotter.Models
                 {
                     ConsumerKey = Settings.Instance.ConsumerKey,
                     ConsumerSecret = Settings.Instance.ConsumerSecret,
-                    OAuthToken = Settings.Instance.OAuthToken,
-                    AccessToken = Settings.Instance.OAuthTokenSecret
+                    OAuthToken = Settings.Instance.Accounts.First().OAuthToken,
+                    AccessToken = Settings.Instance.Accounts.First().OAuthTokenSecret
                 }
             }
         };
@@ -48,7 +48,7 @@ namespace Azyobuzi.Azyotter.Models
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    this.AddTab(e.NewItems.Cast<TabSettings>().FirstOrDefault(),
+                    this.AddTab(e.NewItems.Cast<TabSetting>().FirstOrDefault(),
                         e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Move:
@@ -63,7 +63,7 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
 
-        public void AddTab(TabSettings settings, int index)
+        public void AddTab(TabSetting settings, int index)
         {
             var tab = new Tab(settings, this.twitter);
             this.Tabs.Insert(index, tab);
@@ -78,8 +78,8 @@ namespace Azyobuzi.Azyotter.Models
         public void SaveOAuthToken()
         {
             var auth = this.GetTwitterAuthorizer();
-            Settings.Instance.OAuthToken = auth.Credentials.OAuthToken;
-            Settings.Instance.OAuthTokenSecret = auth.Credentials.AccessToken;
+            Settings.Instance.Accounts.First().OAuthToken = auth.Credentials.OAuthToken;
+            Settings.Instance.Accounts.First().OAuthTokenSecret = auth.Credentials.AccessToken;
             Settings.Instance.Save();
         }
 

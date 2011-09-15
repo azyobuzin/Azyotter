@@ -16,12 +16,12 @@ namespace Azyobuzi.Azyotter.Views
 
         private void deleteTabButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.Instance.Tabs.Remove((TabSettings)((Button)sender).DataContext);
+            Settings.Instance.Tabs.Remove((TabSetting)((Button)sender).DataContext);
         }
 
         private void addTabButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.Instance.Tabs.Add(new TabSettings());
+            Settings.Instance.Tabs.Add(new TabSetting());
         }
     }
 }

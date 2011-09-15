@@ -203,7 +203,8 @@
                 </TabControl.ContentTemplate>
             </TabControl>
 
-            <StatusBar Grid.Row="1" IsTabStop="False">
+            <!--使わなかったらそのうち削除-->
+            <StatusBar Grid.Row="1" IsTabStop="False" Visibility="Collapsed">
                 <TextBlock Text="Ready"/>
             </StatusBar>
         </Grid>

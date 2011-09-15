@@ -30,7 +30,8 @@ namespace Azyobuzi.Azyotter.Models
                     catch
                     {
                         instance = new Settings();
-                        instance.Tabs.Add(new TabSettings() { Name = "Home", Type = TimelineTypes.Home });
+                        instance.Tabs.Add(new TabSetting() { Name = "Home", Type = TimelineTypes.Home });
+                        instance.Accounts.Add(new Account());
                     }
                 }
 
@@ -76,41 +77,24 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
         #endregion
-        
-        #region OAuthToken変更通知プロパティ
-        string _OAuthToken;
 
-        public string OAuthToken
+        #region Accounts変更通知プロパティ
+        ObservableCollection<Account> _Accounts = new ObservableCollection<Account>();
+
+        public ObservableCollection<Account> Accounts
         {
             get
-            { return _OAuthToken; }
+            { return _Accounts; }
             set
             {
-                if (_OAuthToken == value)
+                if (_Accounts == value)
                     return;
-                _OAuthToken = value;
-                RaisePropertyChanged("OAuthToken");
+                _Accounts = value;
+                RaisePropertyChanged("Accounts");
             }
         }
         #endregion
-        
-        #region OAuthTokenSecret変更通知プロパティ
-        string _OAuthTokenSecret;
-
-        public string OAuthTokenSecret
-        {
-            get
-            { return _OAuthTokenSecret; }
-            set
-            {
-                if (_OAuthTokenSecret == value)
-                    return;
-                _OAuthTokenSecret = value;
-                RaisePropertyChanged("OAuthTokenSecret");
-            }
-        }
-        #endregion
-      
+            
         #region UseUserStream変更通知プロパティ
         bool _UseUserStream = true;
 
@@ -129,9 +113,9 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
         
         #region Tabs変更通知プロパティ
-        ObservableCollection<TabSettings> _Tabs = new ObservableCollection<TabSettings>();
+        ObservableCollection<TabSetting> _Tabs = new ObservableCollection<TabSetting>();
 
-        public ObservableCollection<TabSettings> Tabs
+        public ObservableCollection<TabSetting> Tabs
         {
             get
             { return _Tabs; }

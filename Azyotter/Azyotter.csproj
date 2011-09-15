@@ -79,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Account.cs" />
     <Compile Include="Views\Converters\TypeToEnumValuesConverter.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -106,7 +107,7 @@
     <Compile Include="Models\TimelineReceivers\HomeTimelineReceiver.cs" />
     <Compile Include="Models\TimelineReceivers\ITimelineReceiver.cs" />
     <Compile Include="Models\Model.cs" />
-    <Compile Include="Models\TabSettings.cs" />
+    <Compile Include="Models\TabSetting.cs" />
     <Compile Include="Models\TimelineItem.cs" />
     <Compile Include="Models\TimelineReceivers\TimelineReceiver.cs" />
     <Compile Include="Models\TimelineTypes.cs" />
@@ -159,6 +160,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Resource Include="Icon\tw_azyobuzi.ico" />
     <Resource Include="Images\loading_circle.png" />
     <Resource Include="Images\009_HighPriority_16x16_72.png" />
