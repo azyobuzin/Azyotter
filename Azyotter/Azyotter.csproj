@@ -80,6 +80,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\ITimelineItem.cs" />
+    <Compile Include="Models\TwitterDataModel\Source.cs" />
+    <Compile Include="Models\TwitterDataModel\Status.cs" />
+    <Compile Include="Models\TwitterDataModel\User.cs" />
     <Compile Include="Views\Converters\TypeToEnumValuesConverter.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
