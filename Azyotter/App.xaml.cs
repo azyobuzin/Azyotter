@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
-
 using Livet;
 
 namespace Azyobuzi.Azyotter
@@ -16,19 +16,36 @@ namespace Azyobuzi.Azyotter
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             DispatcherHelper.UIDispatcher = Dispatcher;
-            //AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            
+#if !DEBUG
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+#endif
         }
 
-        //集約エラーハンドラ
+        private string GetVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetCustomAttributes(false)
+                .OfType<AssemblyInformationalVersionAttribute>()
+                .Select(_ => _.InformationalVersion)
+                .Single();
+        }
+
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            //TODO:ロギング処理など
+            var tempFile = Path.GetTempFileName();
+            using (var sw = new StreamWriter(tempFile))
+            {
+                sw.WriteLine("Error Report " + DateTime.Now.ToString());
+                sw.WriteLine("Azyotter " + this.GetVersion());
+                sw.WriteLine("OS:" + Environment.OSVersion.VersionString);
+                sw.WriteLine("64bit:" + Environment.Is64BitOperatingSystem.ToString());
+                sw.WriteLine();
+                sw.WriteLine("Exception.ToString() ->");
+                sw.WriteLine(e.ExceptionObject.ToString());
+            }
 
-            MessageBox.Show(
-                "不明なエラーが発生しました。アプリケーションを終了します。",
-                "エラー",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            Process.Start(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\ErrorReporter.exe",
+                string.Format(@"""{0}"" ""{1}""", Process.GetCurrentProcess().MainModule.FileName, tempFile));
 
             Environment.Exit(1);
         }

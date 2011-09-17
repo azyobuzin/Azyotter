@@ -8,9 +8,8 @@ namespace Azyobuzi.Azyotter.Models
 {
     public class Settings : NotificationObject
     {
-        private static readonly string SettingsFileName = Assembly.GetExecutingAssembly() != null
-            ? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Settings.xaml"
-            : "Settings.xaml";
+        private static readonly string SettingsFileName =
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Settings.xaml";
 
         public Settings()
         {

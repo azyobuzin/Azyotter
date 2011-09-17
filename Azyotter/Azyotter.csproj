@@ -175,7 +175,12 @@
     <Content Include="InfrastructureAssemblies\Microsoft.Expression.Interactions.dll" />
     <Content Include="InfrastructureAssemblies\System.Windows.Interactivity.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ErrorReporter\ErrorReporter.csproj">
+      <Project>{4C146B0E-9C59-4480-BD98-C0FA8B9F9E2C}</Project>
+      <Name>ErrorReporter</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)AssemblyVersionInfoGenerator\bin\$(ConfigurationName)\AssemblyVersionInfoGenerator.exe" "$(ProjectDir)</PreBuildEvent>
