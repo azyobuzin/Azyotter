@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Azyobuzi.Azyotter.Models.TwitterDataModel
+namespace Azyobuzi.Azyotter.Models.TwitterDataModels
 {
-    public class Source
+    public class User
     {
         //TODO
     }

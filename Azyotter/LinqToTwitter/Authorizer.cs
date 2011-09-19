@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using LinqToTwitter;
 
-namespace Azyobuzi.Azyotter.LinqToTwitter
+namespace LinqToTwitter
 {
     public class Authorizer : OAuthAuthorizer, ITwitterAuthorizer
     {

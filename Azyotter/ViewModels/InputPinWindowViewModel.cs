@@ -110,12 +110,12 @@ namespace Azyobuzi.Azyotter.ViewModels
         
         #region Completeイベント
         public event EventHandler<EventArgs> Complete;
-        private global::Livet.Notificator<EventArgs> _CompleteEvent;
-        public global::Livet.Notificator<EventArgs> CompleteEvent
+        private Notificator<EventArgs> _CompleteEvent;
+        public Notificator<EventArgs> CompleteEvent
         {
             get
             {
-                if (_CompleteEvent == null) _CompleteEvent = new global::Livet.Notificator<EventArgs>();
+                if (_CompleteEvent == null) _CompleteEvent = new Notificator<EventArgs>();
                 return _CompleteEvent;
             }
             set { _CompleteEvent = value; }
