@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Azyobuzi.Azyotter.Models.TwitterDataModels
+﻿namespace Azyobuzi.Azyotter.Models.TwitterDataModels
 {
-    public class Status
+    public class Status : TimelineItemBase
     {
-        //TODO
+        public override bool IsTweet
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }

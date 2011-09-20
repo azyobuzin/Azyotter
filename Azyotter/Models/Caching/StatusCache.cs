@@ -74,7 +74,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
             return result;
         }
 
-        public Status AddOrMerge(LinqToTwitter.Status status)
+        public Status AddOrMerge(LinqToTwitter.Status status, bool forAllTab)
         {
             throw new NotImplementedException(); //TODO:やる気でない
         }

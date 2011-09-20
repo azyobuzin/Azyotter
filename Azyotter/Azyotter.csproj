@@ -81,7 +81,13 @@
     </ApplicationDefinition>
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Caching\StatusCache.cs" />
+    <Compile Include="Models\Caching\UserCache.cs" />
     <Compile Include="Models\ITimelineItem.cs" />
+    <Compile Include="Models\StatusTextParts\Hashtag.cs" />
+    <Compile Include="Models\StatusTextParts\Normal.cs" />
+    <Compile Include="Models\StatusTextParts\StatusTextPartBase.cs" />
+    <Compile Include="Models\StatusTextParts\Url.cs" />
+    <Compile Include="Models\StatusTextParts\UserName.cs" />
     <Compile Include="Models\TwitterDataModels\Source.cs" />
     <Compile Include="Models\TwitterDataModels\Status.cs" />
     <Compile Include="Models\TwitterDataModels\User.cs" />

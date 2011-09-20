@@ -79,7 +79,8 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                         this.Twitter.Status
                             .Where(_ => _.Type == StatusType.Home
                                 && _.Count == count
-                                && _.Page == page)
+                                && _.Page == page
+                                && _.IncludeEntities == true)
                             .Select(TimelineItem.FromStatus)
                             .ToArray()
                     );
