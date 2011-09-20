@@ -189,7 +189,7 @@
                                                 </TextBlock.Text>
                                                 </TextBlock>
                                                 
-                                                <TextBlock Text="{Binding Text}"/>
+                                                <v:TimelineItemRichText Inlines="{Binding Text}"/>
                                                 
                                                 <TextBlock Text="{Binding Path=CreatedAt, StringFormat=\{0:HH:mm:ss\}}"
                                                            HorizontalAlignment="Right"/>

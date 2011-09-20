@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Documents;
 using Azyobuzi.Azyotter.Models;
 using Livet;
 
@@ -22,11 +24,26 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
 
-        public string Text
+        public IEnumerable<Inline> Text
         {
             get
             {
-                return this.Model.Text.First().Text;//TODO:分解して解決
+                return this.Model.Text
+                    .Select(part =>
+                    {
+                        var url = part as Models.StatusTextParts.Url;
+                        if (url != null)
+                        {
+                            var re = new Hyperlink();
+                            re.Inlines.Add(url.Text);
+                            re.NavigateUri = new Uri(url.Text);
+                            return (Inline)re;
+                        }
+                        else
+                        {
+                            return (Inline)new Run(part.Text);
+                        }
+                    });
             }
         }
 
