@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Azyobuzi.Azyotter.Models;
 using Livet;
 
@@ -6,12 +7,12 @@ namespace Azyobuzi.Azyotter.ViewModels
 {
     public class TimelineItemViewModel : ViewModel
     {
-        public TimelineItemViewModel(TimelineItem model)
+        public TimelineItemViewModel(ITimelineItem model)
         {
             this.Model = model;
         }
 
-        public TimelineItem Model { private set; get; }
+        public ITimelineItem Model { private set; get; }
 
         public DateTime CreatedAt
         {
@@ -25,7 +26,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.Text;
+                return this.Model.Text.First().Text;//TODO:分解して解決
             }
         }
 
@@ -41,7 +42,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.From.Identifier.ScreenName;
+                return this.Model.From.ScreenName;
             }
         }
 

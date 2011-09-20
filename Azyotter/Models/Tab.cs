@@ -14,7 +14,7 @@ namespace Azyobuzi.Azyotter.Models
         public Tab(TabSetting settings, TwitterContext twitter)
         {
             this.twitter = twitter;
-            this.Items = new ObservableCollection<TimelineItem>();
+            this.Items = new ObservableCollection<ITimelineItem>();
             this.Settings = settings;
             settings.PropertyChanged += this.Settings_PropertyChanged;
             this.timer = new Timer(_ =>
@@ -100,7 +100,7 @@ namespace Azyobuzi.Azyotter.Models
 
         private ITimelineReceiver receiver;
 
-        public ObservableCollection<TimelineItem> Items { get; private set; }
+        public ObservableCollection<ITimelineItem> Items { get; private set; }
 
         private void receiver_ReceivedTimeline(object sender, ReceivedTimelineEventArgs e)
         {

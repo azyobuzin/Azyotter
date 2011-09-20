@@ -17,12 +17,12 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
     
     public class ReceivedTimelineEventArgs : EventArgs
     {
-        public ReceivedTimelineEventArgs(TimelineItem[] receivedItems)
+        public ReceivedTimelineEventArgs(ITimelineItem[] receivedItems)
         {
             this.ReceivedItems = receivedItems;
         }
 
-        public TimelineItem[] ReceivedItems { get; private set; }
+        public ITimelineItem[] ReceivedItems { get; private set; }
     }
 
     public class ErrorEventArgs : EventArgs

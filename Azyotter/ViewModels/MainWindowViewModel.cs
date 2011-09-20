@@ -277,14 +277,14 @@ namespace Azyobuzi.Azyotter.ViewModels
             return this.SelectedTab != null
                 && this.SelectedTab.SelectedItems != null
                 && this.SelectedTab.SelectedItems.Cast<TimelineItemViewModel>()
-                    .Any(item => item.Model.Base is global::LinqToTwitter.Status);
+                    .Any(item => item.Model is Models.TwitterDataModels.Status);
         }
 
         private void Reply()
         {
             var replyTo = this.SelectedTab.SelectedItems
                 .Cast<TimelineItemViewModel>()
-                .Where(item => item.Model.Base is global::LinqToTwitter.Status);
+                .Where(item => item.Model is Models.TwitterDataModels.Status);
             this.ReplyToStatus = replyTo.FirstOrDefault();
             this.PostText = string.Join(" ", replyTo.Select(status => "@" + status.FromScreenName))
                 + " " + this.PostText;

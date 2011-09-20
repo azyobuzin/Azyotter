@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Util;
 using LinqToTwitter;
 
@@ -81,7 +82,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                                 && _.Count == count
                                 && _.Page == page
                                 && _.IncludeEntities == true)
-                            .Select(TimelineItem.FromStatus)
+                            .Select(status => StatusCache.Instance.AddOrMerge(status, true))
                             .ToArray()
                     );
                 }
@@ -100,7 +101,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         private void userStream_ReceivedStatus(object sender, UserStreamReceivedStatusEventArgs e)
         {
-            this.OnReceivedTimeline(new TimelineItem[] { TimelineItem.FromStatus(e.Status) });
+            this.OnReceivedTimeline(new ITimelineItem[] { StatusCache.Instance.AddOrMerge(e.Status, true) });
         }
 
         public override void Dispose()

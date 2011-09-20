@@ -119,7 +119,6 @@
     <Compile Include="Models\TimelineReceivers\ITimelineReceiver.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\TabSetting.cs" />
-    <Compile Include="Models\TimelineItem.cs" />
     <Compile Include="Models\TimelineReceivers\TimelineReceiver.cs" />
     <Compile Include="Models\TimelineTypes.cs" />
     <Compile Include="Models\UserStreamManager.cs" />

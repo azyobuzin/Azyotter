@@ -84,7 +84,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
 
             target.ForAllTab = forAllTab || target.ForAllTab;
             target.Id = status.StatusID;
-            target.CreatedAt = status.CreatedAt;
+            target.CreatedAt = status.CreatedAt.ToLocalTime();
             target.Text = this.CreateStatusText(status);
             target.From = UserCache.Instance.AddOrMerge(status.User);
             target.InReplyToStatusId = status.InReplyToStatusID;

@@ -44,7 +44,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
         public User AddOrMerge(LinqToTwitter.User user)
         {
             var target = this.collection.FirstOrDefault(_ =>
-                _.Id == user.UserID || _.ScreenName == user.Identifier.ScreenName);
+                _.Id == user.Identifier.UserID || _.ScreenName == user.Identifier.ScreenName);
 
             if (target == null)
             {

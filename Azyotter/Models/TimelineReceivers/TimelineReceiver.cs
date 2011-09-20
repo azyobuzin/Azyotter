@@ -38,7 +38,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public event EventHandler IsRefreshingChanged;
 
-        protected virtual void OnReceivedTimeline(TimelineItem[] receivedItems)
+        protected virtual void OnReceivedTimeline(ITimelineItem[] receivedItems)
         {
             if (this.ReceivedTimeline != null)
                 this.ReceivedTimeline(this, new ReceivedTimelineEventArgs(receivedItems));
