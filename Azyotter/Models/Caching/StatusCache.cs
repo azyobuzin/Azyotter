@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Azyobuzi.Azyotter.Models.TwitterDataModels;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using Azyobuzi.Azyotter.Models.TwitterDataModels;
 
 namespace Azyobuzi.Azyotter.Models.Caching
 {
@@ -88,12 +85,18 @@ namespace Azyobuzi.Azyotter.Models.Caching
             target.ForAllTab = forAllTab || target.ForAllTab;
             target.Id = status.StatusID;
             target.CreatedAt = status.CreatedAt;
-            //TODO:Textを設定する
+            target.Text = this.CreateStatusText(status);
             target.From = UserCache.Instance.AddOrMerge(status.User);
             target.InReplyToStatusId = status.InReplyToStatusID;
             target.Source = Source.Create(status.Source);
 
             return target;
+        }
+
+        private IEnumerable<StatusTextParts.StatusTextPartBase> CreateStatusText(LinqToTwitter.Status status)
+        {
+            //LinqToTwitterがもう少し安定してから実装する
+            return new[] { new StatusTextParts.Normal() { Text = status.Text } };
         }
     }
 }
