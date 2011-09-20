@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -6,7 +7,8 @@ using Azyobuzi.Azyotter.Models.TwitterDataModels;
 
 namespace Azyobuzi.Azyotter.Models.Caching
 {
-    public class UserCache : INotifyCollectionChanged
+    public class UserCache
+        : IEnumerable<User>, INotifyCollectionChanged
     {
         private UserCache() { }
 
@@ -19,8 +21,18 @@ namespace Azyobuzi.Azyotter.Models.Caching
             }
         }
 
-        private List<User> collection = new List<User>();
-        
+        private ConcurrentBag<User> collection = new ConcurrentBag<User>();
+
+        public IEnumerator<User> GetEnumerator()
+        {
+            return this.collection.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
@@ -29,27 +41,15 @@ namespace Azyobuzi.Azyotter.Models.Caching
                 this.CollectionChanged(this, e);
         }
 
-        private readonly object lockObj = new object();
-
-        public TResult Query<TResult>(Func<IEnumerable<User>, TResult> action)
-        {
-            lock (this.lockObj)
-            {
-                return action(EnumerableEx.Create(() => this.collection.GetEnumerator()));
-            }
-        }
-
         public User AddOrMerge(LinqToTwitter.User user)
         {
-            var target = this.Query(enm =>
-                enm.FirstOrDefault(_ => _.Id == user.UserID || _.ScreenName == user.Identifier.ScreenName)
-            );
+            var target = this.collection.FirstOrDefault(_ =>
+                _.Id == user.UserID || _.ScreenName == user.Identifier.ScreenName);
 
             if (target == null)
             {
                 target = new User();
-                lock (this.lockObj)
-                    this.collection.Add(target);
+                this.collection.Add(target);
                 this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Add, target));
             }
