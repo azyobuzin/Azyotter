@@ -76,7 +76,24 @@ namespace Azyobuzi.Azyotter.Models.Caching
 
         public Status AddOrMerge(LinqToTwitter.Status status, bool forAllTab)
         {
-            throw new NotImplementedException(); //TODO:やる気でない
+            Status target;
+
+            if (!this.collection.TryGetValue(status.StatusID, out target))
+            {
+                target = this.collection.AddOrUpdate(status.StatusID, new Status(), (k, v) => v);
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
+                    NotifyCollectionChangedAction.Add, target));
+            }
+
+            target.ForAllTab = forAllTab || target.ForAllTab;
+            target.Id = status.StatusID;
+            target.CreatedAt = status.CreatedAt;
+            //TODO:Textを設定する
+            target.From = UserCache.Instance.AddOrMerge(status.User);
+            target.InReplyToStatusId = status.InReplyToStatusID;
+            target.Source = Source.Create(status.Source);
+
+            return target;
         }
     }
 }

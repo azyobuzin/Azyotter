@@ -12,7 +12,7 @@ namespace Azyobuzi.Azyotter.Models
         bool ForAllTab { get; set; }
         string Id { get; set; }
         DateTime CreatedAt { get; set; }
-        IEnumerable<StatusTextParts.StatusTextPartBase> Text { get; set; }//TODO
+        IEnumerable<StatusTextParts.StatusTextPartBase> Text { get; set; }
         User From { get; set; }
         User To { get; set; }
         string InReplyToStatusId { get; set; }
