@@ -28,15 +28,12 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
                 try
                 {
-                    this.OnReceivedTimeline(
-                        this.Twitter.Status
-                            .Where(_ => _.Type == StatusType.Home
-                                && _.Count == count
-                                && _.Page == page
-                                && _.IncludeEntities == true)
-                            .Select(status => StatusCache.Instance.AddOrMerge(status, true))
-                            .ToArray()
-                    );
+                    this.Twitter.Status
+                        .Where(_ => _.Type == StatusType.Home
+                            && _.Count == count
+                            && _.Page == page
+                            && _.IncludeEntities == true)
+                        .ForEach(status => StatusCache.Instance.AddOrMerge(status, true));
                 }
                 catch (Exception ex)
                 {
