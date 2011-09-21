@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Models.TimelineReceivers;
 using LinqToTwitter;
 using Livet;
@@ -16,6 +17,7 @@ namespace Azyobuzi.Azyotter.Models
         {
             this.twitter = twitter;
             this.Items = new ObservableCollection<ITimelineItem>();
+            StatusCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
             this.Settings = settings;
             settings.PropertyChanged += this.Settings_PropertyChanged;
             this.timer = new Timer(_ =>
@@ -82,6 +84,7 @@ namespace Azyobuzi.Azyotter.Models
             this.receiver.Dispose();
             this.receiver = null;
             this.Items = null;
+            StatusCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
             this.Settings.PropertyChanged -= this.Settings_PropertyChanged;
             this.Settings = null;
             GC.SuppressFinalize(this);
