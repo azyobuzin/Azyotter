@@ -157,63 +157,90 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             
+                            <ListBox.Resources>
+                                <!--選択時の背景-->
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                 Color="Transparent"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                 Color="Transparent"/>
+                                
+                                <!--選択時の文字色-->
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                                 Color="Black"/>
+                            </ListBox.Resources>
+                            
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="LightGray" BorderThickness="0,0,0,1">
-                                        <Grid Margin="3">
-                                            <Grid.Resources>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Border BorderThickness="3">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="BorderBrush" Value="LightGreen"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
                                                 </Style>
-                                            </Grid.Resources>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="45"/>
-                                                <ColumnDefinition/>
-                                            </Grid.ColumnDefinitions>
+                                            </Border.Style>
+                                            
+                                            <Grid>
+                                                <Grid.Resources>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                                    </Style>
+                                                </Grid.Resources>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
 
-                                            <Image Grid.Column="0"
-                                                   Source="{Binding FromProfileImageUrl}"
-                                                   VerticalAlignment="Top"
-                                                   Stretch="Uniform"/>
+                                                <Image Grid.Column="0"
+                                                       Source="{Binding FromProfileImageUrl}"
+                                                       VerticalAlignment="Top"
+                                                       Stretch="Uniform"/>
 
-                                            <StackPanel Grid.Column="1" Margin="3,0,0,0">
-                                                <TextBlock FontWeight="Bold">
+                                                <StackPanel Grid.Column="1" Margin="3,0,0,0">
+                                                    <TextBlock FontWeight="Bold">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0}/{1}">
                                                         <Binding Path="FromScreenName"/>
                                                         <Binding Path="FromUserName"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
-                                                </TextBlock>
+                                                    </TextBlock>
 
-                                                <v:TimelineItemPlainText Inlines="{Binding Text}">
-                                                    <v:TimelineItemPlainText.Style>
-                                                        <Style TargetType="v:TimelineItemPlainText">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </v:TimelineItemPlainText.Style>
-                                                </v:TimelineItemPlainText>
+                                                    <v:TimelineItemPlainText Inlines="{Binding Text}">
+                                                        <v:TimelineItemPlainText.Style>
+                                                            <Style TargetType="v:TimelineItemPlainText">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </v:TimelineItemPlainText.Style>
+                                                    </v:TimelineItemPlainText>
 
-                                                <v:TimelineItemRichText Inlines="{Binding Text}">
-                                                    <v:TimelineItemRichText.Style>
-                                                        <Style TargetType="v:TimelineItemRichText">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsSelected}" Value="False">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </v:TimelineItemRichText.Style>
-                                                </v:TimelineItemRichText>
+                                                    <v:TimelineItemRichText Inlines="{Binding Text}">
+                                                        <v:TimelineItemRichText.Style>
+                                                            <Style TargetType="v:TimelineItemRichText">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </v:TimelineItemRichText.Style>
+                                                    </v:TimelineItemRichText>
 
-                                                <TextBlock Text="{Binding Path=CreatedAt, StringFormat=\{0:HH:mm:ss\}}"
-                                                           HorizontalAlignment="Right"/>
-                                            </StackPanel>
-                                        </Grid>
+                                                    <TextBlock Text="{Binding Path=CreatedAt, StringFormat=\{0:HH:mm:ss\}}"
+                                                               HorizontalAlignment="Right"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
                                     </Border>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
