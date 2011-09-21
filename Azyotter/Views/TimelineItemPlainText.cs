@@ -10,7 +10,7 @@ namespace Azyobuzi.Azyotter.Views
         public TimelineItemPlainText()
         {
             this.TextWrapping = TextWrapping.Wrap;
-            this.Margin = new Thickness(2);
+            this.Margin = new Thickness(5, 0, 5, 0);
         }
 
         public new IEnumerable<Inline> Inlines

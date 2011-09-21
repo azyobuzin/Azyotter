@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
@@ -37,6 +38,26 @@ namespace Azyobuzi.Azyotter.ViewModels
             );
             source.SortDescriptions.Add(new SortDescription("CreatedAt", ListSortDirection.Descending));
             this.Items = source.View;
+
+            this.SelectedItems = new ObservableCollection<TimelineItemViewModel>();
+            this.SelectedItems.CollectionChanged += (sender, e) =>
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Reset:
+                        this.Items.Cast<TimelineItemViewModel>()
+                            .ForEach(item => item.IsSelected = false);
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        e.OldItems.Cast<TimelineItemViewModel>()
+                            .ForEach(item => item.IsSelected = false);
+                        break;
+                    case NotifyCollectionChangedAction.Add:
+                        e.NewItems.Cast<TimelineItemViewModel>()
+                            .ForEach(item => item.IsSelected = true);
+                        break;
+                }
+            };
         }
 
         public Tab Model { get; private set; }
@@ -59,28 +80,7 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         public ICollectionView Items { get; private set; }
 
-        #region SelectedItems変更通知プロパティ
-        IList _SelectedItems;
-
-        public IList SelectedItems
-        {
-            get
-            { return _SelectedItems; }
-            set
-            {
-                if (_SelectedItems == value)
-                    return;
-
-                _SelectedItems.Cast<TimelineItemViewModel>().ForEach(_ => _.IsSelected = false);
-
-                _SelectedItems = value;
-
-                _SelectedItems.Cast<TimelineItemViewModel>().ForEach(_ => _.IsSelected = true);
-
-                RaisePropertyChanged("SelectedItems");
-            }
-        }
-        #endregion
+        public ObservableCollection<TimelineItemViewModel> SelectedItems { get; private set; }
 
         public string LastErrorMessage
         {

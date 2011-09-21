@@ -79,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Interactivity\ListBoxBehavior.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Caching\StatusCache.cs" />
     <Compile Include="Models\Caching\UserCache.cs" />

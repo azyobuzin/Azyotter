@@ -111,12 +111,9 @@ namespace Azyobuzi.Azyotter.ViewModels
         private TabViewModel CreateTabViewModel(Tab model)
         {
             var re = new TabViewModel(model);
-            ViewModelHelper.BindNotifyChanged(re, this, (sender, e) =>
+            ViewModelHelper.BindNotifyCollectionChanged(re.SelectedItems, this, (sender, e) =>
             {
-                if (e.PropertyName == "SelectedItems")
-                {
-                    this.ReplyCommand.RaiseCanExecuteChanged();
-                }
+                this.ReplyCommand.RaiseCanExecuteChanged();
             });
             return re;
         }
