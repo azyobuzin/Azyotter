@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Azyobuzi.Azyotter.Util;
 using LinqToTwitter;
 using Livet;
 
@@ -14,7 +15,6 @@ namespace Azyobuzi.Azyotter.Models
         public void Init()
         {
             this.Tabs = new ObservableCollection<Tab>();
-            UserStreams.Twitter = this.twitter;
             Settings.Instance.PropertyChanged += this.Settings_PropertyChanged;
             Settings.Instance.Tabs.CollectionChanged += this.Settings_Tabs_CollectionChanged;
             Settings.Instance.Tabs.Select(Tuple.Create<TabSetting, int>)
@@ -39,7 +39,8 @@ namespace Azyobuzi.Azyotter.Models
                     ConsumerSecret = Settings.Instance.ConsumerSecret,
                     OAuthToken = Settings.Instance.Accounts.First().OAuthToken,
                     AccessToken = Settings.Instance.Accounts.First().OAuthTokenSecret
-                }
+                },
+                UserAgent = "Azyotter v" + AssemblyUtil.GetInformationalVersion()
             }
         };
 

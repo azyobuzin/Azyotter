@@ -1,20 +1,38 @@
 ﻿using System.Linq;
 using Azyobuzi.Azyotter.Models.Caching;
+using Azyobuzi.Azyotter.Util;
 using LinqToTwitter;
 
 namespace Azyobuzi.Azyotter.Models
 {
     public static class UserStreams
     {
-        public static TwitterContext Twitter { get; set; }
-
+        private static TwitterContext CreateTwitterContext()
+        {
+            return new TwitterContext()
+            {
+                AuthorizedClient = new Authorizer()
+                {
+                    Credentials = new InMemoryCredentials()
+                    {
+                        ConsumerKey = Settings.Instance.ConsumerKey,
+                        ConsumerSecret = Settings.Instance.ConsumerSecret,
+                        OAuthToken = Settings.Instance.Accounts.First().OAuthToken,
+                        AccessToken = Settings.Instance.Accounts.First().OAuthTokenSecret
+                    },
+                    UserAgent = "Azyotter v" + AssemblyUtil.GetInformationalVersion()
+                }
+            };
+        }
+        
         private static UserStreamParser userstream;
 
         public static void Start()
         {
             Stop();
 
-            userstream = Twitter.UserStream
+            userstream = CreateTwitterContext()
+                .UserStream
                 .Where(us => us.Type == UserStreamType.User)
                 .CreateParser();
 

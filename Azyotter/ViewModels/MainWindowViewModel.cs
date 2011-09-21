@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models;
 using Azyobuzi.Azyotter.Util;
@@ -155,10 +154,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetCustomAttributes(false)
-                    .OfType<AssemblyInformationalVersionAttribute>()
-                    .Select(_ => _.InformationalVersion)
-                    .Single();
+                return AssemblyUtil.GetInformationalVersion();
             }
         }
         
