@@ -96,6 +96,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SystemMenuManager.cs" />
+    <Compile Include="Views\TimelineItemPlainText.cs" />
     <Compile Include="Views\TimelineItemRichText.cs" />
     <Page Include="Views\InputPinWindow.xaml">
       <SubType>Designer</SubType>

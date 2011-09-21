@@ -70,5 +70,23 @@ namespace Azyobuzi.Azyotter.ViewModels
                 return this.Model.From.ProfileImageUrl;
             }
         }
+        
+        #region IsSelected変更通知プロパティ
+        bool _IsSelected;
+
+        public bool IsSelected
+        {
+            get
+            { return _IsSelected; }
+            set
+            {
+                if (_IsSelected == value)
+                    return;
+                _IsSelected = value;
+                RaisePropertyChanged("IsSelected");
+            }
+        }
+        #endregion
+      
     }
 }

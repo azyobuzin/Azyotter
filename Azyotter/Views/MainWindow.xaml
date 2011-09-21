@@ -188,9 +188,31 @@
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                                 </TextBlock>
-                                                
-                                                <v:TimelineItemRichText Inlines="{Binding Text}"/>
-                                                
+
+                                                <v:TimelineItemPlainText Inlines="{Binding Text}">
+                                                    <v:TimelineItemPlainText.Style>
+                                                        <Style TargetType="v:TimelineItemPlainText">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </v:TimelineItemPlainText.Style>
+                                                </v:TimelineItemPlainText>
+
+                                                <v:TimelineItemRichText Inlines="{Binding Text}">
+                                                    <v:TimelineItemRichText.Style>
+                                                        <Style TargetType="v:TimelineItemRichText">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </v:TimelineItemRichText.Style>
+                                                </v:TimelineItemRichText>
+
                                                 <TextBlock Text="{Binding Path=CreatedAt, StringFormat=\{0:HH:mm:ss\}}"
                                                            HorizontalAlignment="Right"/>
                                             </StackPanel>

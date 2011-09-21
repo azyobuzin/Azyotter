@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Data;
 using Azyobuzi.Azyotter.Models;
 using Livet;
@@ -69,7 +70,13 @@ namespace Azyobuzi.Azyotter.ViewModels
             {
                 if (_SelectedItems == value)
                     return;
+
+                _SelectedItems.Cast<TimelineItemViewModel>().ForEach(_ => _.IsSelected = false);
+
                 _SelectedItems = value;
+
+                _SelectedItems.Cast<TimelineItemViewModel>().ForEach(_ => _.IsSelected = true);
+
                 RaisePropertyChanged("SelectedItems");
             }
         }
