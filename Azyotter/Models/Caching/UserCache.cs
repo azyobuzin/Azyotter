@@ -46,12 +46,12 @@ namespace Azyobuzi.Azyotter.Models.Caching
             var target = this.collection.FirstOrDefault(_ =>
                 _.Id == user.Identifier.UserID || _.ScreenName == user.Identifier.ScreenName);
 
+            bool isNew = false;
             if (target == null)
             {
                 target = new User();
                 this.collection.Add(target);
-                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
-                    NotifyCollectionChangedAction.Add, target));
+                isNew = true;
             }
 
             target.Id = user.UserID;
@@ -68,6 +68,10 @@ namespace Azyobuzi.Azyotter.Models.Caching
             target.ListedCount = user.ListedCount;
             target.Protected = user.Protected;
             target.ProfileImageUrl = user.ProfileImageUrl;
+
+            if (isNew)
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
+                    NotifyCollectionChangedAction.Add, target));
 
             return target;
         }

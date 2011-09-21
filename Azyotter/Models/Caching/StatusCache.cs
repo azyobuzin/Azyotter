@@ -9,7 +9,7 @@ using System.Linq;
 namespace Azyobuzi.Azyotter.Models.Caching
 {
     public class StatusCache
-        : IEnumerable<Status>, INotifyCollectionChanged
+        : IEnumerable<ITimelineItem>, INotifyCollectionChanged
     {
         private StatusCache() { }
 
@@ -22,9 +22,9 @@ namespace Azyobuzi.Azyotter.Models.Caching
             }
         }
 
-        private ConcurrentDictionary<string, Status> collection = new ConcurrentDictionary<string, Status>();
+        private ConcurrentDictionary<string, ITimelineItem> collection = new ConcurrentDictionary<string, ITimelineItem>();
 
-        public IEnumerator<Status> GetEnumerator()
+        public IEnumerator<ITimelineItem> GetEnumerator()
         {
             return collection.Values.GetEnumerator();
         }
@@ -42,7 +42,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
                 this.CollectionChanged(this, e);
         }
 
-        public Status this[string id]
+        public ITimelineItem this[string id]
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
 
         public bool Remove(string id)
         {
-            Status tmp;
+            ITimelineItem tmp;
             bool result = this.collection.TryRemove(id, out tmp);
 
             if (result)
@@ -73,15 +73,15 @@ namespace Azyobuzi.Azyotter.Models.Caching
             return result;
         }
 
-        public Status AddOrMerge(LinqToTwitter.Status status, bool forAllTab)
+        public ITimelineItem AddOrMerge(LinqToTwitter.Status status, bool forAllTab)
         {
-            Status target;
+            ITimelineItem target;
 
+            bool isNew = false;
             if (!this.collection.TryGetValue(status.StatusID, out target))
             {
                 target = this.collection.AddOrUpdate(status.StatusID, new Status(), (k, v) => v);
-                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
-                    NotifyCollectionChangedAction.Add, target));
+                isNew = true;
             }
 
             target.ForAllTab = forAllTab || target.ForAllTab;
@@ -91,6 +91,10 @@ namespace Azyobuzi.Azyotter.Models.Caching
             target.From = UserCache.Instance.AddOrMerge(status.User);
             target.InReplyToStatusId = status.InReplyToStatusID;
             target.Source = Source.Create(status.Source);
+
+            if (isNew)
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
+                    NotifyCollectionChangedAction.Add, target));
 
             return target;
         }

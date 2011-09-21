@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using Azyobuzi.Azyotter.Models.Caching;
@@ -12,60 +12,12 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
     {
         public HomeTimelineReceiver()
         {
-            Settings.Instance.PropertyChanged += this.Settings_PropertyChanged;
-            this.Settings_PropertyChanged(Settings.Instance, new PropertyChangedEventArgs("UseUserStream"));
+            StatusCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
         }
 
         public override bool UseUserStream
         {
             get { return true; }
-        }
-
-        private UserStreamManager userStream;
-
-        private void SubscribeEvents()
-        {
-            this.userStream.UserStreamChanging += this.userStream_UserStreamChanging;
-            this.userStream.UserStreamChanged += this.userStream_UserStreamChanged;
-            this.userStream.UserStream.ReceivedStatus += this.userStream_ReceivedStatus;
-        }
-
-        private void UnsubscribeEvents()
-        {
-            this.userStream.UserStreamChanging -= this.userStream_UserStreamChanging;
-            this.userStream.UserStreamChanged -= this.userStream_UserStreamChanged;
-            this.userStream.UserStream.ReceivedStatus -= this.userStream_ReceivedStatus;
-        }
-
-        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "UseUserStream")
-            {
-                if (!Settings.Instance.UseUserStream)
-                {
-                    if (this.userStream != null)
-                    {
-                        this.UnsubscribeEvents();
-                        this.userStream.Unregister(this);
-                        this.userStream = null;
-                    }
-                }
-                else
-                {
-                    this.userStream = UserStreamManager.Register(this);
-                    this.SubscribeEvents();
-                }
-            }
-        }
-
-        private void userStream_UserStreamChanging(object sender, EventArgs e)
-        {
-            this.UnsubscribeEvents();
-        }
-
-        private void userStream_UserStreamChanged(object sender, EventArgs e)
-        {
-            this.SubscribeEvents();
         }
 
         public override void Receive(int count, int page)
@@ -99,20 +51,19 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
             t.Start();
         }
 
-        private void userStream_ReceivedStatus(object sender, UserStreamReceivedStatusEventArgs e)
+        private void StatusCache_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnReceivedTimeline(new ITimelineItem[] { StatusCache.Instance.AddOrMerge(e.Status, true) });
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                e.NewItems.Cast<ITimelineItem>()
+                    .Where(status => status.IsTweet && status.ForAllTab)
+                    .ForEach(status => this.OnReceivedTimeline(new[] { status }));
+            }
         }
 
         public override void Dispose()
         {
-            if (this.userStream != null)
-            {
-                this.UnsubscribeEvents();
-                this.userStream.Unregister(this);
-                this.userStream = null;
-            }
-
+            StatusCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
             base.Dispose();
         }
     }

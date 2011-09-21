@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -154,6 +155,15 @@ namespace Azyobuzi.Azyotter.Models
         public void ClearErrorMessage()
         {
             this.LastErrorMessage = null;
+        }
+
+        private void StatusCache_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                e.OldItems.Cast<ITimelineItem>()
+                    .ForEach(item => this.Items.Remove(item));
+            }
         }
     }
 }

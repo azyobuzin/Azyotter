@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToTwitter;
@@ -13,7 +14,8 @@ namespace Azyobuzi.Azyotter.Models
         public void Init()
         {
             this.Tabs = new ObservableCollection<Tab>();
-            UserStreamManager.Twitter = this.twitter;
+            UserStreams.Twitter = this.twitter;
+            Settings.Instance.PropertyChanged += this.Settings_PropertyChanged;
             Settings.Instance.Tabs.CollectionChanged += this.Settings_Tabs_CollectionChanged;
             Settings.Instance.Tabs.Select(Tuple.Create<TabSetting, int>)
                 .ForEach(tab => this.Settings_Tabs_CollectionChanged(
@@ -24,6 +26,7 @@ namespace Azyobuzi.Azyotter.Models
                         tab.Item2
                     )
                 ));
+            this.Settings_PropertyChanged(Settings.Instance, new PropertyChangedEventArgs("UseUserStream"));
         }
 
         private TwitterContext twitter = new TwitterContext()
@@ -69,6 +72,17 @@ namespace Azyobuzi.Azyotter.Models
             tab.Refresh();
         }
 
+        private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "UseUserStream")
+            {
+                if (Settings.Instance.UseUserStream)
+                    UserStreams.Start();
+                else
+                    UserStreams.Stop();
+            }
+        }
+
         public Authorizer GetTwitterAuthorizer()
         {
             return this.twitter.AuthorizedClient as Authorizer;
@@ -84,10 +98,7 @@ namespace Azyobuzi.Azyotter.Models
 
         public void CloseUserStream()
         {
-            if (UserStreamManager.SubscribersCount != 0)
-            {
-                UserStreamManager.Register(null).UserStream.Close();
-            }
+            UserStreams.Stop();
         }
 
         public Task<Status> Post(string text, string inReplyToStatusId)
