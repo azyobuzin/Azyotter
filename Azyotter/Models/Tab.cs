@@ -54,6 +54,8 @@ namespace Azyobuzi.Azyotter.Models
                         oldReceiver.Error -= this.receiver_Error;
                         oldReceiver.Dispose();
                     }
+                    this.Items.Clear();
+                    this.Refresh();
                     break;
                 case "Args":
                     if (this.receiver != null)

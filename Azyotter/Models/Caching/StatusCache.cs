@@ -2,9 +2,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Azyobuzi.Azyotter.Models.TwitterDataModels;
 using System.IO;
 using System.Linq;
+using System.Web;
+using Azyobuzi.Azyotter.Models.TwitterDataModels;
 
 namespace Azyobuzi.Azyotter.Models.Caching
 {
@@ -102,12 +103,12 @@ namespace Azyobuzi.Azyotter.Models.Caching
         private IEnumerable<StatusTextParts.StatusTextPartBase> CreateStatusText(LinqToTwitter.Status status)
         {
             if (status.Entities == null)
-                return new[] { new StatusTextParts.Normal() { Text = status.Text } };
+                return new[] { new StatusTextParts.Normal() { Text = HttpUtility.HtmlDecode(status.Text) } };
 
             var re = new List<StatusTextParts.StatusTextPartBase>();
 
             IEnumerable<LinqToTwitter.MentionBase> entities = status.Entities.UrlMentions;
-            using (var sr = new StringReader(status.Text))
+            using (var sr = new StringReader(HttpUtility.HtmlDecode(status.Text)))
             {
                 int i = 0;
                 string buffer = string.Empty;

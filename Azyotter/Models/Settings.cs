@@ -30,6 +30,7 @@ namespace Azyobuzi.Azyotter.Models
                     {
                         instance = new Settings();
                         instance.Tabs.Add(new TabSetting() { Name = "Home", Type = TimelineTypes.Home });
+                        instance.Tabs.Add(new TabSetting() { Name = "Mentions", Type = TimelineTypes.Mentions });
                         instance.Accounts.Add(new Account());
                     }
                 }

@@ -70,7 +70,6 @@ namespace Azyobuzi.Azyotter.Models
         {
             var tab = new Tab(settings, this.twitter);
             this.Tabs.Insert(index, tab);
-            tab.Refresh();
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -94,6 +93,8 @@ namespace Azyobuzi.Azyotter.Models
             var auth = this.GetTwitterAuthorizer();
             Settings.Instance.Accounts.First().OAuthToken = auth.Credentials.OAuthToken;
             Settings.Instance.Accounts.First().OAuthTokenSecret = auth.Credentials.AccessToken;
+            Settings.Instance.Accounts.First().UserId = auth.UserId;
+            Settings.Instance.Accounts.First().ScreenName = auth.ScreenName;
             Settings.Instance.Save();
         }
 

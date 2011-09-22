@@ -85,7 +85,9 @@ namespace Azyobuzi.Azyotter.ViewModels
                         {
                             try
                             {
-                                auth.GetAccessToken(token, vm.Pin);
+                                var id = auth.GetAccessToken(token, vm.Pin);
+                                auth.UserId = id.UserID;
+                                auth.ScreenName = id.ScreenName;
                                 this.model.SaveOAuthToken();
                                 vm.CloseRequest();
                                 DispatcherHelper.BeginInvoke(this.Loaded2);
