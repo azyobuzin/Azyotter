@@ -93,5 +93,10 @@ namespace Azyobuzi.Azyotter.ErrorReporter
 
             this.Close();
         }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("notepad", @"""" + logFile + @"""");
+        }
     }
 }

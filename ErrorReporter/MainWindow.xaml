@@ -8,19 +8,24 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="6,6,6,10">
+        <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="6">
             想定外のエラーが発生しました。さらなる改善のためにエラー情報の送信にご協力ください。
         </TextBlock>
         
-        <CheckBox Name="sendReportCheckBox" Grid.Row="1"
+        <TextBlock Grid.Row="1" Margin="6,0,6,10">
+            <Hyperlink Click="Hyperlink_Click">エラー内容を見る</Hyperlink>
+        </TextBlock>
+        
+        <CheckBox Name="sendReportCheckBox" Grid.Row="2"
                   Content="エラー情報を送信する"
                   IsChecked="True" Margin="6,0" />
         
-        <GroupBox Grid.Row="2" Header="エラーが発生した状況などを教えてください（省略可）"
+        <GroupBox Grid.Row="3" Header="エラーが発生した状況などを教えてください（省略可）"
                   IsEnabled="{Binding ElementName=sendReportCheckBox, Path=IsChecked}"
                   Margin="6,0">
             <TextBox Name="commentTextBox" Height="74"
@@ -30,7 +35,7 @@
                      HorizontalScrollBarVisibility="Auto"/>
         </GroupBox>
         
-        <Grid Grid.Row="4"
+        <Grid Grid.Row="5"
               Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
