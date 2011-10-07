@@ -39,9 +39,6 @@
     <ApplicationIcon>Icon\tw_azyobuzi.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LinqToTwitter">
-      <HintPath>..\packages\LinqToTwitter.2.0.21\lib\net40\LinqToTwitter.dll</HintPath>
-    </Reference>
     <Reference Include="Livet">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>InfrastructureAssemblies\Livet.dll</HintPath>
@@ -55,6 +52,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ix_Experimental-Main.1.1.10823\lib\Net4\System.Interactive.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reactive, Version=1.1.10621.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\TaskingTwLib\packages\Rx_Experimental-Main.1.1.10621\lib\Net4\System.Reactive.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Interactivity">
       <SpecificVersion>False</SpecificVersion>
@@ -66,9 +67,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="UserStreamsParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\userstreamex.1.0\lib\net40\UserStreamsParser.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -194,6 +192,10 @@
     <ProjectReference Include="..\ErrorReporter\ErrorReporter.csproj">
       <Project>{4C146B0E-9C59-4480-BD98-C0FA8B9F9E2C}</Project>
       <Name>ErrorReporter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TaskingTwLib\TaskingTwLib\TaskingTwLib.csproj">
+      <Project>{E3E7950F-ADF1-476C-9FE3-70F9E0E3603D}</Project>
+      <Name>TaskingTwLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
