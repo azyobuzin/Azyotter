@@ -1,0 +1,3 @@
+[submodule "TaskingTwLib"]
+	path = TaskingTwLib
+	url = git@github.com:azyobuzin/TaskingTwLib.git
