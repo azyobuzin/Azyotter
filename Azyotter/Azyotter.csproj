@@ -88,7 +88,6 @@
     <Compile Include="Models\StatusTextParts\Url.cs" />
     <Compile Include="Models\StatusTextParts\UserName.cs" />
     <Compile Include="Models\TimelineReceivers\MentionsTimelineReceiver.cs" />
-    <Compile Include="Models\TwitterDataModels\Source.cs" />
     <Compile Include="Models\TwitterDataModels\Status.cs" />
     <Compile Include="Models\TwitterDataModels\User.cs" />
     <Compile Include="Models\UserStreams.cs" />
@@ -116,7 +115,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LinqToTwitter\Authorizer.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\Tab.cs" />
     <Compile Include="Models\TimelineReceivers\HomeTimelineReceiver.cs" />

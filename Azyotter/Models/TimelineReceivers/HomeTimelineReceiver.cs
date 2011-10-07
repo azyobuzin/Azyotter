@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
 using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Util;
-using LinqToTwitter;
+using Azyobuzi.TaskingTwLib;
+using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
 namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 {
@@ -22,30 +21,19 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public override void Receive(int count, int page)
         {
-            var t = new Thread(() =>
-            {
-                this.IsRefreshing = true;
+            this.IsRefreshing = true;
+            TwitterApi.Tweets.TimelinesApi
+                .Create(TwitterApi.Tweets.TimelineType.HomeTimeline, count: count, page: page)
+                .CallApi(this.Token)
+                .ContinueWith(t =>
+                {
+                    if (t.Exception == null)
+                        t.Result.ForEach(status => StatusCache.Instance.AddOrMerge(status, true));
+                    else
+                        this.OnError(t.Exception.InnerException.GetMessage());
 
-                try
-                {
-                    this.Twitter.Status
-                        .Where(_ => _.Type == StatusType.Home
-                            && _.Count == count
-                            && _.Page == page
-                            && _.IncludeEntities == true)
-                        .ForEach(status => StatusCache.Instance.AddOrMerge(status, true));
-                }
-                catch (Exception ex)
-                {
-                    this.OnError(ex.GetMessage());
-                }
-                finally
-                {
                     this.IsRefreshing = false;
-                }
-            });
-            t.IsBackground = true;
-            t.Start();
+                });
         }
 
         private void StatusCache_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

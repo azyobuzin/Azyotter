@@ -10,13 +10,13 @@ namespace Azyobuzi.Azyotter.Models
     {
         bool IsTweet { get; }
         bool ForAllTab { get; set; }
-        string Id { get; set; }
+        ulong Id { get; set; }
         DateTime CreatedAt { get; set; }
         IEnumerable<StatusTextParts.StatusTextPartBase> Text { get; set; }
         User From { get; set; }
         User To { get; set; }
-        string InReplyToStatusId { get; set; }
-        Source Source { get; set; }
+        ulong InReplyToStatusId { get; set; }
+        TaskingTwLib.DataModels.Source Source { get; set; }
     }
 
     public abstract class TimelineItemBase
@@ -42,9 +42,9 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
 
         #region Id変更通知プロパティ
-        string _Id;
+        ulong _Id;
 
-        public string Id
+        public ulong Id
         {
             get
             { return _Id; }
@@ -127,9 +127,9 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
         
         #region InReplyToStatusId変更通知プロパティ
-        string _InReplyToStatusId;
+        ulong _InReplyToStatusId;
 
-        public string InReplyToStatusId
+        public ulong InReplyToStatusId
         {
             get
             { return _InReplyToStatusId; }
@@ -144,9 +144,9 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
         
         #region Source変更通知プロパティ
-        Source _Source;
+        TaskingTwLib.DataModels.Source _Source;
 
-        public Source Source
+        public TaskingTwLib.DataModels.Source Source
         {
             get
             { return _Source; }

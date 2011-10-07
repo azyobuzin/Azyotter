@@ -3,10 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models;
 using Azyobuzi.Azyotter.Util;
+using Azyobuzi.TaskingTwLib;
 using Livet;
 using Livet.Commands;
 using Livet.Messaging;
 using Livet.Messaging.Windows;
+using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
 namespace Azyobuzi.Azyotter.ViewModels
 {
@@ -65,42 +67,55 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void Loaded()
         {
-            var auth = this.model.GetTwitterAuthorizer();
-            if (!auth.IsAuthorized)
+            if (string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthToken)||string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthTokenSecret))
             {
-                string token;
-                Process.Start(auth.GetAuthorizationLink(out token));
-
-                var vm = new InputPinWindowViewModel();
-                ViewModelHelper.BindNotification(vm.CompleteEvent, this, (sender, e) =>
+                Token token = new Token()
                 {
-                    Task.Factory.StartNew(() =>
+                    ConsumerKey = Settings.Instance.ConsumerKey,
+                    ConsumerSecret = Settings.Instance.ConsumerSecret
+                };
+                TwitterApi.OAuth.RequestTokenApi.Create()
+                    .CallApi(token)
+                    .ContinueWith(t =>
                     {
-                        if (vm.IsCanceled)
+                        token = t.Result;
+
+                        Process.Start("https://api.twitter.com/oauth/authorize?oauth_token=" + token.OAuthToken);
+
+                        var vm = new InputPinWindowViewModel();
+                        ViewModelHelper.BindNotification(vm.CompleteEvent, this, (sender, e) =>
                         {
-                            vm.CloseRequest();
-                            this.Messenger.Raise(new WindowActionMessage("WindowAction", WindowAction.Close));
-                        }
-                        else
-                        {
-                            try
+                            Task.Factory.StartNew(() =>
                             {
-                                var id = auth.GetAccessToken(token, vm.Pin);
-                                auth.UserId = id.UserID;
-                                auth.ScreenName = id.ScreenName;
-                                this.model.SaveOAuthToken();
-                                vm.CloseRequest();
-                                DispatcherHelper.BeginInvoke(this.Loaded2);
-                            }
-                            catch
-                            {
-                                vm.InvalidPin();
-                                vm.IsBusy = false;
-                            }
-                        }
+                                if (vm.IsCanceled)
+                                {
+                                    vm.CloseRequest();
+                                    this.Messenger.Raise(new WindowActionMessage("WindowAction", WindowAction.Close));
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        var id = TwitterApi.OAuth.AccessTokenApi
+                                            .Create(vm.Pin)
+                                            .CallApi(token)
+                                            .Result;
+                                        this.model.SaveOAuthToken(id.Item1, id.Item2.Id, id.Item2.ScreenName);                                            
+                                        vm.CloseRequest();
+                                        DispatcherHelper.BeginInvoke(this.Loaded2);
+                                    }
+                                    catch
+                                    {
+                                        vm.InvalidPin();
+                                        vm.IsBusy = false;
+                                    }
+                                }
+                            });
+                        });
+                        this.Messenger.Raise(new TransitionMessage(vm, "ShowInputPinWindow"));
                     });
-                });
-                this.Messenger.Raise(new TransitionMessage(vm, "ShowInputPinWindow"));
+
+                
             }
             else
             {
@@ -233,7 +248,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         private void Post()
         {
             this.IsPosting = true;
-            this.model.Post(this.PostText, this.ReplyToStatus != null ? this.ReplyToStatus.Model.Id : null)
+            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Model.Id : null)
                 .ContinueWith(t =>
                 {
                     if (t.Exception != null)

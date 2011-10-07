@@ -41,10 +41,10 @@ namespace Azyobuzi.Azyotter.Models.Caching
                 this.CollectionChanged(this, e);
         }
 
-        public User AddOrMerge(LinqToTwitter.User user)
+        public User AddOrMerge(TaskingTwLib.DataModels.User user)
         {
             var target = this.collection.FirstOrDefault(_ =>
-                _.Id == user.Identifier.UserID || _.ScreenName == user.Identifier.ScreenName);
+                _.Id == user.Id || _.ScreenName == user.ScreenName);
 
             bool isNew = false;
             if (target == null)
@@ -54,17 +54,17 @@ namespace Azyobuzi.Azyotter.Models.Caching
                 isNew = true;
             }
 
-            target.Id = user.UserID;
-            target.ScreenName = user.Identifier.ScreenName;
+            target.Id = user.Id;
+            target.ScreenName = user.ScreenName;
             target.Name = user.Name;
             target.CreatedAt = user.CreatedAt.ToLocalTime();
             target.Description = user.Description;
             target.Location = user.Location;
-            target.Url = user.URL;
+            target.Url = user.Url;
             target.FriendsCount = user.FriendsCount;
             target.FollowersCount = user.FollowersCount;
             target.StatusesCount = user.StatusesCount;
-            target.FavoritesCount = user.FavoritesCount;
+            target.FavouritesCount = user.FavouritesCount;
             target.ListedCount = user.ListedCount;
             target.Protected = user.Protected;
             target.ProfileImageUrl = user.ProfileImageUrl;

@@ -1,5 +1,4 @@
 ﻿using System;
-using LinqToTwitter;
 
 namespace Azyobuzi.Azyotter.Util
 {
@@ -7,16 +6,19 @@ namespace Azyobuzi.Azyotter.Util
     {
         public static string GetMessage(this Exception ex)
         {
-            var tqe = ex as TwitterQueryException;
+            //var tqe = ex as TwitterQueryException;
 
-            if (tqe != null)
-            {
-                return tqe.Response.Error;
-            }
-            else
-            {
-                return ex.Message;
-            }
+            //if (tqe != null)
+            //{
+            //    return tqe.Response.Error;
+            //}
+            //else
+            //{
+            //    return ex.Message;
+            //}
+            //TODO
+
+            return ex.Message;
         }
     }
 }

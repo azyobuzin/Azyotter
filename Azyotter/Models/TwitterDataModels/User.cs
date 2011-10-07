@@ -7,9 +7,9 @@ namespace Azyobuzi.Azyotter.Models.TwitterDataModels
     {
         
         #region Id変更通知プロパティ
-        string _Id;
+        long _Id;
 
-        public string Id
+        public long Id
         {
             get
             { return _Id; }
@@ -126,9 +126,9 @@ namespace Azyobuzi.Azyotter.Models.TwitterDataModels
         #endregion
         
         #region FriendsCount変更通知プロパティ
-        ulong _FriendsCount;
+        int _FriendsCount;
 
-        public ulong FriendsCount
+        public int FriendsCount
         {
             get
             { return _FriendsCount; }
@@ -143,9 +143,9 @@ namespace Azyobuzi.Azyotter.Models.TwitterDataModels
         #endregion
         
         #region FollowersCount変更通知プロパティ
-        ulong _FollowersCount;
+        int _FollowersCount;
 
-        public ulong FollowersCount
+        public int FollowersCount
         {
             get
             { return _FollowersCount; }
@@ -160,9 +160,9 @@ namespace Azyobuzi.Azyotter.Models.TwitterDataModels
         #endregion
         
         #region StatusesCount変更通知プロパティ
-        ulong _StatusesCount;
+        int _StatusesCount;
 
-        public ulong StatusesCount
+        public int StatusesCount
         {
             get
             { return _StatusesCount; }
@@ -175,20 +175,20 @@ namespace Azyobuzi.Azyotter.Models.TwitterDataModels
             }
         }
         #endregion
-        
-        #region FavoritesCount変更通知プロパティ
-        ulong _FavoritesCount;
 
-        public ulong FavoritesCount
+        #region FavouritesCount変更通知プロパティ
+        int _FavouritesCount;
+
+        public int FavouritesCount
         {
             get
-            { return _FavoritesCount; }
+            { return _FavouritesCount; }
             set
             {
-                if (_FavoritesCount == value)
+                if (_FavouritesCount == value)
                     return;
-                _FavoritesCount = value;
-                RaisePropertyChanged("FavoritesCount");
+                _FavouritesCount = value;
+                RaisePropertyChanged("FavouritesCount");
             }
         }
         #endregion

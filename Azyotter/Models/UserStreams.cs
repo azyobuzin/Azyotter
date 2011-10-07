@@ -1,64 +1,43 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
 using Azyobuzi.Azyotter.Models.Caching;
-using Azyobuzi.Azyotter.Util;
-using LinqToTwitter;
+using Azyobuzi.TaskingTwLib;
+using Azyobuzi.TaskingTwLib.DataModels.UserStreams;
+using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
 namespace Azyobuzi.Azyotter.Models
 {
     public static class UserStreams
     {
-        private static TwitterContext CreateTwitterContext()
-        {
-            return new TwitterContext()
-            {
-                AuthorizedClient = new Authorizer()
-                {
-                    Credentials = new InMemoryCredentials()
-                    {
-                        ConsumerKey = Settings.Instance.ConsumerKey,
-                        ConsumerSecret = Settings.Instance.ConsumerSecret,
-                        OAuthToken = Settings.Instance.Accounts.First().OAuthToken,
-                        AccessToken = Settings.Instance.Accounts.First().OAuthTokenSecret
-                    },
-                    UserAgent = "Azyotter v" + AssemblyUtil.GetInformationalVersion()
-                }
-            };
-        }
-        
-        private static UserStreamParser userstream;
+        private static List<IDisposable> disposable = new List<IDisposable>();
+        public static Token Token { get; set; }
 
         public static void Start()
         {
             Stop();
 
-            userstream = CreateTwitterContext()
-                .UserStream
-                .Where(us => us.Type == UserStreamType.User)
-                .CreateParser();
+            var obs = TwitterApi.UserStreams.UserStreamApi
+                .Create()
+                .CallApi(Token)
+                .AsObservable();
 
-            userstream.ReceivedStatus += userstream_ReceivedStatus;
-            userstream.ReceivedDeletedStatus += userstream_ReceivedDeletedStatus;
+            disposable.Add(
+                obs.OfType<StatusData>()
+                    .Subscribe(data => StatusCache.Instance.AddOrMerge(data.Status, true))
+            );
+
+            disposable.Add(
+                obs.OfType<DeleteData>()
+                    .Where(data => data.Kind == DataKind.DeleteStatus)
+                    .Subscribe(data => StatusCache.Instance.Remove(data.Id))
+            );
         }
 
         public static void Stop()
         {
-            if (userstream != null)
-            {
-                userstream.Close();
-                userstream.ReceivedStatus -= userstream_ReceivedStatus;
-                userstream.ReceivedDeletedStatus -= userstream_ReceivedDeletedStatus;
-                userstream = null;
-            }
-        }
-
-        private static void userstream_ReceivedStatus(object sender, UserStreamReceivedStatusEventArgs e)
-        {
-            StatusCache.Instance.AddOrMerge(e.Status, true);
-        }
-
-        private static void userstream_ReceivedDeletedStatus(object sender, UserStreamReceivedDeletedEventArgs e)
-        {
-            StatusCache.Instance.Remove(e.Id);
+            disposable.ForEach(d => d.Dispose());
+            disposable.Clear();
         }
     }
 }

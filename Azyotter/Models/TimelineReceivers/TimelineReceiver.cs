@@ -1,5 +1,5 @@
 ﻿using System;
-using LinqToTwitter;
+using Azyobuzi.TaskingTwLib;
 
 namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 {
@@ -7,7 +7,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
     {
         public abstract bool UseUserStream { get; }
 
-        public TwitterContext Twitter { get; set; }
+        public Token Token { get; set; }
 
         public string Args { get; set; }
 
@@ -52,7 +52,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public virtual void Dispose()
         {
-            this.Twitter = null;
+            this.Token = null;
             GC.SuppressFinalize(this);
         }
 

@@ -5,13 +5,29 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Util;
-using LinqToTwitter;
+using Azyobuzi.TaskingTwLib;
+using Azyobuzi.TaskingTwLib.DataModels;
 using Livet;
+using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
 namespace Azyobuzi.Azyotter.Models
 {
     public class Model : NotificationObject
     {
+        public Model()
+        {
+            DefaultSetting.UserAgent = "Azyotter v" + AssemblyUtil.GetInformationalVersion();
+            DefaultSetting.Timeout = 20 * 1000;
+            this.token = new Token()
+            {
+                ConsumerKey = Settings.Instance.ConsumerKey,
+                ConsumerSecret = Settings.Instance.ConsumerSecret,
+                OAuthToken = Settings.Instance.Accounts.First().OAuthToken,
+                OAuthTokenSecret = Settings.Instance.Accounts.First().OAuthTokenSecret
+            };
+            UserStreams.Token = this.token;
+        }
+
         public void Init()
         {
             this.Tabs = new ObservableCollection<Tab>();
@@ -29,20 +45,7 @@ namespace Azyobuzi.Azyotter.Models
             this.Settings_PropertyChanged(Settings.Instance, new PropertyChangedEventArgs("UseUserStream"));
         }
 
-        private TwitterContext twitter = new TwitterContext()
-        {
-            AuthorizedClient = new Authorizer()
-            {
-                Credentials = new InMemoryCredentials()
-                {
-                    ConsumerKey = Settings.Instance.ConsumerKey,
-                    ConsumerSecret = Settings.Instance.ConsumerSecret,
-                    OAuthToken = Settings.Instance.Accounts.First().OAuthToken,
-                    AccessToken = Settings.Instance.Accounts.First().OAuthTokenSecret
-                },
-                UserAgent = "Azyotter v" + AssemblyUtil.GetInformationalVersion()
-            }
-        };
+        private Token token;
 
         public ObservableCollection<Tab> Tabs { get; private set; }
 
@@ -68,7 +71,7 @@ namespace Azyobuzi.Azyotter.Models
 
         public void AddTab(TabSetting settings, int index)
         {
-            var tab = new Tab(settings, this.twitter);
+            var tab = new Tab(settings, this.token);
             this.Tabs.Insert(index, tab);
         }
 
@@ -83,18 +86,14 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
 
-        public Authorizer GetTwitterAuthorizer()
+        public void SaveOAuthToken(Token token, long userId, string screenName)
         {
-            return this.twitter.AuthorizedClient as Authorizer;
-        }
-
-        public void SaveOAuthToken()
-        {
-            var auth = this.GetTwitterAuthorizer();
-            Settings.Instance.Accounts.First().OAuthToken = auth.Credentials.OAuthToken;
-            Settings.Instance.Accounts.First().OAuthTokenSecret = auth.Credentials.AccessToken;
-            Settings.Instance.Accounts.First().UserId = auth.UserId;
-            Settings.Instance.Accounts.First().ScreenName = auth.ScreenName;
+            this.token = token;
+            UserStreams.Token = token;
+            Settings.Instance.Accounts.First().OAuthToken = token.OAuthToken;
+            Settings.Instance.Accounts.First().OAuthTokenSecret = token.OAuthTokenSecret;
+            Settings.Instance.Accounts.First().UserId = userId;
+            Settings.Instance.Accounts.First().ScreenName = screenName;
             Settings.Instance.Save();
         }
 
@@ -103,9 +102,11 @@ namespace Azyobuzi.Azyotter.Models
             UserStreams.Stop();
         }
 
-        public Task<Status> Post(string text, string inReplyToStatusId)
+        public Task<Status> Post(string text, ulong? inReplyToStatusId)
         {
-            return Task.Factory.StartNew(() => this.twitter.UpdateStatus(text, inReplyToStatusId));
+            return TwitterApi.Tweets.UpdateApi
+                .Create(text, inReplyToStatusId)
+                .CallApi(this.token);
         }
     }
 }

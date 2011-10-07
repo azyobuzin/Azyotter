@@ -23,7 +23,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
             }
         }
 
-        private ConcurrentDictionary<string, ITimelineItem> collection = new ConcurrentDictionary<string, ITimelineItem>();
+        private ConcurrentDictionary<ulong, ITimelineItem> collection = new ConcurrentDictionary<ulong, ITimelineItem>();
 
         public IEnumerator<ITimelineItem> GetEnumerator()
         {
@@ -43,7 +43,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
                 this.CollectionChanged(this, e);
         }
 
-        public ITimelineItem this[string id]
+        public ITimelineItem this[ulong id]
         {
             get
             {
@@ -51,12 +51,12 @@ namespace Azyobuzi.Azyotter.Models.Caching
             }
         }
 
-        public bool ContainsId(string id)
+        public bool ContainsId(ulong id)
         {
             return this.collection.ContainsKey(id);
         }
 
-        public bool Remove(string id)
+        public bool Remove(ulong id)
         {
             ITimelineItem tmp;
             bool result = this.collection.TryRemove(id, out tmp);
@@ -74,24 +74,24 @@ namespace Azyobuzi.Azyotter.Models.Caching
             return result;
         }
 
-        public ITimelineItem AddOrMerge(LinqToTwitter.Status status, bool forAllTab)
+        public ITimelineItem AddOrMerge(TaskingTwLib.DataModels.Status status, bool forAllTab)
         {
             ITimelineItem target;
 
             bool isNew = false;
-            if (!this.collection.TryGetValue(status.StatusID, out target))
+            if (!this.collection.TryGetValue(status.Id, out target))
             {
-                target = this.collection.AddOrUpdate(status.StatusID, new Status(), (k, v) => v);
+                target = this.collection.AddOrUpdate(status.Id, new Status(), (k, v) => v);
                 isNew = true;
             }
 
             target.ForAllTab = forAllTab || target.ForAllTab;
-            target.Id = status.StatusID;
+            target.Id = status.Id;
             target.CreatedAt = status.CreatedAt.ToLocalTime();
             target.Text = this.CreateStatusText(status);
             target.From = UserCache.Instance.AddOrMerge(status.User);
-            target.InReplyToStatusId = status.InReplyToStatusID;
-            target.Source = Source.Create(status.Source);
+            target.InReplyToStatusId = status.InReplyToStatusId;
+            target.Source = status.Source;
 
             if (isNew)
                 this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
@@ -100,45 +100,45 @@ namespace Azyobuzi.Azyotter.Models.Caching
             return target;
         }
 
-        private IEnumerable<StatusTextParts.StatusTextPartBase> CreateStatusText(LinqToTwitter.Status status)
+        private IEnumerable<StatusTextParts.StatusTextPartBase> CreateStatusText(TaskingTwLib.DataModels.Status status)
         {
-            if (status.Entities == null)
+            //if (status.Entities == null)
                 return new[] { new StatusTextParts.Normal() { Text = HttpUtility.HtmlDecode(status.Text) } };
 
-            var re = new List<StatusTextParts.StatusTextPartBase>();
+            //var re = new List<StatusTextParts.StatusTextPartBase>();
 
-            IEnumerable<LinqToTwitter.MentionBase> entities = status.Entities.UrlMentions;
-            using (var sr = new StringReader(HttpUtility.HtmlDecode(status.Text)))
-            {
-                int i = 0;
-                string buffer = string.Empty;
-                while (sr.Peek() != -1)
-                {
-                    var sEntity = entities.FirstOrDefault(_ => _.Start == i);
-                    if (sEntity == null)
-                    {
-                        buffer += (char)sr.Read();
-                        i++;
-                    }
-                    else
-                    {
-                        re.Add(new StatusTextParts.Normal() { Text = buffer });
-                        buffer = string.Empty;
-                        var urlEntity = sEntity as LinqToTwitter.UrlMention;
-                        string urlBuffer = string.Empty;
-                        while (i != urlEntity.End)
-                        {
-                            urlBuffer += (char)sr.Read();
-                            i++;
-                        }
-                        re.Add(new StatusTextParts.Url() { Text = urlBuffer });
-                    }
-                }
-                re.Add(new StatusTextParts.Normal() { Text = buffer });
-                buffer = string.Empty;
-            }
+            //IEnumerable<LinqToTwitter.MentionBase> entities = status.Entities.UrlMentions;
+            //using (var sr = new StringReader(HttpUtility.HtmlDecode(status.Text)))
+            //{
+            //    int i = 0;
+            //    string buffer = string.Empty;
+            //    while (sr.Peek() != -1)
+            //    {
+            //        var sEntity = entities.FirstOrDefault(_ => _.Start == i);
+            //        if (sEntity == null)
+            //        {
+            //            buffer += (char)sr.Read();
+            //            i++;
+            //        }
+            //        else
+            //        {
+            //            re.Add(new StatusTextParts.Normal() { Text = buffer });
+            //            buffer = string.Empty;
+            //            var urlEntity = sEntity as LinqToTwitter.UrlMention;
+            //            string urlBuffer = string.Empty;
+            //            while (i != urlEntity.End)
+            //            {
+            //                urlBuffer += (char)sr.Read();
+            //                i++;
+            //            }
+            //            re.Add(new StatusTextParts.Url() { Text = urlBuffer });
+            //        }
+            //    }
+            //    re.Add(new StatusTextParts.Normal() { Text = buffer });
+            //    buffer = string.Empty;
+            //}
 
-            return re;
+            //return re;
         }
     }
 }

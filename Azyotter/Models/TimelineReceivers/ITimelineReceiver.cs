@@ -1,12 +1,12 @@
 ﻿using System;
-using LinqToTwitter;
+using Azyobuzi.TaskingTwLib;
 
 namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 {
     public interface ITimelineReceiver : IDisposable
     {
         bool UseUserStream { get; }
-        TwitterContext Twitter { get; set; }
+        Token Token { get; set; }
         string Args { get; set; }
         void Receive(int count, int page);
         bool IsRefreshing { get; }
