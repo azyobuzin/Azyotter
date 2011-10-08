@@ -78,10 +78,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Interactivity\ListBoxBehavior.cs" />
+    <Compile Include="Interactivity\ShortcutKeyBehavior.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Caching\StatusCache.cs" />
     <Compile Include="Models\Caching\UserCache.cs" />
     <Compile Include="Models\ITimelineItem.cs" />
+    <Compile Include="Models\ShortcutKeys\ShortcutKey.cs" />
+    <Compile Include="Models\ShortcutKeys\ShortcutKeysSetting.cs" />
     <Compile Include="Models\StatusTextParts\Hashtag.cs" />
     <Compile Include="Models\StatusTextParts\Normal.cs" />
     <Compile Include="Models\StatusTextParts\StatusTextPartBase.cs" />

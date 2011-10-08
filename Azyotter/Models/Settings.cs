@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Xaml;
@@ -87,6 +88,8 @@ namespace Azyobuzi.Azyotter.Models
             { return _Accounts; }
             set
             {
+                if (value == null)
+                    throw new ArgumentNullException();
                 if (_Accounts == value)
                     return;
                 _Accounts = value;
@@ -121,10 +124,31 @@ namespace Azyobuzi.Azyotter.Models
             { return _Tabs; }
             set
             {
+                if (value == null)
+                    throw new ArgumentNullException();
                 if (_Tabs == value)
                     return;
                 _Tabs = value;
                 RaisePropertyChanged("Tabs");
+            }
+        }
+        #endregion
+        
+        #region ShorcutKeys変更通知プロパティ
+        ShortcutKeys.ShortcutKeysSetting _ShorcutKeys = new ShortcutKeys.ShortcutKeysSetting();
+
+        public ShortcutKeys.ShortcutKeysSetting ShorcutKeys
+        {
+            get
+            { return _ShorcutKeys; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException();
+                if (_ShorcutKeys == value)
+                    return;
+                _ShorcutKeys = value;
+                RaisePropertyChanged("ShorcutKeys");
             }
         }
         #endregion

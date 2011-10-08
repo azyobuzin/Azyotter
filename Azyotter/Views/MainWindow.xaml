@@ -285,7 +285,12 @@
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto"
-                     Text="{Binding PostText, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding PostText, UpdateSourceTrigger=PropertyChanged}">
+                <i:Interaction.Behaviors>
+                    <ai:ShortcutKeyBehavior ShortcutKey="{Binding ShortcutKeys.Post}"
+                                            Command="{Binding PostCommand}"/>
+                </i:Interaction.Behaviors>
+            </TextBox>
 
             <Button Grid.Column="1"
                     IsTabStop="False"

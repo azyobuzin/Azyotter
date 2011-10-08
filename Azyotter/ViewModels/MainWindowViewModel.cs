@@ -14,6 +14,15 @@ namespace Azyobuzi.Azyotter.ViewModels
 {
     public class MainWindowViewModel : ViewModel
     {
+        public MainWindowViewModel()
+        {
+            ViewModelHelper.BindNotifyChanged(Settings.Instance, this, (sender, e) =>
+            {
+                if (e.PropertyName == "ShorcutKeys")
+                    this.RaisePropertyChanged(() => this.ShortcutKeys);
+            });
+        }
+
         private Model model = new Model();
                 
         #region Tabs変更通知プロパティ
@@ -174,7 +183,15 @@ namespace Azyobuzi.Azyotter.ViewModels
                 return AssemblyUtil.GetInformationalVersion();
             }
         }
-        
+
+        public Models.ShortcutKeys.ShortcutKeysSetting ShortcutKeys
+        {
+            get
+            {
+                return Settings.Instance.ShorcutKeys;
+            }
+        }
+              
         #region PostText変更通知プロパティ
         string _PostText;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Util;
@@ -43,8 +44,8 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                 e.NewItems.Cast<ITimelineItem>()
                     .Where(status => status.IsTweet)
                     .Where(status => Settings.Instance.Accounts
-                        .Any(account => new string(status.Text.SelectMany(_ => _.Text).ToArray())
-                            .Contains("@" + account.ScreenName)
+                        .Any(account => status.Text.OfType<StatusTextParts.UserName>()
+                            .Any(entity=> entity.Text.TrimStart('@').Equals(account.ScreenName, StringComparison.InvariantCultureIgnoreCase))
                         )
                     )
                     .ForEach(status => this.OnReceivedTimeline(new[] { status }));
