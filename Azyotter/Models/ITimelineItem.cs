@@ -13,6 +13,7 @@ namespace Azyobuzi.Azyotter.Models
         ulong Id { get; set; }
         DateTime CreatedAt { get; set; }
         IEnumerable<StatusTextParts.StatusTextPartBase> Text { get; set; }
+        IEnumerable<string> ImageThumbnails { get; set; }
         User From { get; set; }
         User To { get; set; }
         ulong InReplyToStatusId { get; set; }
@@ -91,7 +92,24 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
         #endregion
+        
+        #region ImageThumbnails変更通知プロパティ
+        IEnumerable<string> _ImageThumbnails;
 
+        public IEnumerable<string> ImageThumbnails
+        {
+            get
+            { return _ImageThumbnails; }
+            set
+            {
+                if (_ImageThumbnails == value)
+                    return;
+                _ImageThumbnails = value;
+                RaisePropertyChanged("ImageThumbnails");
+            }
+        }
+        #endregion
+      
         #region From変更通知プロパティ
         User _From;
 

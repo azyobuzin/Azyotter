@@ -204,12 +204,12 @@
 
                                                 <StackPanel Grid.Column="1" Margin="3,0,0,0">
                                                     <TextBlock FontWeight="Bold">
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="{}{0}/{1}">
-                                                        <Binding Path="FromScreenName"/>
-                                                        <Binding Path="FromUserName"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{}{0}/{1}">
+                                                                <Binding Path="FromScreenName"/>
+                                                                <Binding Path="FromUserName"/>
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
                                                     </TextBlock>
 
                                                     <v:TimelineItemPlainText Inlines="{Binding Text}">
@@ -236,6 +236,25 @@
                                                             </Style>
                                                         </v:TimelineItemRichText.Style>
                                                     </v:TimelineItemRichText>
+
+                                                    <ListBox ItemsSource="{Binding ImageThumbnails}"
+                                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                             BorderThickness="0">
+                                                        <ListBox.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel IsItemsHost="True"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ListBox.ItemsPanel>
+                                                        
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Image Source="{Binding}"
+                                                                       Margin="3"
+                                                                       Width="96"/>
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                    </ListBox>
 
                                                     <TextBlock Text="{Binding Path=CreatedAt, StringFormat=\{0:HH:mm:ss\}}"
                                                                HorizontalAlignment="Right"/>

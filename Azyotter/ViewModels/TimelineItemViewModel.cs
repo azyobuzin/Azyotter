@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
@@ -42,14 +43,43 @@ namespace Azyobuzi.Azyotter.ViewModels
                             re.Cursor = Cursors.Hand;
                             re.Foreground = Brushes.Blue;
                             re.Inlines.Add(url.Text);
-                            re.NavigateUri = new Uri(url.Text);
+                            re.ToolTip = url.ExpandedUrl;
+                            re.Click += (sender, e) => Process.Start(url.ShortenedUrl);
                             return (Inline)re;
                         }
-                        else
+
+                        var mention = part as Models.StatusTextParts.UserName;
+                        if (mention != null)
                         {
-                            return (Inline)new Run(part.Text);
+                            var re = new Hyperlink();
+                            re.TextDecorations.Add(TextDecorations.Underline);
+                            re.Cursor = Cursors.Hand;
+                            re.Foreground = Brushes.Blue;
+                            re.Inlines.Add(mention.Text);
+                            return (Inline)re;
                         }
+
+                        var hashtag = part as Models.StatusTextParts.Hashtag;
+                        if (hashtag != null)
+                        {
+                            var re = new Hyperlink();
+                            re.TextDecorations.Add(TextDecorations.Underline);
+                            re.Cursor = Cursors.Hand;
+                            re.Foreground = Brushes.Blue;
+                            re.Inlines.Add(hashtag.Text);
+                            return (Inline)re;
+                        }
+
+                        return new Run(part.Text);
                     });
+            }
+        }
+
+        public IEnumerable<string> ImageThumbnails
+        {
+            get
+            {
+                return this.Model.ImageThumbnails;
             }
         }
 

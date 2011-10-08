@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using Azyobuzi.Azyotter.Models.TwitterDataModels;
 
@@ -93,6 +94,13 @@ namespace Azyobuzi.Azyotter.Models.Caching
             target.InReplyToStatusId = status.InReplyToStatusId;
             target.Source = status.Source;
 
+            if (status.Entities != null)
+            {
+                target.ImageThumbnails = status.Entities.Media
+                    .Select(media => media.MediaUrl + ":thumb")
+                    .ToArray();
+            }
+
             if (isNew)
                 this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
                     NotifyCollectionChangedAction.Add, target));
@@ -102,43 +110,76 @@ namespace Azyobuzi.Azyotter.Models.Caching
 
         private IEnumerable<StatusTextParts.StatusTextPartBase> CreateStatusText(TaskingTwLib.DataModels.Status status)
         {
-            //if (status.Entities == null)
+            if (status.Entities == null)
                 return new[] { new StatusTextParts.Normal() { Text = HttpUtility.HtmlDecode(status.Text) } };
 
-            //var re = new List<StatusTextParts.StatusTextPartBase>();
+            var re = new List<StatusTextParts.StatusTextPartBase>();
 
-            //IEnumerable<LinqToTwitter.MentionBase> entities = status.Entities.UrlMentions;
-            //using (var sr = new StringReader(HttpUtility.HtmlDecode(status.Text)))
-            //{
-            //    int i = 0;
-            //    string buffer = string.Empty;
-            //    while (sr.Peek() != -1)
-            //    {
-            //        var sEntity = entities.FirstOrDefault(_ => _.Start == i);
-            //        if (sEntity == null)
-            //        {
-            //            buffer += (char)sr.Read();
-            //            i++;
-            //        }
-            //        else
-            //        {
-            //            re.Add(new StatusTextParts.Normal() { Text = buffer });
-            //            buffer = string.Empty;
-            //            var urlEntity = sEntity as LinqToTwitter.UrlMention;
-            //            string urlBuffer = string.Empty;
-            //            while (i != urlEntity.End)
-            //            {
-            //                urlBuffer += (char)sr.Read();
-            //                i++;
-            //            }
-            //            re.Add(new StatusTextParts.Url() { Text = urlBuffer });
-            //        }
-            //    }
-            //    re.Add(new StatusTextParts.Normal() { Text = buffer });
-            //    buffer = string.Empty;
-            //}
+            var entities = status.Entities.Media
+                .Cast<TaskingTwLib.DataModels.TweetEntities.Entity>()
+                .Concat(status.Entities.Urls)
+                .Concat(status.Entities.UserMentions)
+                .Concat(status.Entities.Hashtags);
+            using (var sr = new StringReader(status.Text))
+            {
+                int i = 0;
+                var buffer = new StringBuilder();
+                while (sr.Peek() != -1)
+                {
+                    var sEntity = entities.FirstOrDefault(_ => _.Indices.StartIndex == i);
+                    if (sEntity == null)
+                    {
+                        buffer.Append((char)sr.Read());
+                        i++;
+                    }
+                    else
+                    {
+                        if (buffer.Length != 0)
+                        {
+                            re.Add(new StatusTextParts.Normal() { Text = buffer.ToString() });
+                            buffer.Clear();
+                        }
 
-            //return re;
+                        var entityContentBuffer = new StringBuilder();
+                        while (i != sEntity.Indices.EndIndex)
+                        {
+                            entityContentBuffer.Append((char)sr.Read());
+                            i++;
+                        }
+
+                        var url = sEntity as TaskingTwLib.DataModels.TweetEntities.UrlEntity;
+                        var mention = sEntity as TaskingTwLib.DataModels.TweetEntities.UserMentionEntity;
+                        var hashtag = sEntity as TaskingTwLib.DataModels.TweetEntities.HashtagEntity;
+                        if (url != null)
+                        {
+                            re.Add(new StatusTextParts.Url()
+                            {
+                                Text = url.DisplayUrl,
+                                ShortenedUrl = url.Url,
+                                ExpandedUrl = url.ExpandedUrl
+                            });
+                        }
+                        else if (mention != null)
+                        {
+                            re.Add(new StatusTextParts.UserName()
+                            {
+                                Text = entityContentBuffer.ToString()
+                            });
+                        }
+                        else if (hashtag != null)
+                        {
+                            re.Add(new StatusTextParts.Hashtag()
+                            {
+                                Text = entityContentBuffer.ToString()
+                            });
+                        }
+                    }
+                }
+                re.Add(new StatusTextParts.Normal() { Text = buffer.ToString() });
+                buffer.Clear();
+            }
+
+            return re;
         }
     }
 }
