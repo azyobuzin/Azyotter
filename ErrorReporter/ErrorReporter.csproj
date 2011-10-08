@@ -92,9 +92,14 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Azyotter\Properties\VersionInfoBase.txt">
+      <Link>Properties\VersionInfoBase.txt</Link>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)AssemblyVersionInfoGenerator\bin\$(ConfigurationName)\AssemblyVersionInfoGenerator.exe" "$(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)TaskingTwLib\util\AssemblyVersionGeneratorFromGit.exe" "$(ProjectDir)\" "$(ProjectDir)Properties\VersionInfo.cs" "$(SolutionDir)Azyotter\Properties\VersionInfoBase.txt"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -2,16 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azyotter", "Azyotter\Azyotter.csproj", "{1AAEBDFB-324B-416D-99AF-F14A10A8A465}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793} = {6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyVersionInfoGenerator", "AssemblyVersionInfoGenerator\AssemblyVersionInfoGenerator.csproj", "{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorReporter", "ErrorReporter\ErrorReporter.csproj", "{4C146B0E-9C59-4480-BD98-C0FA8B9F9E2C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793} = {6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskingTwLib", "TaskingTwLib\TaskingTwLib\TaskingTwLib.csproj", "{E3E7950F-ADF1-476C-9FE3-70F9E0E3603D}"
 EndProject
@@ -35,16 +27,6 @@ Global
 		{1AAEBDFB-324B-416D-99AF-F14A10A8A465}.Release|Mixed Platforms.Build.0 = Release|x86
 		{1AAEBDFB-324B-416D-99AF-F14A10A8A465}.Release|x86.ActiveCfg = Release|x86
 		{1AAEBDFB-324B-416D-99AF-F14A10A8A465}.Release|x86.Build.0 = Release|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Debug|x86.ActiveCfg = Debug|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Debug|x86.Build.0 = Debug|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Release|Any CPU.ActiveCfg = Release|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Release|Mixed Platforms.Build.0 = Release|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Release|x86.ActiveCfg = Release|x86
-		{6DB9115A-2DBD-44B1-94D2-A71BDCFE6793}.Release|x86.Build.0 = Release|x86
 		{4C146B0E-9C59-4480-BD98-C0FA8B9F9E2C}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{4C146B0E-9C59-4480-BD98-C0FA8B9F9E2C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{4C146B0E-9C59-4480-BD98-C0FA8B9F9E2C}.Debug|Mixed Platforms.Build.0 = Debug|x86
