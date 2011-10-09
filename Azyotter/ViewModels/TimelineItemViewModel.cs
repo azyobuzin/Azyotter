@@ -33,6 +33,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             get
             {
                 return this.Model.Text
+                    .Where(part => part != null && part.Text != null)
                     .Select(part =>
                     {
                         var url = part as Models.StatusTextParts.Url;
