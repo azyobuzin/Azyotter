@@ -1,4 +1,4 @@
-﻿Azyotter 0.1.50
+﻿Azyotter 0.1.53
 作者：@azyobuzin
 動作環境：.NET Framework 4 Full
 ライセンス：MIT License
@@ -18,6 +18,9 @@
 	・Home・Mentions以外のタブ種類が実装されていないので落ちる
 
 ★更新履歴
+	0.1.53(2011/10/09)
+		・よく落ちるのでバグ修正
+
 	0.1.50(2011/10/08)
 		・エラーレポーターをつけた
 		・LINQ to TwitterからTaskingTwLibに乗り換え
