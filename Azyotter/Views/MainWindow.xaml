@@ -149,8 +149,7 @@
                         <ListBox ItemsSource="{Binding Items}"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                  HorizontalContentAlignment="Stretch"
-                                 SelectionMode="Extended"
-                                 ai:ListBoxBehavior.SelectedItems="{Binding SelectedItems}">
+                                 SelectionMode="Extended">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDoubleClick">
                                     <i:InvokeCommandAction Command="{Binding Source={StaticResource MainWindowViewModel}, Path=ReplyCommand}" />
@@ -168,6 +167,12 @@
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
                                                  Color="Black"/>
                             </ListBox.Resources>
+                            
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Selector.IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                             
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

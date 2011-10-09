@@ -33,31 +33,28 @@ namespace Azyobuzi.Azyotter.ViewModels
             var source = new CollectionViewSource();
             source.Source = ViewModelHelper.CreateReadOnlyNotificationDispatcherCollection(
                 model.Items,
-                item => new TimelineItemViewModel(item),
+                item =>
+                {
+                    var re = new TimelineItemViewModel(item);
+                    ViewModelHelper.BindNotifyChanged(re, this, (sender, e) =>
+                    {
+                        if (e.PropertyName == "IsSelected")
+                        {
+                            var vm = (TimelineItemViewModel)sender;
+                            if (vm.IsSelected)
+                                this.SelectedItems.Add(vm);
+                            else
+                                this.SelectedItems.Remove(vm);
+                        }
+                    });
+                    return re;
+                },
                 DispatcherHelper.UIDispatcher
             );
             source.SortDescriptions.Add(new SortDescription("CreatedAt", ListSortDirection.Descending));
             this.Items = source.View;
 
             this.SelectedItems = new ObservableCollection<TimelineItemViewModel>();
-            this.SelectedItems.CollectionChanged += (sender, e) =>
-            {
-                switch (e.Action)
-                {
-                    case NotifyCollectionChangedAction.Reset:
-                        this.Items.Cast<TimelineItemViewModel>()
-                            .ForEach(item => item.IsSelected = false);
-                        break;
-                    case NotifyCollectionChangedAction.Remove:
-                        e.OldItems.Cast<TimelineItemViewModel>()
-                            .ForEach(item => item.IsSelected = false);
-                        break;
-                    case NotifyCollectionChangedAction.Add:
-                        e.NewItems.Cast<TimelineItemViewModel>()
-                            .ForEach(item => item.IsSelected = true);
-                        break;
-                }
-            };
         }
 
         public Tab Model { get; private set; }
