@@ -51,6 +51,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                 },
                 DispatcherHelper.UIDispatcher
             );
+            source.SortDescriptions.Clear();
             source.SortDescriptions.Add(new SortDescription("CreatedAt", ListSortDirection.Descending));
             this.Items = source.View;
 

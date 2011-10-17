@@ -8,6 +8,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
         bool UseUserStream { get; }
         Token Token { get; set; }
         string Args { get; set; }
+        void GetFirst();
         void Receive(int count, int page);
         bool IsRefreshing { get; }
         event EventHandler<ReceivedTimelineEventArgs> ReceivedTimeline;

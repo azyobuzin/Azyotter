@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Util;
 using Azyobuzi.TaskingTwLib;
@@ -18,6 +20,25 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
         public override bool UseUserStream
         {
             get { return true; }
+        }
+
+        private IEnumerable<ITimelineItem> Query(IEnumerable<ITimelineItem> source)
+        {
+            return source
+                .Where(status => status.IsTweet)
+                .Where(status => Settings.Instance.Accounts
+                    .Any(account => status.Text.OfType<StatusTextParts.UserName>()
+                        .Any(entity => entity.Text.TrimStart('@').Equals(account.ScreenName, StringComparison.InvariantCultureIgnoreCase))
+                    )
+                );
+        }
+
+        public override void GetFirst()
+        {
+            Task.Factory.StartNew(() =>
+                this.Query(StatusCache.Instance)
+                    .ForEach(status => this.OnReceivedTimeline(new[] { status }))
+            );
         }
 
         public override void Receive(int count, int page)
@@ -41,13 +62,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                e.NewItems.Cast<ITimelineItem>()
-                    .Where(status => status.IsTweet)
-                    .Where(status => Settings.Instance.Accounts
-                        .Any(account => status.Text.OfType<StatusTextParts.UserName>()
-                            .Any(entity=> entity.Text.TrimStart('@').Equals(account.ScreenName, StringComparison.InvariantCultureIgnoreCase))
-                        )
-                    )
+                this.Query(e.NewItems.Cast<ITimelineItem>())
                     .ForEach(status => this.OnReceivedTimeline(new[] { status }));
             }
         }

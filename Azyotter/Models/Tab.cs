@@ -55,6 +55,7 @@ namespace Azyobuzi.Azyotter.Models
                         oldReceiver.Dispose();
                     }
                     this.Items.Clear();
+                    this.receiver.GetFirst();
                     this.Refresh();
                     break;
                 case "Args":

@@ -11,6 +11,8 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public string Args { get; set; }
 
+        public abstract void GetFirst();
+
         public abstract void Receive(int count, int page);
 
         private bool isRefreshing;
