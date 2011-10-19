@@ -16,7 +16,7 @@ namespace Azyobuzi.Azyotter.Models
         public Tab(TabSetting settings, Token token)
         {
             this.token = token;
-            this.Items = new ConcurrentObservableCollection<ITimelineItem>(new System.Collections.Generic.List<ITimelineItem>());
+            this.Items = new ConcurrentObservableCollection<ITimelineItem>();
             StatusCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
             this.Settings = settings;
             settings.PropertyChanged += this.Settings_PropertyChanged;
