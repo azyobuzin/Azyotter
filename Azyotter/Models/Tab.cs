@@ -16,7 +16,7 @@ namespace Azyobuzi.Azyotter.Models
         public Tab(TabSetting settings, Token token)
         {
             this.token = token;
-            this.Items = new ObservableCollection<ITimelineItem>();
+            this.Items = new ConcurrentObservableCollection<ITimelineItem>(new System.Collections.Generic.List<ITimelineItem>());
             StatusCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
             this.Settings = settings;
             settings.PropertyChanged += this.Settings_PropertyChanged;
@@ -107,7 +107,7 @@ namespace Azyobuzi.Azyotter.Models
 
         private ITimelineReceiver receiver;
 
-        public ObservableCollection<ITimelineItem> Items { get; private set; }
+        public ConcurrentObservableCollection<ITimelineItem> Items { get; private set; }
 
         private void receiver_ReceivedTimeline(object sender, ReceivedTimelineEventArgs e)
         {

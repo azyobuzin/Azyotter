@@ -31,9 +31,9 @@ namespace Azyobuzi.Azyotter.ViewModels
             });
 
             var source = new CollectionViewSource();
-            source.Source = ViewModelHelper.CreateReadOnlyNotificationDispatcherCollection(
+            source.Source = ViewModelHelper.CreateReadOnlyDispatcherCollection(
                 model.Items,
-                item =>
+                (ITimelineItem item) =>
                 {
                     var re = new TimelineItemViewModel(item);
                     ViewModelHelper.BindNotifyChanged(re, this, (sender, e) =>

@@ -26,9 +26,9 @@ namespace Azyobuzi.Azyotter.ViewModels
         private Model model = new Model();
                 
         #region Tabs変更通知プロパティ
-        ReadOnlyNotificationDispatcherCollection<TabViewModel> _Tabs;
+        ReadOnlyDispatcherCollection<TabViewModel> _Tabs;
 
-        public ReadOnlyNotificationDispatcherCollection<TabViewModel> Tabs
+        public ReadOnlyDispatcherCollection<TabViewModel> Tabs
         {
             get
             { return _Tabs; }
@@ -147,9 +147,9 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             this.model.Init();
 
-            this.Tabs = ViewModelHelper.CreateReadOnlyNotificationDispatcherCollection(
+            this.Tabs = ViewModelHelper.CreateReadOnlyDispatcherCollection(
                 this.model.Tabs,
-                this.CreateTabViewModel,
+                (Tab model) => this.CreateTabViewModel(model),
                 DispatcherHelper.UIDispatcher
             );
 
