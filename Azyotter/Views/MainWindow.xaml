@@ -284,9 +284,9 @@
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
 
-                <StatusBarItem Grid.Column="0" Content=""/>
+                <StatusBarItem Grid.Column="0" Padding="0" Content=""/>
                 
-                <StatusBarItem Grid.Column="1">
+                <StatusBarItem Grid.Column="1" Padding="0">
                     <Button Name="mainMenuButton"
                             Style="{StaticResource FlatButton}"
                             Click="mainMenuButton_Click">
