@@ -94,6 +94,7 @@
     <Compile Include="Models\TwitterDataModels\User.cs" />
     <Compile Include="Models\UserStreams.cs" />
     <Compile Include="Util\AssemblyUtil.cs" />
+    <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="Views\Converters\TypeToEnumValuesConverter.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
