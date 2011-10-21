@@ -13,13 +13,13 @@ namespace Azyobuzi.Azyotter.Models
 {
     public class Tab : NotificationObject, IDisposable
     {
-        public Tab(TabSetting settings, Token token)
+        public Tab(TabSetting setting, Token token)
         {
             this.token = token;
             this.Items = new ConcurrentObservableCollection<ITimelineItem>();
             StatusCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
-            this.Settings = settings;
-            settings.PropertyChanged += this.Settings_PropertyChanged;
+            this.Setting = setting;
+            setting.PropertyChanged += this.Settings_PropertyChanged;
             this.timer = new Timer(_ =>
             {
                 if (!Models.Settings.Instance.UseUserStream)
@@ -28,7 +28,7 @@ namespace Azyobuzi.Azyotter.Models
             this.RaiseSettingsPropertyChanged();
         }
 
-        public TabSetting Settings { get; private set; }
+        public TabSetting Setting { get; private set; }
         private Token token;
         private Timer timer;
 
@@ -41,9 +41,9 @@ namespace Azyobuzi.Azyotter.Models
                     break;
                 case "Type":
                     var oldReceiver = this.receiver;//UserStream再接続防止
-                    this.receiver = TimelineReceiver.CreateTimelineReceiver(this.Settings.Type);
+                    this.receiver = TimelineReceiver.CreateTimelineReceiver(this.Setting.Type);
                     this.receiver.Token = this.token;
-                    this.receiver.Args = this.Settings.Args;
+                    this.receiver.Args = this.Setting.Args;
                     this.receiver.ReceivedTimeline += this.receiver_ReceivedTimeline;
                     this.receiver.IsRefreshingChanged += this.receiver_IsRefreshingChanged;
                     this.receiver.Error += this.receiver_Error;
@@ -60,10 +60,10 @@ namespace Azyobuzi.Azyotter.Models
                     break;
                 case "Args":
                     if (this.receiver != null)
-                        this.receiver.Args = this.Settings.Args;
+                        this.receiver.Args = this.Setting.Args;
                     break;
                 case "RefreshSpan":
-                    this.timer.Change(0, this.Settings.RefreshSpan * 1000);
+                    this.timer.Change(0, this.Setting.RefreshSpan * 1000);
                     break;
             }
         }
@@ -74,7 +74,7 @@ namespace Azyobuzi.Azyotter.Models
         private void RaiseSettingsPropertyChanged()
         {
             typeof(TabSetting).GetProperties()
-                .ForEach(p => this.Settings_PropertyChanged(this.Settings, new PropertyChangedEventArgs(p.Name)));
+                .ForEach(p => this.Settings_PropertyChanged(this.Setting, new PropertyChangedEventArgs(p.Name)));
         }
 
         public void Dispose()
@@ -88,8 +88,8 @@ namespace Azyobuzi.Azyotter.Models
             this.receiver = null;
             this.Items = null;
             StatusCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
-            this.Settings.PropertyChanged -= this.Settings_PropertyChanged;
-            this.Settings = null;
+            this.Setting.PropertyChanged -= this.Settings_PropertyChanged;
+            this.Setting = null;
             GC.SuppressFinalize(this);
         }
 
@@ -97,11 +97,11 @@ namespace Azyobuzi.Azyotter.Models
         {
             get
             {
-                return this.Settings.Name;
+                return this.Setting.Name;
             }
             set
             {
-                this.Settings.Name = value;
+                this.Setting.Name = value;
             }
         }
 
@@ -118,7 +118,7 @@ namespace Azyobuzi.Azyotter.Models
 
         public void Refresh()
         {
-            this.receiver.Receive(this.Settings.GetCount, 1);
+            this.receiver.Receive(this.Setting.GetCount, 1);
         }
 
         public bool IsRefreshing

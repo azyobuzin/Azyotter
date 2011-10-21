@@ -69,9 +69,9 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
 
-        public void AddTab(TabSetting settings, int index)
+        public void AddTab(TabSetting setting, int index)
         {
-            var tab = new Tab(settings, this.token);
+            var tab = new Tab(setting, this.token);
             this.Tabs.Insert(index, tab);
         }
 

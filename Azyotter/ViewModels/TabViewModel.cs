@@ -1,19 +1,19 @@
 ﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Data;
 using Azyobuzi.Azyotter.Models;
 using Livet;
 using Livet.Commands;
+using Livet.Messaging;
 
 namespace Azyobuzi.Azyotter.ViewModels
 {
     public class TabViewModel : ViewModel
     {
-        public TabViewModel(Tab model)
+        public TabViewModel(Tab model, InteractionMessenger mainWindowViewModelMessenger)
         {
             this.Model = model;
+            this.Messenger = mainWindowViewModelMessenger;
 
             ViewModelHelper.BindNotifyChanged(model, this, (sender, e) =>
             {
@@ -115,5 +115,50 @@ namespace Azyobuzi.Azyotter.ViewModels
                 return !string.IsNullOrEmpty(this.Model.LastErrorMessage);
             }
         }
+
+        #region EditCommand
+        private ViewModelCommand _EditCommand;
+
+        public ViewModelCommand EditCommand
+        {
+            get
+            {
+                if (_EditCommand == null)
+                {
+                    _EditCommand = new ViewModelCommand(Edit);
+                }
+                return _EditCommand;
+            }
+        }
+
+        public void Edit()
+        {
+            this.Messenger.Raise(new TransitionMessage(new TabSettingWindowViewModel(this.Model.Setting), "ShowTabSettingWindow"));
+        }
+        #endregion
+
+        #region CloseCommand
+        private ViewModelCommand _CloseCommand;
+
+        public ViewModelCommand CloseCommand
+        {
+            get
+            {
+                if (_CloseCommand == null)
+                {
+                    _CloseCommand = new ViewModelCommand(Close);
+                }
+                return _CloseCommand;
+            }
+        }
+
+        public void Close()
+        {
+            Settings.Instance.Tabs.Remove(this.Model.Setting);
+            this.Model.Dispose();
+            Settings.Instance.Save();
+        }
+        #endregion
+
     }
 }

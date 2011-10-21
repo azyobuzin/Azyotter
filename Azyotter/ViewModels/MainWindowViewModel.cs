@@ -135,7 +135,7 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private TabViewModel CreateTabViewModel(Tab model)
         {
-            var re = new TabViewModel(model);
+            var re = new TabViewModel(model, this.Messenger);
             ViewModelHelper.BindNotifyCollectionChanged(re.SelectedItems, this, (sender, e) =>
             {
                 this.ReplyCommand.RaiseCanExecuteChanged();
@@ -317,6 +317,29 @@ namespace Azyobuzi.Azyotter.ViewModels
                 + " " + this.PostText;
         }
         #endregion
-      
+
+        #region AddTabCommand
+        private ViewModelCommand _AddTabCommand;
+
+        public ViewModelCommand AddTabCommand
+        {
+            get
+            {
+                if (_AddTabCommand == null)
+                {
+                    _AddTabCommand = new ViewModelCommand(AddTab);
+                }
+                return _AddTabCommand;
+            }
+        }
+
+        public void AddTab()
+        {
+            var tab = new TabSetting();
+            Settings.Instance.Tabs.Add(tab);
+            Settings.Instance.Save();
+        }
+        #endregion
+
     }
 }

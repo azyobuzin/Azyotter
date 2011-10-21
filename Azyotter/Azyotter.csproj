@@ -95,9 +95,13 @@
     <Compile Include="Models\UserStreams.cs" />
     <Compile Include="Util\AssemblyUtil.cs" />
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
+    <Compile Include="ViewModels\TabSettingWindowViewModel.cs" />
     <Compile Include="Views\Converters\TypeToEnumValuesConverter.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TabSettingWindow.xaml.cs">
+      <DependentUpon>TabSettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TimelineItemPlainText.cs" />
     <Compile Include="Views\TimelineItemRichText.cs" />
@@ -142,6 +146,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TabSettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
