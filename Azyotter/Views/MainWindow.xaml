@@ -10,7 +10,7 @@
         DataContext="{DynamicResource MainWindowViewModel}"
         Title="{Binding Version, StringFormat={}Azyotter {0}}"
         Height="500" Width="650"
-        Icon="/Azyotter;component/Icon/tw_azyobuzi.ico" Loaded="Window_Loaded">
+        Icon="/Azyotter;component/Icon/tw_azyobuzi.ico">
     
     <Window.Resources>
         <vm:MainWindowViewModel x:Key="MainWindowViewModel"/>
@@ -120,14 +120,12 @@
                             
                             <Button Name="notifyError"
                                     Width="16" Height="16"
-                                    Background="Transparent"
-                                    BorderBrush="Transparent"
                                     Command="{Binding ClearErrorMessageCommand}"
                                     ToolTip="{Binding LastErrorMessage}"
                                     ToolTipService.InitialShowDelay="0"
                                     ToolTipService.BetweenShowDelay="0">
                                 <Button.Style>
-                                    <Style TargetType="Button">
+                                    <Style TargetType="Button" BasedOn="{StaticResource FlatButton}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding LastErrorMessageIsNotEmpty}" Value="False">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -274,9 +272,45 @@
                 </TabControl.ContentTemplate>
             </TabControl>
 
-            <!--使わなかったらそのうち削除-->
-            <StatusBar Grid.Row="1" IsTabStop="False" Visibility="Collapsed">
-                <TextBlock Text="Ready"/>
+            <StatusBar Grid.Row="1" IsTabStop="False">
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid IsItemsHost="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+
+                <StatusBarItem Grid.Column="0" Content=""/>
+                
+                <StatusBarItem Grid.Column="1">
+                    <Button Name="mainMenuButton"
+                            Style="{StaticResource FlatButton}"
+                            Click="mainMenuButton_Click">
+                        <Image Source="/Azyotter;component/Images/azyotter24.png"
+                               Width="24" Height="24"/>
+                        
+                        <Button.Resources>
+                            <ContextMenu x:Key="mainContextMenu"
+                                         Placement="Top">
+                                <MenuItem Header="設定(_S)...">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <l:TransitionInteractionMessageAction WindowType="v:SettingsWindow">
+                                                <l:DirectInteractionMessage>
+                                                    <l:TransitionMessage Mode="NewOrActive"/>
+                                                </l:DirectInteractionMessage>
+                                            </l:TransitionInteractionMessageAction>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.Resources>
+                    </Button>
+                </StatusBarItem>
             </StatusBar>
         </Grid>
 

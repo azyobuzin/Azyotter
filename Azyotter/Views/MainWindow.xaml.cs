@@ -24,23 +24,11 @@ namespace Azyobuzi.Azyotter.Views
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void mainMenuButton_Click(object sender, RoutedEventArgs e)
         {
-            SystemMenuManager.AddSeparator(this);
-            SystemMenuManager.AddMenuItem(this, 1, "設定(&S)...", () =>
-            {
-                var w = Application.Current.Windows.OfType<SettingsWindow>().FirstOrDefault();
-                if (w != null)
-                {
-                    w.Activate();
-                }
-                else
-                {
-                    w = new SettingsWindow();
-                    w.Owner = this;
-                    w.Show();
-                }
-            });
+            var contextMenu = (ContextMenu)this.mainMenuButton.Resources["mainContextMenu"];
+            contextMenu.PlacementTarget = this.mainMenuButton;
+            contextMenu.IsOpen = true;
         }
     }
 }
