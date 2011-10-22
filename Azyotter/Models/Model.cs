@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Util;
 using Azyobuzi.TaskingTwLib;
-using Azyobuzi.TaskingTwLib.DataModels;
 using Livet;
 using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
@@ -102,11 +103,48 @@ namespace Azyobuzi.Azyotter.Models
             UserStreams.Stop();
         }
 
-        public Task<Status> Post(string text, ulong? inReplyToStatusId)
+        public Task<bool> Post(string text, ulong? inReplyToStatusId, bool useFooter)
         {
+            if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
+                text += " " + Settings.Instance.Footer;
+
+            this.Status = "投稿中：" + text;
+
             return TwitterApi.Tweets.UpdateApi
                 .Create(text, inReplyToStatusId)
-                .CallApi(this.token);
+                .CallApi(this.token)
+                .ContinueWith(t =>
+                {
+                    if (t.Exception == null)
+                    {
+                        StatusCache.Instance.AddOrMerge(t.Result, true);
+                        Status = "投稿完了：" + text;
+                        return true;
+                    }
+                    else
+                    {
+                        Status = "投稿失敗（" + t.Exception.InnerException.GetMessage() + "）：" + text;
+                        return false;
+                    }
+                });
         }
+
+        #region Status変更通知プロパティ
+        private string _Status;
+
+        public string Status
+        {
+            get
+            { return _Status; }
+            set
+            { 
+                if (EqualityComparer<string>.Default.Equals(_Status, value))
+                    return;
+                _Status = value;
+                RaisePropertyChanged("Status");
+            }
+        }
+        #endregion
+
     }
 }

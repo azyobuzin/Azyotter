@@ -11,6 +11,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         public SettingsWindowViewModel()
         {
             this.UseUserStream = Settings.Instance.UseUserStream;
+            this.Footer = Settings.Instance.Footer;
         }
 
         #region UseUserStream変更通知プロパティ
@@ -26,6 +27,23 @@ namespace Azyobuzi.Azyotter.ViewModels
                     return;
                 _UseUserStream = value;
                 RaisePropertyChanged("UseUserStream");
+            }
+        }
+        #endregion
+
+        #region Footer変更通知プロパティ
+        private string _Footer;
+
+        public string Footer
+        {
+            get
+            { return _Footer; }
+            set
+            { 
+                if (EqualityComparer<string>.Default.Equals(_Footer, value))
+                    return;
+                _Footer = value.Trim();
+                RaisePropertyChanged("Footer");
             }
         }
         #endregion
@@ -48,6 +66,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         public void Ok()
         {
             Settings.Instance.UseUserStream = this.UseUserStream;
+            Settings.Instance.Footer = this.Footer;
             Settings.Instance.Save();
             this.Cancel();
         }

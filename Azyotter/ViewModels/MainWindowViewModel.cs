@@ -21,6 +21,12 @@ namespace Azyobuzi.Azyotter.ViewModels
                 if (e.PropertyName == "ShorcutKeys")
                     this.RaisePropertyChanged(() => this.ShortcutKeys);
             });
+
+            ViewModelHelper.BindNotifyChanged(this.model, this, (sender, e) =>
+            {
+                if (e.PropertyName == "Status")
+                    this.RaisePropertyChanged(() => this.Status);
+            });
         }
 
         private Model model = new Model();
@@ -191,6 +197,14 @@ namespace Azyobuzi.Azyotter.ViewModels
                 return Settings.Instance.ShorcutKeys;
             }
         }
+
+        public string Status
+        {
+            get
+            {
+                return this.model.Status;
+            }
+        }
               
         #region PostText変更通知プロパティ
         string _PostText;
@@ -265,17 +279,10 @@ namespace Azyobuzi.Azyotter.ViewModels
         private void Post()
         {
             this.IsPosting = true;
-            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Model.Id : null)
+            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Model.Id : null, true)
                 .ContinueWith(t =>
                 {
-                    if (t.Exception != null)
-                    {
-                        this.Messenger.Raise(new InformationMessage(
-                            t.Exception.InnerException.GetMessage(),
-                            "投稿失敗",
-                            "ShowInfomation"));
-                    }
-                    else
+                    if(t.Result)
                     {
                         this.PostText = string.Empty;
                         this.ReplyToStatus = null;
@@ -285,7 +292,44 @@ namespace Azyobuzi.Azyotter.ViewModels
                 });
         }
         #endregion
-        
+
+        #region PostWithoutFooterCommand
+        private Livet.Commands.ViewModelCommand _PostWithoutFooterCommand;
+
+        public Livet.Commands.ViewModelCommand PostWithoutFooterCommand
+        {
+            get
+            {
+                if (_PostWithoutFooterCommand == null)
+                {
+                    _PostWithoutFooterCommand = new Livet.Commands.ViewModelCommand(PostWithoutFooter, CanPostWithoutFooter);
+                }
+                return _PostWithoutFooterCommand;
+            }
+        }
+
+        public bool CanPostWithoutFooter()
+        {
+            return !string.IsNullOrWhiteSpace(this.PostText);
+        }
+
+        public void PostWithoutFooter()
+        {
+            this.IsPosting = true;
+            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Model.Id : null, false)
+                .ContinueWith(t =>
+                {
+                    if (t.Result)
+                    {
+                        this.PostText = string.Empty;
+                        this.ReplyToStatus = null;
+                    }
+
+                    this.IsPosting = false;
+                });
+        }
+        #endregion
+
         #region ReplyCommand
         ViewModelCommand _ReplyCommand;
 

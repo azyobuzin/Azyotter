@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
@@ -152,6 +153,23 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
         #endregion
-      
+
+        #region Footer変更通知プロパティ
+        private string _Footer;
+
+        public string Footer
+        {
+            get
+            { return _Footer; }
+            set
+            { 
+                if (EqualityComparer<string>.Default.Equals(_Footer, value))
+                    return;
+                _Footer = value;
+                RaisePropertyChanged("Footer");
+            }
+        }
+        #endregion
+
     }
 }

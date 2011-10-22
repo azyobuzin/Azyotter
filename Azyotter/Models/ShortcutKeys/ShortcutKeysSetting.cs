@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Generic;
+using System.Windows.Input;
 using Livet;
 
 namespace Azyobuzi.Azyotter.Models.ShortcutKeys
@@ -15,13 +16,30 @@ namespace Azyobuzi.Azyotter.Models.ShortcutKeys
             { return _Post; }
             set
             {
-                if (_Post == value)
+                if (EqualityComparer<ShortcutKey>.Default.Equals(_Post, value))
                     return;
                 _Post = value;
                 RaisePropertyChanged("Post");
             }
         }
         #endregion
-      
+
+        #region PostWithoutFooter変更通知プロパティ
+        private ShortcutKey _PostWithoutFooter = new ShortcutKey() { Ctrl = true, Shift = true, Key = Key.Return };
+
+        public ShortcutKey PostWithoutFooter
+        {
+            get
+            { return _PostWithoutFooter; }
+            set
+            { 
+                if (EqualityComparer<ShortcutKey>.Default.Equals(_PostWithoutFooter, value))
+                    return;
+                _PostWithoutFooter = value;
+                RaisePropertyChanged("PostWithoutFooter");
+            }
+        }
+        #endregion
+
     }
 }
