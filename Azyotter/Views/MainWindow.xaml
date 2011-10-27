@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:Azyobuzi.Azyotter.ViewModels"
         xmlns:ai="clr-namespace:Azyobuzi.Azyotter.Interactivity"
         DataContext="{DynamicResource MainWindowViewModel}"
-        Title="{Binding Version, StringFormat={}Azyotter {0}}"
+        Title="{Binding Title}"
         Height="500" Width="650"
         Icon="/Azyotter;component/Icon/tw_azyobuzi.ico">
     
@@ -37,8 +37,12 @@
             <l:TransitionInteractionMessageAction WindowType="v:TabSettingWindow" Mode="Normal"/>
         </l:InteractionMessageTrigger>
         
-        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInfomation">
+        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInformation">
             <l:InformationDialogInteractionMessageAction/>
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="Confirmation">
+            <l:ConfirmationDialogInteractionMessageAction/>
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
     
@@ -320,6 +324,8 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </MenuItem>
+
+                                <MenuItem Header="アップデート確認(_U)" Command="{Binding CheckUpdateCommand}"/>
                             </ContextMenu>
                         </Button.Resources>
                     </Button>

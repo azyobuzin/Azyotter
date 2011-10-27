@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using Azyobuzi.Azyotter.Models;
 using Azyobuzi.Azyotter.Util;
 using Azyobuzi.TaskingTwLib;
@@ -24,13 +25,24 @@ namespace Azyobuzi.Azyotter.ViewModels
 
             ViewModelHelper.BindNotifyChanged(this.model, this, (sender, e) =>
             {
-                if (e.PropertyName == "Status")
-                    this.RaisePropertyChanged(() => this.Status);
+                switch (e.PropertyName)
+                {
+                    case "Status":
+                        this.RaisePropertyChanged(e.PropertyName);
+                        break;
+                    case "CanUpdate":
+                        this.RaisePropertyChanged(() => this.CanUpdate);
+                        this.RaisePropertyChanged(() => this.Title);
+                        break;
+                }
             });
+
+            ViewModelHelper.BindNotification(this.model.ExitRequestEvent, this, (sender, e) =>
+                this.Messenger.Raise(new WindowActionMessage("WindowAction", WindowAction.Close)));
         }
 
         private Model model = new Model();
-                
+
         #region Tabs変更通知プロパティ
         ReadOnlyDispatcherCollection<TabViewModel> _Tabs;
 
@@ -47,7 +59,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
         #endregion
-        
+
         #region SelectedTab変更通知プロパティ
         TabViewModel _SelectedTab;
 
@@ -66,7 +78,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
         #endregion
-      
+
         #region LoadedCommand
         ViewModelCommand _LoadedCommand;
 
@@ -82,7 +94,7 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void Loaded()
         {
-            if (string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthToken)||string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthTokenSecret))
+            if (string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthToken) || string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthTokenSecret))
             {
                 Token token = new Token()
                 {
@@ -115,7 +127,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                                             .Create(vm.Pin)
                                             .CallApi(token)
                                             .Result;
-                                        this.model.SaveOAuthToken(id.Item1, id.Item2.Id, id.Item2.ScreenName);                                            
+                                        this.model.SaveOAuthToken(id.Item1, id.Item2.Id, id.Item2.ScreenName);
                                         vm.CloseRequest();
                                         DispatcherHelper.BeginInvoke(this.Loaded2);
                                     }
@@ -130,7 +142,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                         this.Messenger.Raise(new TransitionMessage(vm, "ShowInputPinWindow"));
                     });
 
-                
+
             }
             else
             {
@@ -160,8 +172,10 @@ namespace Azyobuzi.Azyotter.ViewModels
             );
 
             this.SelectedTab = this.Tabs.FirstOrDefault();
+
+            Task.Factory.StartNew(() => this.model.GetCanUpdate());
         }
-        
+
         #region ClosingCommand
         ViewModelCommand _ClosingCommand;
 
@@ -205,7 +219,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                 return this.model.Status;
             }
         }
-              
+
         #region PostText変更通知プロパティ
         string _PostText;
 
@@ -223,7 +237,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
         #endregion
-        
+
         #region ReplyToStatus変更通知プロパティ
         TimelineItemViewModel _ReplyToStatus;
 
@@ -240,7 +254,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
         #endregion
-      
+
         #region IsPosting変更通知プロパティ
         bool _IsPosting;
 
@@ -257,7 +271,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
         #endregion
-      
+
         #region PostCommand
         ViewModelCommand _PostCommand;
 
@@ -282,7 +296,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Model.Id : null, true)
                 .ContinueWith(t =>
                 {
-                    if(t.Result)
+                    if (t.Result)
                     {
                         this.PostText = string.Empty;
                         this.ReplyToStatus = null;
@@ -382,6 +396,66 @@ namespace Azyobuzi.Azyotter.ViewModels
             var tab = new TabSetting();
             Settings.Instance.Tabs.Add(tab);
             Settings.Instance.Save();
+        }
+        #endregion
+
+        public bool CanUpdate
+        {
+            get
+            {
+                return this.model.CanUpdate;
+            }
+        }
+
+        public string Title
+        {
+            get
+            {
+                return "Azyotter " + this.Version
+                    + (this.CanUpdate ? "（更新があります）" : string.Empty);
+            }
+        }
+
+        #region CheckUpdateCommand
+        private ViewModelCommand _CheckUpdateCommand;
+
+        public ViewModelCommand CheckUpdateCommand
+        {
+            get
+            {
+                if (_CheckUpdateCommand == null)
+                {
+                    _CheckUpdateCommand = new ViewModelCommand(CheckUpdate);
+                }
+                return _CheckUpdateCommand;
+            }
+        }
+
+        public void CheckUpdate()
+        {
+            var result = this.model.GetCanUpdate();
+            if (!result)
+            {
+                this.Messenger.Raise(new InformationMessage(
+                    "アップデートは見つかりませんでした。",
+                    "アップデート確認",
+                    MessageBoxImage.Information,
+                    "ShowInformation"));
+            }
+            else
+            {
+                var message = this.Messenger.GetResponse(new ConfirmationMessage(
+                    "Azyotter " + this.model.LatestVersion.Version.ToString() + " があります。アップデートしますか？",
+                    "アップデート確認",
+                    MessageBoxImage.Information,
+                    MessageBoxButton.OKCancel,
+                    "Confirmation"));
+
+                if (message.Response.HasValue && message.Response.Value)
+                {
+                    this.model.Update();
+                }
+            }
         }
         #endregion
 

@@ -20,6 +20,11 @@ namespace Azyobuzi.Azyotter
 #if !DEBUG
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 #endif
+
+            //アップデーターを削除
+            e.Args.Where(arg => arg.StartsWith("/u:"))
+                .Select(arg => arg.TrimStart("/u:".ToCharArray()))
+                .ForEach(dir => Directory.Delete(dir, true));
         }
 
         private string GetVersion()

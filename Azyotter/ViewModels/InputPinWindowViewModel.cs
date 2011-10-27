@@ -137,7 +137,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         public void InvalidPin()
         {
             this.IsCanceled = true;
-            this.Messenger.Raise(new InformationMessage("認証できませんでした。", "失敗", MessageBoxImage.Error, "ShowInfomation"));
+            this.Messenger.Raise(new InformationMessage("認証できませんでした。", "失敗", MessageBoxImage.Error, "ShowInformation"));
         }
     }
 }

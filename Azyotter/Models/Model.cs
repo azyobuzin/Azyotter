@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models.Caching;
+using Azyobuzi.Azyotter.Updater;
 using Azyobuzi.Azyotter.Util;
 using Azyobuzi.TaskingTwLib;
 using Livet;
@@ -145,12 +149,109 @@ namespace Azyobuzi.Azyotter.Models
             get
             { return _Status; }
             set
-            { 
+            {
                 if (EqualityComparer<string>.Default.Equals(_Status, value))
                     return;
                 _Status = value;
                 RaisePropertyChanged("Status");
             }
+        }
+        #endregion
+
+        #region CanUpdate変更通知プロパティ
+        private bool _CanUpdate;
+
+        public bool CanUpdate
+        {
+            get
+            { return _CanUpdate; }
+            set
+            {
+                if (EqualityComparer<bool>.Default.Equals(_CanUpdate, value))
+                    return;
+                _CanUpdate = value;
+                RaisePropertyChanged("CanUpdate");
+            }
+        }
+        #endregion
+
+        #region LatestVersion変更通知プロパティ
+        private Update _LatestVersion;
+
+        public Update LatestVersion
+        {
+            get
+            { return _LatestVersion; }
+            set
+            {
+                if (EqualityComparer<Update>.Default.Equals(_LatestVersion, value))
+                    return;
+                _LatestVersion = value;
+                RaisePropertyChanged("LatestVersion");
+            }
+        }
+        #endregion
+
+        public bool GetCanUpdate()
+        {
+            bool result;
+
+            try
+            {
+                this.LatestVersion = Updates.GetUpdates().Latest();
+                result = this.LatestVersion.Version > Version.Parse(AssemblyUtil.GetInformationalVersion());
+            }
+            catch
+            {
+                return false;
+            }
+
+            this.CanUpdate = result;
+
+            return result;
+        }
+
+        public void Update()
+        {
+            var asmDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var tmpDir = Directory.CreateDirectory(Path.GetTempPath() + Guid.NewGuid().ToString());
+
+            File.Copy(Path.Combine(asmDir, "Updater.exe"), Path.Combine(tmpDir.FullName, "Updater.exe"), true);
+            File.Copy(Path.Combine(asmDir, "Updater.pdb"), Path.Combine(tmpDir.FullName, "Updater.pdb"), true);
+            File.Copy(Path.Combine(asmDir, "System.Windows.Interactivity.dll"), Path.Combine(tmpDir.FullName, "System.Windows.Interactivity.dll"), true);
+            File.Copy(Path.Combine(asmDir, "Ionic.Zip.dll"), Path.Combine(tmpDir.FullName, "Ionic.Zip.dll"), true);
+
+            Process.Start(Path.Combine(tmpDir.FullName, "Updater.exe"),
+                string.Format(@"""{0}"" ""{1}""",
+                    Process.GetCurrentProcess().MainModule.FileName,
+                    this.LatestVersion.Id));
+
+            this.OnExitRequest(EventArgs.Empty);
+        }
+
+        #region ExitRequestイベント
+        public event EventHandler<EventArgs> ExitRequest;
+        private Notificator<EventArgs> _ExitRequestEvent;
+        public Notificator<EventArgs> ExitRequestEvent
+        {
+            get
+            {
+                if (_ExitRequestEvent == null)
+                {
+                    _ExitRequestEvent = new Notificator<EventArgs>();
+                }
+                return _ExitRequestEvent;
+            }
+        }
+
+        protected virtual void OnExitRequest(EventArgs e)
+        {
+            var threadSafeHandler = System.Threading.Interlocked.CompareExchange(ref ExitRequest, null, null);
+            if (threadSafeHandler != null)
+            {
+                threadSafeHandler(this, e);
+            }
+            ExitRequestEvent.Raise(e);
         }
         #endregion
 

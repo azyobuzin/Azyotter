@@ -159,7 +159,7 @@ namespace Azyobuzi.Azyotter.Updater
                         
                         DispatcherInvoke(disp, () => this.Message = "新しいAzyotterを起動しています...");
 
-                        Process.Start(azyotterExePath, string.Format(@"/u:{0}",
+                        Process.Start(azyotterExePath, string.Format(@"""/u:{0}""",
                             Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName)));
 
                         ThreadPool.QueueUserWorkItem((state) =>

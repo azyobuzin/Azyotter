@@ -20,7 +20,7 @@
             </l:WindowInteractionMessageAction>
         </l:InteractionMessageTrigger>
         
-        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInfomation">
+        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInformation">
             <l:InformationDialogInteractionMessageAction/>
         </l:InteractionMessageTrigger>
     </i:Interaction.Triggers>
