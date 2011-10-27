@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Util;
@@ -27,6 +28,13 @@ namespace Azyobuzi.Azyotter.Models
                 OAuthTokenSecret = Settings.Instance.Accounts.First().OAuthTokenSecret
             };
             UserStreams.Token = this.token;
+
+            UserStreams.Error += (sender, e) =>
+            {
+                var wex = e.Error as WebException;
+                if (wex == null || wex.Status != WebExceptionStatus.RequestCanceled)
+                    this.Status = "UserStreamで問題が発生したため再接続します";
+            };
         }
 
         public void Init()
