@@ -182,11 +182,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Properties\VersionInfoBase.txt" />
     <Content Include="Readme.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Icon\tw_azyobuzi.ico" />
     <Resource Include="Images\loading_circle.png" />
