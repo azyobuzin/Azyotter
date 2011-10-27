@@ -210,6 +210,10 @@
       <Project>{E3E7950F-ADF1-476C-9FE3-70F9E0E3603D}</Project>
       <Name>TaskingTwLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Updater\Updater.csproj">
+      <Project>{CC6B863F-A1E6-43DE-966D-FBEA9D7F1307}</Project>
+      <Name>Updater</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

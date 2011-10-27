@@ -53,6 +53,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             );
             source.SortDescriptions.Clear();
             source.SortDescriptions.Add(new SortDescription("CreatedAt", ListSortDirection.Descending));
+            source.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
             this.Items = source.View;
 
             this.SelectedItems = new ObservableCollection<TimelineItemViewModel>();
