@@ -24,12 +24,12 @@ namespace Azyobuzi.Azyotter.Models
                     {
                         if (data.Kind == DataKind.Status)
                         {
-                            StatusCache.Instance.AddOrMerge(data.Status, true);
+                            TimelineItemCache.Instance.AddOrMerge(data.Status, true);
                         }
 
                         if (data.Kind == DataKind.DeleteStatus)
                         {
-                            StatusCache.Instance.Remove(data.Id);
+                            TimelineItemCache.Instance.Remove(data.Id);
                         }
                     },
                     ex =>

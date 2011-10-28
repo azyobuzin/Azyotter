@@ -13,7 +13,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
     {
         public HomeTimelineReceiver()
         {
-            StatusCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
+            TimelineItemCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
         }
 
         public override bool UseUserStream
@@ -29,7 +29,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
         public override void GetFirst()
         {
             Task.Factory.StartNew(() =>
-                this.Query(StatusCache.Instance)
+                this.Query(TimelineItemCache.Instance)
                     .ForEach(status => this.OnReceivedTimeline(new[] { status }))
             );
         }
@@ -43,7 +43,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                 .ContinueWith(t =>
                 {
                     if (t.Exception == null)
-                        t.Result.ForEach(status => StatusCache.Instance.AddOrMerge(status, true));
+                        t.Result.ForEach(status => TimelineItemCache.Instance.AddOrMerge(status, true));
                     else
                         this.OnError(t.Exception.InnerException.GetMessage());
 
@@ -62,7 +62,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public override void Dispose()
         {
-            StatusCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
+            TimelineItemCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
             base.Dispose();
         }
     }

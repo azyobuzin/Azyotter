@@ -17,7 +17,7 @@ namespace Azyobuzi.Azyotter.Models
         {
             this.token = token;
             this.Items = new ConcurrentObservableCollection<ITimelineItem>();
-            StatusCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
+            TimelineItemCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
             this.Setting = setting;
             setting.PropertyChanged += this.Settings_PropertyChanged;
             this.timer = new Timer(_ =>
@@ -87,7 +87,7 @@ namespace Azyobuzi.Azyotter.Models
             this.receiver.Dispose();
             this.receiver = null;
             this.Items = null;
-            StatusCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
+            TimelineItemCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
             this.Setting.PropertyChanged -= this.Settings_PropertyChanged;
             this.Setting = null;
             GC.SuppressFinalize(this);

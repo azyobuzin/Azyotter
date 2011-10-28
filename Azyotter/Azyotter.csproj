@@ -79,7 +79,7 @@
     </ApplicationDefinition>
     <Compile Include="Interactivity\ShortcutKeyBehavior.cs" />
     <Compile Include="Models\Account.cs" />
-    <Compile Include="Models\Caching\StatusCache.cs" />
+    <Compile Include="Models\Caching\TimelineItemCache.cs" />
     <Compile Include="Models\Caching\UserCache.cs" />
     <Compile Include="Models\ITimelineItem.cs" />
     <Compile Include="Models\ShortcutKeys\ShortcutKey.cs" />
@@ -90,7 +90,7 @@
     <Compile Include="Models\StatusTextParts\Url.cs" />
     <Compile Include="Models\StatusTextParts\UserName.cs" />
     <Compile Include="Models\TimelineReceivers\MentionsTimelineReceiver.cs" />
-    <Compile Include="Models\TwitterDataModels\Status.cs" />
+    <Compile Include="Models\TwitterDataModels\Tweet.cs" />
     <Compile Include="Models\TwitterDataModels\User.cs" />
     <Compile Include="Models\UserStreams.cs" />
     <Compile Include="Util\AssemblyUtil.cs" />
