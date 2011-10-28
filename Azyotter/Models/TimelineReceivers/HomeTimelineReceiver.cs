@@ -13,7 +13,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
     {
         public HomeTimelineReceiver()
         {
-            TimelineItemCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
+            TimelineItemCache.Instance.CollectionChanged += this.TimelineItemCache_CollectionChanged;
         }
 
         public override bool UseUserStream
@@ -43,7 +43,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                 .ContinueWith(t =>
                 {
                     if (t.Exception == null)
-                        t.Result.ForEach(status => TimelineItemCache.Instance.AddOrMerge(status, true));
+                        t.Result.ForEach(status => TimelineItemCache.Instance.AddOrMergeTweet(status, true));
                     else
                         this.OnError(t.Exception.InnerException.GetMessage());
 
@@ -51,7 +51,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                 });
         }
 
-        private void StatusCache_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void TimelineItemCache_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
@@ -62,7 +62,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public override void Dispose()
         {
-            TimelineItemCache.Instance.CollectionChanged -= this.StatusCache_CollectionChanged;
+            TimelineItemCache.Instance.CollectionChanged -= this.TimelineItemCache_CollectionChanged;
             base.Dispose();
         }
     }

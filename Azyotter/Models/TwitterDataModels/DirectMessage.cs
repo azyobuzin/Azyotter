@@ -1,21 +1,15 @@
 ﻿namespace Azyobuzi.Azyotter.Models.TwitterDataModels
 {
-    public class Tweet : TimelineItemBase
+    public class DirectMessage : TimelineItemBase
     {
         public override bool IsTweet
         {
-            get
-            {
-                return true;
-            }
+            get { return false; }
         }
 
         public override bool IsDirectMessage
         {
-            get
-            {
-                return false;
-            }
+            get { return true; }
         }
     }
 }

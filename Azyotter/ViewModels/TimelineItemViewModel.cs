@@ -20,6 +20,22 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         public ITimelineItem Model { private set; get; }
 
+        public bool IsTweet
+        {
+            get
+            {
+                return this.Model.IsTweet;
+            }
+        }
+
+        public bool IsDirectMessage
+        {
+            get
+            {
+                return this.Model.IsDirectMessage;
+            }
+        }
+
         public DateTime CreatedAt
         {
             get

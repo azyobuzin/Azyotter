@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,9 +9,9 @@ using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
 namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 {
-    public class MentionsTimelineReceiver : TimelineReceiver
+    public class DirectMessagesReceiver : TimelineReceiver
     {
-        public MentionsTimelineReceiver()
+        public DirectMessagesReceiver()
         {
             TimelineItemCache.Instance.CollectionChanged += this.TimelineItemCache_CollectionChanged;
         }
@@ -24,38 +23,37 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         private IEnumerable<ITimelineItem> Query(IEnumerable<ITimelineItem> source)
         {
-            return source
-                .Where(status => status.IsTweet)
-                .Where(status => Settings.Instance.Accounts
-                    .Any(account => status.Text.OfType<StatusTextParts.UserName>()
-                        .Any(entity => entity.Text.TrimStart('@').Equals(account.ScreenName, StringComparison.InvariantCultureIgnoreCase))
-                    )
-                );
+            return source.Where(item => item.IsDirectMessage && item.ForAllTab);
         }
 
         public override void GetFirst()
         {
             Task.Factory.StartNew(() =>
                 this.Query(TimelineItemCache.Instance)
-                    .ForEach(status => this.OnReceivedTimeline(new[] { status }))
+                    .ForEach(item => this.OnReceivedTimeline(new[] { item }))
             );
         }
 
         public override void Receive(int count, int page)
         {
+            int i = 0;
             this.IsRefreshing = true;
-            TwitterApi.Tweets.TimelinesApi
-                .Create(TwitterApi.Tweets.TimelineType.Mentions, count: count, page: page)
-                .CallApi(this.Token)
-                .ContinueWith(t =>
-                {
-                    if (t.Exception == null)
-                        t.Result.ForEach(status => TimelineItemCache.Instance.AddOrMergeTweet(status, true));
-                    else
-                        this.OnError(t.Exception.InnerException.GetMessage());
+            new[] { TwitterApi.DirectMessages.DirectMessagesApiType.Received, TwitterApi.DirectMessages.DirectMessagesApiType.Sent }
+                .ForEach(type =>
+                    TwitterApi.DirectMessages.DirectMessagesApi
+                        .Create(type, count: count, page: page)
+                        .CallApi(this.Token)
+                        .ContinueWith(t =>
+                        {
+                            if (t.Exception == null)
+                                t.Result.ForEach(directMessage => TimelineItemCache.Instance.AddOrMergeDirectMessage(directMessage));
+                            else
+                                this.OnError(t.Exception.InnerException.GetMessage());
 
-                    this.IsRefreshing = false;
-                });
+                            if (++i >= 2)
+                                this.IsRefreshing = false;
+                        })
+                );
         }
 
         private void TimelineItemCache_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -63,7 +61,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 this.Query(e.NewItems.Cast<ITimelineItem>())
-                    .ForEach(status => this.OnReceivedTimeline(new[] { status }));
+                    .ForEach(item => this.OnReceivedTimeline(new[] { item }));
             }
         }
 

@@ -129,7 +129,7 @@ namespace Azyobuzi.Azyotter.Models
                 {
                     if (t.Exception == null)
                     {
-                        TimelineItemCache.Instance.AddOrMerge(t.Result, true);
+                        TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
                         Status = "投稿完了：" + text;
                         return true;
                     }

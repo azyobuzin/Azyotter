@@ -24,7 +24,7 @@ namespace Azyobuzi.Azyotter.Models
                     {
                         if (data.Kind == DataKind.Status)
                         {
-                            TimelineItemCache.Instance.AddOrMerge(data.Status, true);
+                            TimelineItemCache.Instance.AddOrMergeTweet(data.Status, true);
                         }
 
                         if (data.Kind == DataKind.DeleteStatus)

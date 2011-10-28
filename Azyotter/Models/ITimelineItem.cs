@@ -9,6 +9,7 @@ namespace Azyobuzi.Azyotter.Models
     public interface ITimelineItem : INotifyPropertyChanged
     {
         bool IsTweet { get; }
+        bool IsDirectMessage { get; }
         bool ForAllTab { get; set; }
         ulong Id { get; set; }
         DateTime CreatedAt { get; set; }
@@ -24,6 +25,8 @@ namespace Azyobuzi.Azyotter.Models
         : NotificationObject, ITimelineItem
     {
         public abstract bool IsTweet { get; }
+
+        public abstract bool IsDirectMessage { get; }
 
         #region ForAllTab変更通知プロパティ
         bool _ForAllTab;

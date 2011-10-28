@@ -48,10 +48,21 @@ namespace Azyobuzi.Azyotter.Models.Caching
             return this.collection
                 .FirstOrDefault(item => item.IsTweet && item.Id == id);
         }
+
+        public ITimelineItem GetDirectMessage(ulong id)
+        {
+            return this.collection
+                .FirstOrDefault(item => item.IsDirectMessage && item.Id == id);
+        }
         
         public bool ContainsTweet(ulong id)
         {
             return this.GetTweet(id) != null;
+        }
+
+        public bool ContainsDirectMessage(ulong id)
+        {
+            return this.GetDirectMessage(id) != null;
         }
 
         public bool Remove(ITimelineItem item)
@@ -68,7 +79,12 @@ namespace Azyobuzi.Azyotter.Models.Caching
             return this.Remove(this.GetTweet(id));
         }
 
-        public ITimelineItem AddOrMerge(TaskingTwLib.DataModels.Status status, bool forAllTab)
+        public bool RemoveDirectMessage(ulong id)
+        {
+            return this.Remove(this.GetDirectMessage(id));
+        }
+
+        public ITimelineItem AddOrMergeTweet(TaskingTwLib.DataModels.Status status, bool forAllTab)
         {
             ITimelineItem target = this.GetTweet(status.Id);
 
@@ -82,7 +98,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
 
             target.ForAllTab = forAllTab || target.ForAllTab;
             target.Id = status.Id;
-            target.CreatedAt = status.CreatedAt.ToLocalTime();
+            target.CreatedAt = status.CreatedAt;
             target.Text = this.CreateStatusText(status);
             target.From = UserCache.Instance.AddOrMerge(status.User);
             target.InReplyToStatusId = status.InReplyToStatusId;
@@ -94,6 +110,39 @@ namespace Azyobuzi.Azyotter.Models.Caching
                     .Select(media => media.MediaUrl + ":thumb")
                     .ToArray();
             }
+
+            if (isNew)
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
+                    NotifyCollectionChangedAction.Add, target));
+
+            return target;
+        }
+
+        public ITimelineItem AddOrMergeDirectMessage(TaskingTwLib.DataModels.DirectMessage directMessage)
+        {
+            ITimelineItem target = this.GetDirectMessage(directMessage.Id);
+
+            bool isNew = false;
+            if (target == null)
+            {
+                target = new DirectMessage();
+                this.collection.Add(target);
+                isNew = true;
+            }
+
+            target.ForAllTab = true;
+            target.Id = directMessage.Id;
+            target.CreatedAt = directMessage.CreatedAt;
+            target.Text = this.CreateDirectMessageText(directMessage);
+            target.From = UserCache.Instance.AddOrMerge(directMessage.Sender);
+            target.To = UserCache.Instance.AddOrMerge(directMessage.Recipient);
+
+            //if (directMessage.Entities != null)
+            //{
+            //    target.ImageThumbnails = directMessage.Entities.Media
+            //        .Select(media => media.MediaUrl + ":thumb")
+            //        .ToArray();
+            //}
 
             if (isNew)
                 this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
@@ -174,6 +223,17 @@ namespace Azyobuzi.Azyotter.Models.Caching
             }
 
             return re;
+        }
+
+        private IEnumerable<StatusTextParts.StatusTextPartBase> CreateDirectMessageText(TaskingTwLib.DataModels.DirectMessage directMessage)
+        {
+            var sts = new TaskingTwLib.DataModels.Status()
+            {
+                Text = directMessage.Text,
+                Entities = directMessage.Entities
+            };
+
+            return this.CreateStatusText(sts);
         }
     }
 }
