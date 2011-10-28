@@ -116,6 +116,34 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
 
+        public string ToUserName
+        {
+            get
+            {
+                return this.Model.To.Name;
+            }
+        }
+
+        public string ToScreenName
+        {
+            get
+            {
+                return this.Model.To.ScreenName;
+            }
+        }
+
+        public string DisplayName
+        {
+            get
+            {
+                return this.FromScreenName + "/" + this.FromUserName
+                    + (this.Model.To != null
+                        ? " → " + this.ToScreenName + "/" + this.ToUserName
+                        : string.Empty
+                      );
+            }
+        }
+
         public string FromProfileImageUrl
         {
             get

@@ -223,14 +223,7 @@
                                                        Stretch="Uniform"/>
 
                                                 <StackPanel Grid.Column="1" Margin="3,0,0,0">
-                                                    <TextBlock FontWeight="Bold">
-                                                        <TextBlock.Text>
-                                                            <MultiBinding StringFormat="{}{0}/{1}">
-                                                                <Binding Path="FromScreenName"/>
-                                                                <Binding Path="FromUserName"/>
-                                                            </MultiBinding>
-                                                        </TextBlock.Text>
-                                                    </TextBlock>
+                                                    <TextBlock FontWeight="Bold" Text="{Binding DisplayName}"/>
 
                                                     <v:TimelineItemPlainText Inlines="{Binding Text}">
                                                         <v:TimelineItemPlainText.Style>
