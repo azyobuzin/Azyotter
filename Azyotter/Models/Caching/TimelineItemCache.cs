@@ -151,6 +151,61 @@ namespace Azyobuzi.Azyotter.Models.Caching
             return target;
         }
 
+        public ITimelineItem AddUserStreamEvent(TaskingTwLib.DataModels.UserStreams.EventData userStreamEvent)
+        {
+            StatusTextParts.StatusTextPartBase[] text;
+
+            if (userStreamEvent.Event.StartsWith("list_"))
+            {
+                text = new[]
+                {
+                    new StatusTextParts.Normal()
+                    {
+                        Text = userStreamEvent.Event + ": " + userStreamEvent.TargetList.FullName
+                    }
+                };
+            }
+            else
+            {
+                switch (userStreamEvent.Event)
+                {
+                    case "follow":
+                    case "block":
+                    case "unblock":
+                    case "user_update":
+                        text = new[] { new StatusTextParts.Normal() { Text = userStreamEvent.Event } };
+                        break;
+                    case "favorite":
+                    case "unfavorite":
+                        text = new StatusTextParts.StatusTextPartBase[]
+                            {
+                                new StatusTextParts.Normal(){Text= userStreamEvent.Event + ": "}
+                            }
+                            .Concat(this.AddOrMergeTweet(userStreamEvent.TargetStatus, false).Text)
+                            .ToArray();
+                        break;
+                    default:
+                        text = new[] { new StatusTextParts.Normal() { Text = "unknown: " + userStreamEvent.Json } };
+                        break;
+                }
+            }
+
+            var target = new UserStreamEvent()
+            {
+                ForAllTab = true,
+                CreatedAt = userStreamEvent.CreatedAt,
+                Text = text,
+                From = UserCache.Instance.AddOrMerge(userStreamEvent.Source),
+                To = userStreamEvent.Target != null ? UserCache.Instance.AddOrMerge(userStreamEvent.Target) : null
+            };
+
+            this.collection.Add(target);
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(
+                NotifyCollectionChangedAction.Add, target));
+
+            return target;
+        }
+
         private IEnumerable<StatusTextParts.StatusTextPartBase> CreateStatusText(TaskingTwLib.DataModels.Status status)
         {
             if (status.Entities == null)

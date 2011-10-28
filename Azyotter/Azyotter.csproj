@@ -91,9 +91,11 @@
     <Compile Include="Models\StatusTextParts\UserName.cs" />
     <Compile Include="Models\TimelineReceivers\DirectMessagesReceiver.cs" />
     <Compile Include="Models\TimelineReceivers\MentionsTimelineReceiver.cs" />
+    <Compile Include="Models\TimelineReceivers\UserStreamEventsReceiver.cs" />
     <Compile Include="Models\TwitterDataModels\DirectMessage.cs" />
     <Compile Include="Models\TwitterDataModels\Tweet.cs" />
     <Compile Include="Models\TwitterDataModels\User.cs" />
+    <Compile Include="Models\TwitterDataModels\UserStreamEvent.cs" />
     <Compile Include="Models\UserStreams.cs" />
     <Compile Include="Util\AssemblyUtil.cs" />
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />

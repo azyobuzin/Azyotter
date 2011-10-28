@@ -29,7 +29,17 @@ namespace Azyobuzi.Azyotter.Models
 
                         if (data.Kind == DataKind.DeleteStatus)
                         {
-                            TimelineItemCache.Instance.Remove(data.Id);
+                            TimelineItemCache.Instance.RemoveTweet(data.Id);
+                        }
+
+                        if (data.Kind == DataKind.DeleteDirectMessage)
+                        {
+                            TimelineItemCache.Instance.RemoveDirectMessage(data.Id);
+                        }
+
+                        if (data.Kind == DataKind.Event)
+                        {
+                            TimelineItemCache.Instance.AddUserStreamEvent(data);
                         }
                     },
                     ex =>

@@ -68,6 +68,8 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                     return new MentionsTimelineReceiver();
                 case TimelineTypes.DirectMessages:
                     return new DirectMessagesReceiver();
+                case TimelineTypes.UserStreamEvents:
+                    return new UserStreamEventsReceiver();
                 default:
                     throw new ArgumentException("対応していないタイプです。");
             }
