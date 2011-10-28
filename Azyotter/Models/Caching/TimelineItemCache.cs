@@ -23,7 +23,7 @@ namespace Azyobuzi.Azyotter.Models.Caching
             }
         }
 
-        private ConcurrentObservableCollection<ITimelineItem> collection = new ConcurrentObservableCollection<ITimelineItem>();
+        private ObservableSynchronizedCollection<ITimelineItem> collection = new ObservableSynchronizedCollection<ITimelineItem>();
 
         public IEnumerator<ITimelineItem> GetEnumerator()
         {

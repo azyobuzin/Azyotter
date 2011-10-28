@@ -849,6 +849,11 @@
             ViewModelで使用するMessengerクラスです。
             </summary>
         </member>
+        <member name="M:Livet.Messaging.InteractionMessenger.#ctor">
+            <summary>
+            デフォルトコンストラクタ
+            </summary>
+        </member>
         <member name="M:Livet.Messaging.InteractionMessenger.Raise(Livet.Messaging.InteractionMessage)">
             <summary>
             指定された相互作用メッセージを同期的に送信します。
@@ -876,6 +881,11 @@
             <typeparam name="T">戻り値情報のある相互作用メッセージの型</typeparam>
             <param name="message">戻り値情報のある相互作用メッセージ</param>
             <param name="callback">コールバック</param>
+        </member>
+        <member name="E:Livet.Messaging.InteractionMessenger.AsyncMessageFailed">
+            <summary>
+            非同期で発信された相互作用メッセージが失敗した際に発生するイベントです。
+            </summary>
         </member>
         <member name="E:Livet.Messaging.InteractionMessenger.Raised">
             <summary>
@@ -3353,12 +3363,6 @@
             <param name="handler">イベントハンドラ</param>
             <returns>IEnumerable&lt;IWeakEventListener&gt;></returns>
         </member>
-        <member name="T:Livet.ConcurrentObservableCollection`1">
-            <summary>
-            スレッドセーフな変更通知コレクションです。
-            </summary>
-            <typeparam name="T">コレクションアイテムの型</typeparam>
-        </member>
         <member name="T:Livet.Behaviors.Messaging.TransitionInteractionMessageAction">
             <summary>
             画面遷移(Window)を行うアクションです。<see cref="T:Livet.Messaging.TransitionMessage"/>に対応します。
@@ -3518,6 +3522,149 @@
         <member name="P:Livet.Behaviors.ControlBinding.OneWay.DataGridDetailsPresenterSetStateToSourceAction.Source">
             <summary>
             Propertyプロパティで指定されたプロパティから値が設定されるソースを取得または設定します。
+            </summary>
+        </member>
+        <member name="T:Livet.ObservableSynchronizedCollection`1">
+            <summary>
+            スレッドセーフな変更通知コレクションです。
+            </summary>
+            <typeparam name="T">コレクションアイテムの型</typeparam>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.#ctor">
+            <summary>
+            デフォルトコンストラクタ
+            </summary>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="source">初期値となるソース</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.#ctor(System.Collections.Generic.IList{`0})">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="source">初期値となるソース</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.IndexOf(`0)">
+            <summary>
+            指定したオブジェクトを検索し、最初に見つかった位置の 0 から始まるインデックスを返します。
+            </summary>
+            <param name="item">検索するオブジェクト</param>
+            <returns>最初に見つかった位置のインデックス</returns>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.Insert(System.Int32,`0)">
+            <summary>
+            指定したインデックスの位置に要素を挿入します。
+            </summary>
+            <param name="index">指定するインデックス</param>
+            <param name="item">挿入するオブジェクト</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.RemoveAt(System.Int32)">
+            <summary>
+            指定したインデックスにある要素を削除します。
+            </summary>
+            <param name="index">指定するインデックス</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.Add(`0)">
+            <summary>
+            末尾にオブジェクトを追加します。
+            </summary>
+            <param name="item">追加するオブジェクト</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.Clear">
+            <summary>
+            すべての要素を削除します。
+            </summary>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.Contains(`0)">
+            <summary>
+            ある要素がこのコレクションに含まれているかどうかを判断します。
+            </summary>
+            <param name="item">コレクションに含まれているか判断したい要素</param>
+            <returns>このコレクションに含まれているかどうか</returns>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            全体を互換性のある1次元の配列にコピーします。コピー操作は、コピー先の配列の指定したインデックスから始まります。
+            </summary>
+            <param name="array">コピー先の配列</param>
+            <param name="arrayIndex">コピー先の配列のどこからコピー操作をするかのインデックス</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.Remove(`0)">
+            <summary>
+            最初に見つかった特定のオブジェクトを削除します。
+            </summary>
+            <param name="item">削除したいオブジェクト</param>
+            <returns>削除できたかどうか</returns>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.Move(System.Int32,System.Int32)">
+            <summary>
+            指定されたインデックスの要素を指定されたインデックスに移動します。
+            </summary>
+            <param name="oldIndex">移動したい要素のインデックス</param>
+            <param name="newIndex">移動先のインデックス</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.GetEnumerator">
+            <summary>
+            反復処理するための列挙子を返します。
+            </summary>
+            <returns>列挙子</returns>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            反復処理するための列挙子を返します。
+            </summary>
+            <returns>列挙子</returns>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.CopyTo(System.Array,System.Int32)">
+            <summary>
+            全体を互換性のある1次元の配列にコピーします。コピー操作は、コピー先の配列の指定したインデックスから始まります。
+            </summary>
+            <param name="array">コピー先の配列</param>
+            <param name="index">コピー先の配列のどこからコピー操作をするかのインデックス</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+            CollectionChangedイベントを発生させます。
+            </summary>
+            <param name="args">NotifyCollectionChangedEventArgs</param>
+        </member>
+        <member name="M:Livet.ObservableSynchronizedCollection`1.OnPropertyChanged(System.String)">
+            <summary>
+            PropertyChangedイベントを発生させます。
+            </summary>
+            <param name="propertyName">変更されたプロパティの名前</param>
+        </member>
+        <member name="P:Livet.ObservableSynchronizedCollection`1.Count">
+            <summary>
+            実際に格納されている要素の数を取得します。
+            </summary>
+        </member>
+        <member name="P:Livet.ObservableSynchronizedCollection`1.IsReadOnly">
+            <summary>
+            このコレクションが読み取り専用かどうかを取得します。
+            </summary>
+        </member>
+        <member name="P:Livet.ObservableSynchronizedCollection`1.IsSynchronized">
+            <summary>
+            このコレクションがスレッドセーフであるかどうかを取得します。(常にtrueを返します)
+            </summary>
+        </member>
+        <member name="P:Livet.ObservableSynchronizedCollection`1.SyncRoot">
+            <summary>
+            このコレクションへのスレッドセーフなアクセスに使用できる同期オブジェクトを返します。
+            </summary>
+        </member>
+        <member name="E:Livet.ObservableSynchronizedCollection`1.CollectionChanged">
+            <summary>
+            コレクションが変更された際に発生するイベントです。
+            </summary>
+        </member>
+        <member name="E:Livet.ObservableSynchronizedCollection`1.PropertyChanged">
+            <summary>
+            プロパティが変更された際に発生するイベントです。
             </summary>
         </member>
     </members>
