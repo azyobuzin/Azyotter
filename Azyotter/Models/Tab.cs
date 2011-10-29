@@ -22,7 +22,7 @@ namespace Azyobuzi.Azyotter.Models
             setting.PropertyChanged += this.Settings_PropertyChanged;
             this.timer = new Timer(_ =>
             {
-                if (!Models.Settings.Instance.UseUserStream)
+                if (!this.receiver.UseUserStream || !Models.Settings.Instance.UseUserStream)
                     this.Refresh();
             });
             this.RaiseSettingsPropertyChanged();
