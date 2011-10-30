@@ -10,9 +10,27 @@ namespace Azyobuzi.Azyotter.ViewModels
     {
         public SettingsWindowViewModel()
         {
+            this.AutoUpdate = Settings.Instance.AutoUpdate;
             this.UseUserStream = Settings.Instance.UseUserStream;
             this.Footer = Settings.Instance.Footer;
         }
+
+        #region AutoUpdate変更通知プロパティ
+        private bool _AutoUpdate;
+
+        public bool AutoUpdate
+        {
+            get
+            { return _AutoUpdate; }
+            set
+            { 
+                if (EqualityComparer<bool>.Default.Equals(_AutoUpdate, value))
+                    return;
+                _AutoUpdate = value;
+                RaisePropertyChanged("AutoUpdate");
+            }
+        }
+        #endregion
 
         #region UseUserStream変更通知プロパティ
         private bool _UseUserStream;
@@ -65,6 +83,7 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         public void Ok()
         {
+            Settings.Instance.AutoUpdate = this.AutoUpdate;
             Settings.Instance.UseUserStream = this.UseUserStream;
             Settings.Instance.Footer = this.Footer;
             Settings.Instance.Save();

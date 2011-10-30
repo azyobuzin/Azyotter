@@ -98,7 +98,24 @@ namespace Azyobuzi.Azyotter.Models
             }
         }
         #endregion
-            
+
+        #region AutoUpdate変更通知プロパティ
+        private bool _AutoUpdate = true;
+
+        public bool AutoUpdate
+        {
+            get
+            { return _AutoUpdate; }
+            set
+            {
+                if (EqualityComparer<bool>.Default.Equals(_AutoUpdate, value))
+                    return;
+                _AutoUpdate = value;
+                RaisePropertyChanged("AutoUpdate");
+            }
+        }
+        #endregion
+
         #region UseUserStream変更通知プロパティ
         bool _UseUserStream = true;
 

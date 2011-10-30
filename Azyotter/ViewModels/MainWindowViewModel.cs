@@ -173,7 +173,13 @@ namespace Azyobuzi.Azyotter.ViewModels
 
             this.SelectedTab = this.Tabs.FirstOrDefault();
 
-            Task.Factory.StartNew(() => this.model.GetCanUpdate());
+            Task.Factory.StartNew(() =>
+            {
+                if (Settings.Instance.AutoUpdate)
+                    this.CheckUpdate(true);
+                else
+                    this.model.GetCanUpdate();
+            });
         }
 
         #region ClosingCommand
@@ -446,22 +452,25 @@ namespace Azyobuzi.Azyotter.ViewModels
             {
                 if (_CheckUpdateCommand == null)
                 {
-                    _CheckUpdateCommand = new ViewModelCommand(CheckUpdate);
+                    _CheckUpdateCommand = new ViewModelCommand(() => CheckUpdate(false));
                 }
                 return _CheckUpdateCommand;
             }
         }
 
-        public void CheckUpdate()
+        public void CheckUpdate(bool auto)
         {
             var result = this.model.GetCanUpdate();
             if (!result)
             {
-                this.Messenger.Raise(new InformationMessage(
-                    "アップデートは見つかりませんでした。",
-                    "アップデート確認",
-                    MessageBoxImage.Information,
-                    "ShowInformation"));
+                if (!auto)
+                {
+                    this.Messenger.Raise(new InformationMessage(
+                        "アップデートは見つかりませんでした。",
+                        "アップデート確認",
+                        MessageBoxImage.Information,
+                        "ShowInformation"));
+                }
             }
             else
             {
