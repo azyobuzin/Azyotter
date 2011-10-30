@@ -44,7 +44,10 @@ namespace Azyobuzi.Azyotter.Updater
             using (var zip = ZipFile.Read(zipFile))
             {
                 zip.ExtractProgress += (sender, e) =>
-                    progressChanged((int)(((double)e.EntriesExtracted / (double)e.EntriesTotal) * 100));
+                {
+                    if (e.EntriesExtracted > 0 && e.EntriesTotal > 0)
+                        progressChanged((int)(((double)e.EntriesExtracted / (double)e.EntriesTotal) * 100));
+                };
 
                 zip.ExtractAll(targetDir, ExtractExistingFileAction.OverwriteSilently);
             }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Windows;
 using Livet;
@@ -24,7 +25,16 @@ namespace Azyobuzi.Azyotter
             //アップデーターを削除
             e.Args.Where(arg => arg.StartsWith("/u:"))
                 .Select(arg => arg.TrimStart("/u:".ToCharArray()))
-                .ForEach(dir => Directory.Delete(dir, true));
+                .ToObservable()
+                .Delay(TimeSpan.FromSeconds(10))
+                .Subscribe(dir =>
+                {
+                    try
+                    {
+                        Directory.Delete(dir, true);
+                    }
+                    catch { }
+                });
         }
 
         private string GetVersion()
