@@ -92,6 +92,18 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
 
+        public string TextString
+        {
+            get
+            {
+                return string.Join("",
+                    this.Model.Text
+                        .Where(part => part != null && part.Text != null)
+                        .Select(part => part.Text)
+                );
+            }
+        }
+
         public IEnumerable<string> ImageThumbnails
         {
             get

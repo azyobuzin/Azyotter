@@ -326,64 +326,127 @@
             </StatusBar>
         </Grid>
 
-        <Grid Height="24" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="50"/>
-            </Grid.ColumnDefinitions>
+        <Grid VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
 
-            <TextBox Grid.Column="0"
+            <Grid Name="postGrid" Grid.Row="0" Height="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto"
                      Text="{Binding PostText, UpdateSourceTrigger=PropertyChanged}">
-                <i:Interaction.Behaviors>
-                    <ai:ShortcutKeyBehavior ShortcutKey="{Binding ShortcutKeys.Post}"
-                                            Command="{Binding PostCommand}"/>
-                    <ai:ShortcutKeyBehavior ShortcutKey="{Binding ShortcutKeys.PostWithoutFooter}"
-                                            Command="{Binding PostWithoutFooterCommand}"/>
-                </i:Interaction.Behaviors>
-            </TextBox>
+                    <i:Interaction.Behaviors>
+                        <ai:ShortcutKeyBehavior ShortcutKey="{Binding ShortcutKeys.Post}"
+                                                Command="{Binding PostCommand}"/>
+                        <ai:ShortcutKeyBehavior ShortcutKey="{Binding ShortcutKeys.PostWithoutFooter}"
+                                                Command="{Binding PostWithoutFooterCommand}"/>
+                    </i:Interaction.Behaviors>
+                </TextBox>
 
-            <Button Grid.Column="1"
+                <Button Grid.Column="1"
                     IsTabStop="False"
                     Command="{Binding PostCommand}">
-                <Button.Style>
-                    <Style TargetType="Button">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPosting}" Value="False">
+                                    <Setter Property="Content" Value="投稿"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsPosting}" Value="True">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <v:LoadingCircle Width="16" Height="16"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
+                <i:Interaction.Triggers>
+                    <i:EventTrigger SourceObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid, AncestorLevel=2}}"
+                                    EventName="GotFocus">
+                        <ei:ChangePropertyAction PropertyName="Height" Value="48"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger SourceObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid, AncestorLevel=2}}"
+                                    EventName="LostFocus">
+                        <ei:ChangePropertyAction PropertyName="Height" Value="24"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <Grid.Style>
+                    <Style TargetType="Grid">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsPosting}" Value="False">
-                                <Setter Property="Content" Value="投稿"/>
-                            </DataTrigger>
                             <DataTrigger Binding="{Binding IsPosting}" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <v:LoadingCircle Width="16" Height="16"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </Button.Style>
-            </Button>
+                </Grid.Style>
+            </Grid>
 
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="GotFocus">
-                    <ei:ChangePropertyAction PropertyName="Height" Value="48"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="LostFocus">
-                    <ei:ChangePropertyAction PropertyName="Height" Value="24"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsPosting}" Value="True">
-                            <Setter Property="IsEnabled" Value="False"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
+            <Border Grid.Row="1"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Background="LightGoldenrodYellow"
+                    Padding="3">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Height, ElementName=postGrid}"
+                                         Value="24">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ReplyToStatus}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Image Grid.Column="0"
+                           Width="16" Height="16"
+                           Source="/Azyotter;component/Images/112_ArrowReturnLeft_Blue_16x16_72.png"
+                           VerticalAlignment="Center"/>
+
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap">
+                        <TextBlock.Text>
+                            <MultiBinding>
+                                <Binding Path="ReplyToStatus.FromScreenName"/>
+                                <Binding Path="ReplyToStatus.TextString"/>
+                                
+                                <MultiBinding.StringFormat>
+                                    @{0}: {1}
+                                </MultiBinding.StringFormat>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    
+                    <Button Grid.Column="2"
+                            Style="{StaticResource FlatButton}"
+                            VerticalAlignment="Center"
+                            Command="{Binding ClearReplyToStatusCommand}">
+                        <Image Width="16" Height="16"
+                               Source="/Azyotter;component/Images/delete.png" />
+                    </Button>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Window>

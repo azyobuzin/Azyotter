@@ -376,6 +376,27 @@ namespace Azyobuzi.Azyotter.ViewModels
         }
         #endregion
 
+        #region ClearReplyToStatusCommand
+        private ViewModelCommand _ClearReplyToStatusCommand;
+
+        public ViewModelCommand ClearReplyToStatusCommand
+        {
+            get
+            {
+                if (_ClearReplyToStatusCommand == null)
+                {
+                    _ClearReplyToStatusCommand = new ViewModelCommand(ClearReplyToStatus);
+                }
+                return _ClearReplyToStatusCommand;
+            }
+        }
+
+        public void ClearReplyToStatus()
+        {
+            this.ReplyToStatus = null;
+        }
+        #endregion
+
         #region AddTabCommand
         private ViewModelCommand _AddTabCommand;
 
