@@ -82,6 +82,7 @@
     <Compile Include="Models\Caching\TimelineItemCache.cs" />
     <Compile Include="Models\Caching\UserCache.cs" />
     <Compile Include="Models\ITimelineItem.cs" />
+    <Compile Include="Models\RunningTasks.cs" />
     <Compile Include="Models\ShortcutKeys\ShortcutKey.cs" />
     <Compile Include="Models\ShortcutKeys\ShortcutKeysSetting.cs" />
     <Compile Include="Models\StatusTextParts\Hashtag.cs" />
@@ -97,13 +98,19 @@
     <Compile Include="Models\TwitterDataModels\Tweet.cs" />
     <Compile Include="Models\TwitterDataModels\User.cs" />
     <Compile Include="Models\TwitterDataModels\UserStreamEvent.cs" />
+    <Compile Include="Models\Update.cs" />
     <Compile Include="Models\UserStreams.cs" />
     <Compile Include="Util\AssemblyUtil.cs" />
+    <Compile Include="ViewModels\RunningTaskViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
+    <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="ViewModels\TabSettingWindowViewModel.cs" />
     <Compile Include="Views\Converters\TypeToEnumValuesConverter.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StatusBar.xaml.cs">
+      <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TabSettingWindow.xaml.cs">
       <DependentUpon>TabSettingWindow.xaml</DependentUpon>
@@ -151,6 +158,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StatusBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

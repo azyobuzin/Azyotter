@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.Azyotter.Updater;
@@ -33,12 +34,13 @@ namespace Azyobuzi.Azyotter.Models
             };
             UserStreams.Token = this.token;
 
-            UserStreams.Error += (sender, e) =>
-            {
-                var wex = e.Error as WebException;
-                if (wex == null || wex.Status != WebExceptionStatus.RequestCanceled)
-                    this.Status = "UserStreamで問題が発生したため再接続します";
-            };
+            //TODO
+            //UserStreams.Error += (sender, e) =>
+            //{
+            //    var wex = e.Error as WebException;
+            //    if (wex == null || wex.Status != WebExceptionStatus.RequestCanceled)
+            //        this.Status = "UserStreamで問題が発生したため再接続します";
+            //};
         }
 
         public void Init()
@@ -120,140 +122,32 @@ namespace Azyobuzi.Azyotter.Models
             if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
                 text += " " + Settings.Instance.Footer;
 
-            this.Status = "投稿中：" + text;
+            var cancellation = new CancellationTokenSource();
+            RunningTask runningTask = null;
 
-            return TwitterApi.Tweets.UpdateApi
+            var reTask = TwitterApi.Tweets.UpdateApi
                 .Create(text, inReplyToStatusId)
-                .CallApi(this.token)
+                .CallApi(this.token, cancellation.Token)
                 .ContinueWith(t =>
                 {
+                    RunningTasks.Instance.Remove(runningTask);
+
                     if (t.Exception == null)
                     {
                         TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
-                        Status = "投稿完了：" + text;
                         return true;
                     }
                     else
                     {
-                        Status = "投稿失敗（" + t.Exception.InnerException.GetMessage() + "）：" + text;
+                        //this.Status = "投稿失敗（" + t.Exception.InnerException.GetMessage() + "）：" + text;
                         return false;
                     }
                 });
+
+            runningTask = new RunningTask("投稿中：" + text, reTask, cancellation);
+            RunningTasks.Instance.Add(runningTask);
+
+            return reTask;
         }
-
-        #region Status変更通知プロパティ
-        private string _Status;
-
-        public string Status
-        {
-            get
-            { return _Status; }
-            set
-            {
-                if (EqualityComparer<string>.Default.Equals(_Status, value))
-                    return;
-                _Status = value;
-                RaisePropertyChanged("Status");
-            }
-        }
-        #endregion
-
-        #region CanUpdate変更通知プロパティ
-        private bool _CanUpdate;
-
-        public bool CanUpdate
-        {
-            get
-            { return _CanUpdate; }
-            set
-            {
-                if (EqualityComparer<bool>.Default.Equals(_CanUpdate, value))
-                    return;
-                _CanUpdate = value;
-                RaisePropertyChanged("CanUpdate");
-            }
-        }
-        #endregion
-
-        #region LatestVersion変更通知プロパティ
-        private Update _LatestVersion;
-
-        public Update LatestVersion
-        {
-            get
-            { return _LatestVersion; }
-            set
-            {
-                if (EqualityComparer<Update>.Default.Equals(_LatestVersion, value))
-                    return;
-                _LatestVersion = value;
-                RaisePropertyChanged("LatestVersion");
-            }
-        }
-        #endregion
-
-        public bool GetCanUpdate()
-        {
-            bool result;
-
-            try
-            {
-                this.LatestVersion = Updates.GetUpdates().Latest();
-                result = this.LatestVersion.Version > Version.Parse(AssemblyUtil.GetInformationalVersion());
-            }
-            catch
-            {
-                return false;
-            }
-
-            this.CanUpdate = result;
-
-            return result;
-        }
-
-        public void Update()
-        {
-            var asmDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var tmpDir = Directory.CreateDirectory(Path.GetTempPath() + Guid.NewGuid().ToString());
-
-            File.Copy(Path.Combine(asmDir, "Updater.exe"), Path.Combine(tmpDir.FullName, "Updater.exe"), true);
-            File.Copy(Path.Combine(asmDir, "Updater.pdb"), Path.Combine(tmpDir.FullName, "Updater.pdb"), true);
-            File.Copy(Path.Combine(asmDir, "System.Windows.Interactivity.dll"), Path.Combine(tmpDir.FullName, "System.Windows.Interactivity.dll"), true);
-            File.Copy(Path.Combine(asmDir, "Ionic.Zip.dll"), Path.Combine(tmpDir.FullName, "Ionic.Zip.dll"), true);
-
-            Process.Start(Path.Combine(tmpDir.FullName, "Updater.exe"),
-                string.Format(@"""{0}"" ""{1}""",
-                    Process.GetCurrentProcess().MainModule.FileName,
-                    this.LatestVersion.Id));
-
-            this.OnExitRequest(EventArgs.Empty);
-        }
-
-        #region ExitRequestイベント
-        public event EventHandler<EventArgs> ExitRequest;
-        private Notificator<EventArgs> _ExitRequestEvent;
-        public Notificator<EventArgs> ExitRequestEvent
-        {
-            get
-            {
-                if (_ExitRequestEvent == null)
-                {
-                    _ExitRequestEvent = new Notificator<EventArgs>();
-                }
-                return _ExitRequestEvent;
-            }
-        }
-
-        protected virtual void OnExitRequest(EventArgs e)
-        {
-            var threadSafeHandler = System.Threading.Interlocked.CompareExchange(ref ExitRequest, null, null);
-            if (threadSafeHandler != null)
-            {
-                threadSafeHandler(this, e);
-            }
-            ExitRequestEvent.Raise(e);
-        }
-        #endregion
-
     }
 }

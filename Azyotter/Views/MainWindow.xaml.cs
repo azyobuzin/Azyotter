@@ -23,12 +23,5 @@ namespace Azyobuzi.Azyotter.Views
                 tabItem.IsSelected = true;
             }
         }
-
-        private void mainMenuButton_Click(object sender, RoutedEventArgs e)
-        {
-            var contextMenu = (ContextMenu)this.mainMenuButton.Resources["mainContextMenu"];
-            contextMenu.PlacementTarget = this.mainMenuButton;
-            contextMenu.IsOpen = true;
-        }
     }
 }

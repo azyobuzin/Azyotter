@@ -282,48 +282,7 @@
                 </TabControl.ContentTemplate>
             </TabControl>
 
-            <StatusBar Grid.Row="1" IsTabStop="False">
-                <StatusBar.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Grid IsItemsHost="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                        </Grid>
-                    </ItemsPanelTemplate>
-                </StatusBar.ItemsPanel>
-
-                <StatusBarItem Grid.Column="0" Padding="0" Content="{Binding Status}"/>
-                
-                <StatusBarItem Grid.Column="1" Padding="0">
-                    <Button Name="mainMenuButton"
-                            Style="{StaticResource FlatButton}"
-                            Click="mainMenuButton_Click">
-                        <Image Source="/Azyotter;component/Images/azyotter24.png"
-                               Width="24" Height="24"/>
-                        
-                        <Button.Resources>
-                            <ContextMenu x:Key="mainContextMenu"
-                                         Placement="Top">
-                                <MenuItem Header="設定(_S)...">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="Click">
-                                            <l:TransitionInteractionMessageAction WindowType="v:SettingsWindow">
-                                                <l:DirectInteractionMessage>
-                                                    <l:TransitionMessage Mode="NewOrActive"/>
-                                                </l:DirectInteractionMessage>
-                                            </l:TransitionInteractionMessageAction>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </MenuItem>
-
-                                <MenuItem Header="アップデート確認(_U)" Command="{Binding CheckUpdateCommand}"/>
-                            </ContextMenu>
-                        </Button.Resources>
-                    </Button>
-                </StatusBarItem>
-            </StatusBar>
+            <v:StatusBar Grid.Row="1" IsTabStop="False"/>
         </Grid>
 
         <Grid VerticalAlignment="Top">
@@ -335,7 +294,7 @@
             <Grid Name="postGrid" Grid.Row="0" Height="24">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0"
@@ -352,25 +311,9 @@
                 </TextBox>
 
                 <Button Grid.Column="1"
-                    IsTabStop="False"
-                    Command="{Binding PostCommand}">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsPosting}" Value="False">
-                                    <Setter Property="Content" Value="投稿"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsPosting}" Value="True">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <v:LoadingCircle Width="16" Height="16"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                        Content="ツイート"
+                        IsTabStop="False"
+                        Command="{Binding PostCommand}"/>
                 
                 <i:Interaction.Triggers>
                     <i:EventTrigger SourceObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid, AncestorLevel=2}}"
@@ -382,16 +325,6 @@
                         <ei:ChangePropertyAction PropertyName="Height" Value="24"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsPosting}" Value="True">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
             </Grid>
 
             <Border Grid.Row="1"

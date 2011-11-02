@@ -22,23 +22,15 @@ namespace Azyobuzi.Azyotter.ViewModels
                 if (e.PropertyName == "ShorcutKeys")
                     this.RaisePropertyChanged(() => this.ShortcutKeys);
             });
-
-            ViewModelHelper.BindNotifyChanged(this.model, this, (sender, e) =>
+            
+            Update.CanUpdateChanged += (sender, e) =>
             {
-                switch (e.PropertyName)
-                {
-                    case "Status":
-                        this.RaisePropertyChanged(e.PropertyName);
-                        break;
-                    case "CanUpdate":
-                        this.RaisePropertyChanged(() => this.CanUpdate);
-                        this.RaisePropertyChanged(() => this.Title);
-                        break;
-                }
-            });
+                this.RaisePropertyChanged(() => this.CanUpdate);
+                this.RaisePropertyChanged(() => this.Title);
+            };
 
-            ViewModelHelper.BindNotification(this.model.ExitRequestEvent, this, (sender, e) =>
-                this.Messenger.Raise(new WindowActionMessage("WindowAction", WindowAction.Close)));
+            Update.ExitRequest += (sender, e) => this.Messenger.Raise(
+                new WindowActionMessage("WindowAction", WindowAction.Close));
         }
 
         private Model model = new Model();
@@ -176,9 +168,9 @@ namespace Azyobuzi.Azyotter.ViewModels
             Task.Factory.StartNew(() =>
             {
                 if (Settings.Instance.AutoUpdate)
-                    this.CheckUpdate(true);
+                    new StatusBarViewModel().CheckUpdate(true);
                 else
-                    this.model.GetCanUpdate();
+                    Update.GetCanUpdate();
             });
         }
 
@@ -218,13 +210,13 @@ namespace Azyobuzi.Azyotter.ViewModels
             }
         }
 
-        public string Status
-        {
-            get
-            {
-                return this.model.Status;
-            }
-        }
+        //public string Status
+        //{
+        //    get
+        //    {
+        //        return this.model.Status;
+        //    }
+        //}
 
         #region PostText変更通知プロパティ
         string _PostText;
@@ -261,23 +253,6 @@ namespace Azyobuzi.Azyotter.ViewModels
         }
         #endregion
 
-        #region IsPosting変更通知プロパティ
-        bool _IsPosting;
-
-        public bool IsPosting
-        {
-            get
-            { return _IsPosting; }
-            set
-            {
-                if (_IsPosting == value)
-                    return;
-                _IsPosting = value;
-                RaisePropertyChanged("IsPosting");
-            }
-        }
-        #endregion
-
         #region PostCommand
         ViewModelCommand _PostCommand;
 
@@ -298,18 +273,9 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void Post()
         {
-            this.IsPosting = true;
-            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Model.Id : null, true)
-                .ContinueWith(t =>
-                {
-                    if (t.Result)
-                    {
-                        this.PostText = string.Empty;
-                        this.ReplyToStatus = null;
-                    }
-
-                    this.IsPosting = false;
-                });
+            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, true);
+            this.PostText = string.Empty;
+            this.ReplyToStatus = null;
         }
         #endregion
 
@@ -335,18 +301,9 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         public void PostWithoutFooter()
         {
-            this.IsPosting = true;
-            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Model.Id : null, false)
-                .ContinueWith(t =>
-                {
-                    if (t.Result)
-                    {
-                        this.PostText = string.Empty;
-                        this.ReplyToStatus = null;
-                    }
-
-                    this.IsPosting = false;
-                });
+            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, false);
+            this.PostText = string.Empty;
+            this.ReplyToStatus = null;
         }
         #endregion
 
@@ -430,7 +387,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.model.CanUpdate;
+                return Update.CanUpdate;
             }
         }
 
@@ -442,52 +399,5 @@ namespace Azyobuzi.Azyotter.ViewModels
                     + (this.CanUpdate ? "（更新があります）" : string.Empty);
             }
         }
-
-        #region CheckUpdateCommand
-        private ViewModelCommand _CheckUpdateCommand;
-
-        public ViewModelCommand CheckUpdateCommand
-        {
-            get
-            {
-                if (_CheckUpdateCommand == null)
-                {
-                    _CheckUpdateCommand = new ViewModelCommand(() => CheckUpdate(false));
-                }
-                return _CheckUpdateCommand;
-            }
-        }
-
-        public void CheckUpdate(bool auto)
-        {
-            var result = this.model.GetCanUpdate();
-            if (!result)
-            {
-                if (!auto)
-                {
-                    this.Messenger.Raise(new InformationMessage(
-                        "アップデートは見つかりませんでした。",
-                        "アップデート確認",
-                        MessageBoxImage.Information,
-                        "ShowInformation"));
-                }
-            }
-            else
-            {
-                var message = this.Messenger.GetResponse(new ConfirmationMessage(
-                    "Azyotter " + this.model.LatestVersion.Version.ToString() + " があります。アップデートしますか？",
-                    "アップデート確認",
-                    MessageBoxImage.Information,
-                    MessageBoxButton.OKCancel,
-                    "Confirmation"));
-
-                if (message.Response.HasValue && message.Response.Value)
-                {
-                    this.model.Update();
-                }
-            }
-        }
-        #endregion
-
     }
 }

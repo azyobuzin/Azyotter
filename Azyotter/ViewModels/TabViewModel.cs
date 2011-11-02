@@ -12,7 +12,7 @@ namespace Azyobuzi.Azyotter.ViewModels
     {
         public TabViewModel(Tab model, InteractionMessenger mainWindowViewModelMessenger)
         {
-            this.Model = model;
+            this.model = model;
             this.Messenger = mainWindowViewModelMessenger;
 
             ViewModelHelper.BindNotifyChanged(model, this, (sender, e) =>
@@ -59,13 +59,13 @@ namespace Azyobuzi.Azyotter.ViewModels
             this.SelectedItems = new ObservableCollection<TimelineItemViewModel>();
         }
 
-        public Tab Model { get; private set; }
+        private Tab model;
 
         public string Name
         {
             get
             {
-                return this.Model.Name;
+                return this.model.Name;
             }
         }
 
@@ -73,7 +73,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.IsRefreshing;
+                return this.model.IsRefreshing;
             }
         }
 
@@ -86,7 +86,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             get
             {
                 return "タイムラインの取得に失敗しました："
-                    + this.Model.LastErrorMessage;
+                    + this.model.LastErrorMessage;
             }
         }
         
@@ -105,7 +105,7 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void ClearErrorMessage()
         {
-            this.Model.ClearErrorMessage();
+            this.model.ClearErrorMessage();
         }
         #endregion
 
@@ -113,7 +113,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return !string.IsNullOrEmpty(this.Model.LastErrorMessage);
+                return !string.IsNullOrEmpty(this.model.LastErrorMessage);
             }
         }
 
@@ -134,7 +134,7 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         public void Edit()
         {
-            this.Messenger.Raise(new TransitionMessage(new TabSettingWindowViewModel(this.Model.Setting), "ShowTabSettingWindow"));
+            this.Messenger.Raise(new TransitionMessage(new TabSettingWindowViewModel(this.model.Setting), "ShowTabSettingWindow"));
         }
         #endregion
 
@@ -155,8 +155,8 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         public void Close()
         {
-            Settings.Instance.Tabs.Remove(this.Model.Setting);
-            this.Model.Dispose();
+            Settings.Instance.Tabs.Remove(this.model.Setting);
+            this.model.Dispose();
             Settings.Instance.Save();
         }
         #endregion

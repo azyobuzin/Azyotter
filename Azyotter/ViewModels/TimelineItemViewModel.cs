@@ -15,16 +15,16 @@ namespace Azyobuzi.Azyotter.ViewModels
     {
         public TimelineItemViewModel(ITimelineItem model)
         {
-            this.Model = model;
+            this.model = model;
         }
 
-        public ITimelineItem Model { private set; get; }
+        private ITimelineItem model;
 
         public bool IsTweet
         {
             get
             {
-                return this.Model.IsTweet;
+                return this.model.IsTweet;
             }
         }
 
@@ -32,7 +32,15 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.IsDirectMessage;
+                return this.model.IsDirectMessage;
+            }
+        }
+
+        public ulong Id
+        {
+            get
+            {
+                return this.model.Id;
             }
         }
 
@@ -40,7 +48,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.CreatedAt;
+                return this.model.CreatedAt;
             }
         }
 
@@ -48,7 +56,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.Text
+                return this.model.Text
                     .Where(part => part != null && part.Text != null)
                     .Select(part =>
                     {
@@ -97,7 +105,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             get
             {
                 return string.Join("",
-                    this.Model.Text
+                    this.model.Text
                         .Where(part => part != null && part.Text != null)
                         .Select(part => part.Text)
                 );
@@ -108,7 +116,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.ImageThumbnails;
+                return this.model.ImageThumbnails;
             }
         }
 
@@ -116,7 +124,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.From.Name;
+                return this.model.From.Name;
             }
         }
 
@@ -124,7 +132,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.From.ScreenName;
+                return this.model.From.ScreenName;
             }
         }
 
@@ -132,7 +140,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.To.Name;
+                return this.model.To.Name;
             }
         }
 
@@ -140,7 +148,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.To.ScreenName;
+                return this.model.To.ScreenName;
             }
         }
 
@@ -149,7 +157,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             get
             {
                 return this.FromScreenName + "/" + this.FromUserName
-                    + (this.Model.To != null
+                    + (this.model.To != null
                         ? " → " + this.ToScreenName + "/" + this.ToUserName
                         : string.Empty
                       );
@@ -160,7 +168,7 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             get
             {
-                return this.Model.From.ProfileImageUrl;
+                return this.model.From.ProfileImageUrl;
             }
         }
         
