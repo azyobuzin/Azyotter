@@ -112,7 +112,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)TaskingTwLib\util\AssemblyVersionGeneratorFromGit.exe" "$(ProjectDir)\" "$(ProjectDir)Properties\VersionInfo.cs" "$(SolutionDir)Azyotter\Properties\VersionInfoBase.txt"</PreBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)util\AssemblyVersionGeneratorFromGit.exe" "$(ProjectDir)\" "$(ProjectDir)Properties\VersionInfo.cs" "$(SolutionDir)Azyotter\Properties\VersionInfoBase.txt"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

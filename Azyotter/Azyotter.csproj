@@ -49,12 +49,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Interactive, Version=1.1.10823.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ix_Experimental-Main.1.1.10823\lib\Net4\System.Interactive.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reactive, Version=1.1.11011.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Reactive, Version=1.1.11111.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\TaskingTwLib\packages\Rx_Experimental-Main.1.1.11011\lib\Net4\System.Reactive.dll</HintPath>
+      <HintPath>..\packages\Rx_Experimental-Main.1.1.11111\lib\Net4\System.Reactive.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Interactivity">
@@ -224,7 +223,7 @@
       <Project>{4C146B0E-9C59-4480-BD98-C0FA8B9F9E2C}</Project>
       <Name>ErrorReporter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TaskingTwLib\TaskingTwLib\TaskingTwLib.csproj">
+    <ProjectReference Include="..\TaskingTwLib\TaskingTwLib.csproj">
       <Project>{E3E7950F-ADF1-476C-9FE3-70F9E0E3603D}</Project>
       <Name>TaskingTwLib</Name>
     </ProjectReference>
@@ -236,7 +235,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)TaskingTwLib\util\AssemblyVersionGeneratorFromGit.exe" "$(ProjectDir)\" "$(ProjectDir)Properties\VersionInfo.cs" "$(ProjectDir)Properties\VersionInfoBase.txt"</PreBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)util\AssemblyVersionGeneratorFromGit.exe" "$(ProjectDir)\" "$(ProjectDir)Properties\VersionInfo.cs" "$(ProjectDir)Properties\VersionInfoBase.txt"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
