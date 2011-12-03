@@ -45,11 +45,39 @@
                             </LinearGradientBrush>
                         </Border.Background>
                         
-                        <StackPanel Orientation="Horizontal">
-                            <v:LoadingCircle Width="16" Height="16"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <v:LoadingCircle Grid.Column="0"
+                                             Width="16" Height="16"
                                              Margin="0,0,2,0" />
-                            <TextBlock Text="{Binding Description}"/>
-                        </StackPanel>
+                            
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Description}"
+                                       HorizontalAlignment="Stretch"/>
+                            
+                            <Button Grid.Column="3"
+                                    Width="16" Height="16"
+                                    Command="{Binding CancelCommand}">
+                                <Image Source="/Azyotter;component/Images/1385_Disable_16x16_72.png" />
+                                
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource FlatButton}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CancelCommand.CanExecute}"
+                                                         Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
