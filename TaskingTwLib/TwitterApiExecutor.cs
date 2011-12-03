@@ -26,26 +26,58 @@ namespace Azyobuzi.TaskingTwLib
         {
             Func<T> action = () =>
             {
-                var req = RequestGenerator.GenerateTwitterApiRequest(
-                    apiMethod.RequestUri,
-                    apiMethod.MethodType,
-                    token,
-                    DefaultSetting.Proxy,
-                    DefaultSetting.Timeout,
-                    DefaultSetting.UserAgent,
-                    apiMethod.ContentType,
-                    apiMethod.Parameters,
-                    apiMethod.Verifier,
-                    apiMethod.Callback);
-
-                using (var res = req.GetResponse())
+                HttpWebRequest req = null;
+                try
                 {
-                    //TODO:RateLimit読み取り
+                    if (cancellationToken.HasValue)
+                        cancellationToken.Value.ThrowIfCancellationRequested();
 
-                    using (var sr = new StreamReader(res.GetResponseStream()))
+                    req = RequestGenerator.GenerateTwitterApiRequest(
+                        apiMethod.RequestUri,
+                        apiMethod.MethodType,
+                        token,
+                        DefaultSetting.Proxy,
+                        DefaultSetting.Timeout,
+                        DefaultSetting.UserAgent,
+                        apiMethod.ContentType,
+                        apiMethod.Parameters,
+                        apiMethod.Verifier,
+                        apiMethod.Callback);
+
+                    if (cancellationToken.HasValue)
+                        cancellationToken.Value.ThrowIfCancellationRequested();
+
+                    T result = default(T);
+
+                    var waiter = new ManualResetEvent(false);
+
+                    req.BeginGetResponse(ar =>
                     {
-                        return apiMethod.Parse(sr.ReadToEnd(), token);
+                        using (var res = req.EndGetResponse(ar))
+                        {
+                            //TODO:RateLimit読み取り
+
+                            using (var sr = new StreamReader(res.GetResponseStream()))
+                            {
+                                result = apiMethod.Parse(sr.ReadToEnd(), token);
+                            }
+                        }
+                        waiter.Set();
+                    }, null);
+
+                    while (!waiter.WaitOne(100))
+                    {
+                        if (cancellationToken.HasValue)
+                            cancellationToken.Value.ThrowIfCancellationRequested();
                     }
+
+                    return result;
+                }
+                catch (OperationCanceledException)
+                {
+                    if (req != null)
+                        req.Abort();
+                    throw;
                 }
             };
 
