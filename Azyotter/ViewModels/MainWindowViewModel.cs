@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,6 +9,7 @@ using Azyobuzi.TaskingTwLib;
 using Livet;
 using Livet.Commands;
 using Livet.Messaging;
+using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
 using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
@@ -273,9 +275,13 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void Post()
         {
-            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, true);
+            if (string.IsNullOrEmpty(this.MediaFile))
+                this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, true);
+            else
+                this.model.PostWithMedia(this.PostText, this.MediaFile, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, true);
             this.PostText = string.Empty;
             this.ReplyToStatus = null;
+            this.MediaFile = null;
         }
         #endregion
 
@@ -301,9 +307,13 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         public void PostWithoutFooter()
         {
-            this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, false);
+            if (string.IsNullOrEmpty(this.MediaFile))
+                this.model.Post(this.PostText, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, false);
+            else
+                this.model.PostWithMedia(this.PostText, this.MediaFile, this.ReplyToStatus != null ? (ulong?)this.ReplyToStatus.Id : null, false);
             this.PostText = string.Empty;
             this.ReplyToStatus = null;
+            this.MediaFile = null;
         }
         #endregion
 
@@ -380,6 +390,55 @@ namespace Azyobuzi.Azyotter.ViewModels
             var tab = new TabSetting();
             Settings.Instance.Tabs.Add(tab);
             Settings.Instance.Save();
+        }
+        #endregion
+
+        #region MediaFile変更通知プロパティ
+        private string _MediaFile;
+
+        public string MediaFile
+        {
+            get
+            { return _MediaFile; }
+            set
+            { 
+                if (EqualityComparer<string>.Default.Equals(_MediaFile, value))
+                    return;
+                _MediaFile = value;
+                RaisePropertyChanged("MediaFile");
+            }
+        }
+        #endregion
+
+        #region SelectMediaFileCommand
+        private ViewModelCommand _SelectMediaFileCommand;
+
+        public ViewModelCommand SelectMediaFileCommand
+        {
+            get
+            {
+                if (_SelectMediaFileCommand == null)
+                {
+                    _SelectMediaFileCommand = new ViewModelCommand(SelectMediaFile);
+                }
+                return _SelectMediaFileCommand;
+            }
+        }
+
+        public void SelectMediaFile()
+        {
+            if (!string.IsNullOrEmpty(this.MediaFile))
+            {
+                this.MediaFile = null;
+            }
+            else
+            {
+                var msg = this.Messenger.GetResponse(new OpeningFileSelectionMessage("ShowOpenFileDialog")
+                {
+                    Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.gif"
+                });
+                this.MediaFile = msg.Response;
+            }
         }
         #endregion
 

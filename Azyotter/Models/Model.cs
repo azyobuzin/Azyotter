@@ -117,7 +117,7 @@ namespace Azyobuzi.Azyotter.Models
             UserStreams.Stop();
         }
 
-        public Task<bool> Post(string text, ulong? inReplyToStatusId, bool useFooter)
+        public Task Post(string text, ulong? inReplyToStatusId, bool useFooter)
         {
             if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
                 text += " " + Settings.Instance.Footer;
@@ -135,16 +135,50 @@ namespace Azyobuzi.Azyotter.Models
                     if (t.Exception == null)
                     {
                         TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
-                        return true;
                     }
                     else
                     {
-                        //this.Status = "投稿失敗（" + t.Exception.InnerException.GetMessage() + "）：" + text;
-                        return false;
+                        //TODO:再試行できるようにする
                     }
                 });
 
             runningTask = new RunningTask("投稿中：" + text, reTask, cancellation);
+            RunningTasks.Instance.Add(runningTask);
+
+            return reTask;
+        }
+
+        public Task PostWithMedia(string text, string mediaFile, ulong? inReplyToStatusId, bool useFooter)
+        {
+            if (!File.Exists(mediaFile))
+            {
+                //TODO:エラー通知
+            }
+
+            if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
+                text += " " + Settings.Instance.Footer;
+
+            var cancellation = new CancellationTokenSource();
+            RunningTask runningTask = null;
+
+            var reTask = TwitterApi.Tweets.UpdateApi
+                .Create(text, new[] { mediaFile }, inReplyToStatusId: inReplyToStatusId)
+                .CallApi(this.token, cancellation.Token)
+                .ContinueWith(t =>
+                {
+                    RunningTasks.Instance.Remove(runningTask);
+
+                    if (t.Exception == null)
+                    {
+                        TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
+                    }
+                    else
+                    {
+                        //TODO:再試行できるようにする
+                    }
+                });
+
+            runningTask = new RunningTask("画像投稿中：" + text, reTask, cancellation);
             RunningTasks.Instance.Add(runningTask);
 
             return reTask;

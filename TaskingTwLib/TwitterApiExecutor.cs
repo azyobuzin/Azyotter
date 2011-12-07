@@ -50,19 +50,35 @@ namespace Azyobuzi.TaskingTwLib
                     T result = default(T);
 
                     var waiter = new ManualResetEvent(false);
+                    Exception connectionException = null;
 
                     req.BeginGetResponse(ar =>
                     {
-                        using (var res = req.EndGetResponse(ar))
+                        try
                         {
-                            //TODO:RateLimit読み取り
-
-                            using (var sr = new StreamReader(res.GetResponseStream()))
+                            using (var res = req.EndGetResponse(ar))
                             {
-                                result = apiMethod.Parse(sr.ReadToEnd(), token);
+                                //TODO:RateLimit読み取り
+
+                                using (var sr = new StreamReader(res.GetResponseStream()))
+                                {
+                                    result = apiMethod.Parse(sr.ReadToEnd(), token);
+                                }
                             }
                         }
-                        waiter.Set();
+                        catch (WebException ex)
+                        {
+                            if (ex.Status != WebExceptionStatus.RequestCanceled)
+                                connectionException = ex;
+                        }
+                        catch (Exception ex)
+                        {
+                            connectionException = ex;
+                        }
+                        finally
+                        {
+                            waiter.Set();
+                        }
                     }, null);
 
                     while (!waiter.WaitOne(100))
@@ -70,6 +86,9 @@ namespace Azyobuzi.TaskingTwLib
                         if (cancellationToken.HasValue)
                             cancellationToken.Value.ThrowIfCancellationRequested();
                     }
+
+                    if (connectionException != null)
+                        throw connectionException;
 
                     return result;
                 }

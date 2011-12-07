@@ -59,10 +59,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\Azyotter\Util\AssemblyUtil.cs">
-      <Link>AssemblyUtil.cs</Link>
-    </Compile>
     <Compile Include="AlwaysExecutableCommand.cs" />
+    <Compile Include="AssemblyUtil.cs" />
     <Compile Include="UpdateCore.cs" />
     <Compile Include="Updates.cs" />
     <Compile Include="Properties\VersionInfo.cs" />

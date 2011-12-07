@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Threading;
-using Azyobuzi.Azyotter.Util;
 using Ionic.Zip;
 
 namespace Azyobuzi.Azyotter.Updater

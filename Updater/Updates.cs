@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Xml.Linq;
-using Azyobuzi.Azyotter.Util;
 
 namespace Azyobuzi.Azyotter.Updater
 {
