@@ -16,3 +16,4 @@ http://www.azyobuzi.net/projects/azyotter/
 ★既知の問題
 	・ListStatusesとFilterは実装していないので落ちる
 	・Google日本語入力を使っていると落ちる（環境依存？）
+	・Windows 7 64bitだと起動できないという報告あり
