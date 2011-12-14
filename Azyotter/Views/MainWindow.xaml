@@ -289,7 +289,7 @@
             <v:StatusBar Grid.Row="1" IsTabStop="False"/>
         </Grid>
 
-        <Grid VerticalAlignment="Top">
+        <Grid Name="postGridOwner" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -318,6 +318,12 @@
                         <ai:ShortcutKeyBehavior ShortcutKey="{Binding ShortcutKeys.PostWithoutFooter}"
                                                 Command="{Binding PostWithoutFooterCommand}"/>
                     </i:Interaction.Behaviors>
+                    
+                    <i:Interaction.Triggers>
+                        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="FocusToPostTextBox">
+                            <l:SetFocusAction/>
+                        </l:InteractionMessageTrigger>
+                    </i:Interaction.Triggers>
                 </TextBox>
                 
                 <Grid Grid.Column="0"
@@ -376,11 +382,11 @@
                         Command="{Binding PostCommand}"/>
                 
                 <i:Interaction.Triggers>
-                    <i:EventTrigger SourceObject="{Binding ElementName=postGrid}"
+                    <i:EventTrigger SourceObject="{Binding ElementName=postGridOwner}"
                                     EventName="GotFocus">
                         <ei:ChangePropertyAction PropertyName="Height" Value="70"/>
                     </i:EventTrigger>
-                    <i:EventTrigger SourceObject="{Binding ElementName=postGrid}"
+                    <i:EventTrigger SourceObject="{Binding ElementName=postGridOwner}"
                                     EventName="LostFocus">
                         <ei:ChangePropertyAction PropertyName="Height" Value="25"/>
                     </i:EventTrigger>

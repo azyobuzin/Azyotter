@@ -255,6 +255,11 @@ namespace Azyobuzi.Azyotter.ViewModels
         }
         #endregion
 
+        private void FocusToPostTextBox()
+        {
+            this.Messenger.Raise(new InteractionMessage("FocusToPostTextBox"));
+        }
+
         #region PostCommand
         ViewModelCommand _PostCommand;
 
@@ -282,6 +287,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             this.PostText = string.Empty;
             this.ReplyToStatus = null;
             this.MediaFile = null;
+            this.FocusToPostTextBox();
         }
         #endregion
 
@@ -314,6 +320,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             this.PostText = string.Empty;
             this.ReplyToStatus = null;
             this.MediaFile = null;
+            this.FocusToPostTextBox();
         }
         #endregion
 
@@ -346,6 +353,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             this.ReplyToStatus = replyTo.FirstOrDefault();
             this.PostText = string.Join(" ", replyTo.Select(status => "@" + status.FromScreenName))
                 + " " + this.PostText;
+            this.FocusToPostTextBox();
         }
         #endregion
 
