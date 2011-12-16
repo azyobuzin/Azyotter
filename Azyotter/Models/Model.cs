@@ -25,14 +25,6 @@ namespace Azyobuzi.Azyotter.Models
         {
             DefaultSetting.UserAgent = "Azyotter v" + AssemblyUtil.GetInformationalVersion();
             DefaultSetting.Timeout = 20 * 1000;
-            this.token = new Token()
-            {
-                ConsumerKey = Settings.Instance.ConsumerKey,
-                ConsumerSecret = Settings.Instance.ConsumerSecret,
-                OAuthToken = Settings.Instance.Accounts.First().OAuthToken,
-                OAuthTokenSecret = Settings.Instance.Accounts.First().OAuthTokenSecret
-            };
-            UserStreams.Token = this.token;
 
             //TODO
             //UserStreams.Error += (sender, e) =>
@@ -60,8 +52,6 @@ namespace Azyobuzi.Azyotter.Models
             this.Settings_PropertyChanged(Settings.Instance, new PropertyChangedEventArgs("UseUserStream"));
         }
 
-        private Token token;
-
         public ObservableCollection<Tab> Tabs { get; private set; }
 
         private void Settings_Tabs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -86,7 +76,7 @@ namespace Azyobuzi.Azyotter.Models
 
         public void AddTab(TabSetting setting, int index)
         {
-            var tab = new Tab(setting, this.token);
+            var tab = new Tab(setting);
             this.Tabs.Insert(index, tab);
         }
 
@@ -103,8 +93,6 @@ namespace Azyobuzi.Azyotter.Models
 
         public void SaveOAuthToken(Token token, long userId, string screenName)
         {
-            this.token = token;
-            UserStreams.Token = token;
             Settings.Instance.Accounts.First().OAuthToken = token.OAuthToken;
             Settings.Instance.Accounts.First().OAuthTokenSecret = token.OAuthTokenSecret;
             Settings.Instance.Accounts.First().UserId = userId;
@@ -119,69 +107,71 @@ namespace Azyobuzi.Azyotter.Models
 
         public Task Post(string text, ulong? inReplyToStatusId, bool useFooter)
         {
-            if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
-                text += " " + Settings.Instance.Footer;
+            //if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
+            //    text += " " + Settings.Instance.Footer;
 
-            var cancellation = new CancellationTokenSource();
-            RunningTask runningTask = null;
+            //var cancellation = new CancellationTokenSource();
+            //RunningTask runningTask = null;
 
-            var reTask = TwitterApi.Tweets.UpdateApi
-                .Create(text, inReplyToStatusId)
-                .CallApi(this.token, cancellation.Token)
-                .ContinueWith(t =>
-                {
-                    RunningTasks.Instance.Remove(runningTask);
+            //var reTask = TwitterApi.Tweets.UpdateApi
+            //    .Create(text, inReplyToStatusId)
+            //    .CallApi(this.token, cancellation.Token)
+            //    .ContinueWith(t =>
+            //    {
+            //        RunningTasks.Instance.Remove(runningTask);
 
-                    if (t.Exception == null)
-                    {
-                        TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
-                    }
-                    else
-                    {
-                        //TODO:再試行できるようにする
-                    }
-                });
+            //        if (t.Exception == null)
+            //        {
+            //            TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
+            //        }
+            //        else
+            //        {
+            //            //TODO:再試行できるようにする
+            //        }
+            //    });
 
-            runningTask = new RunningTask("投稿中：" + text, reTask, cancellation);
-            RunningTasks.Instance.Add(runningTask);
+            //runningTask = new RunningTask("投稿中：" + text, reTask, cancellation);
+            //RunningTasks.Instance.Add(runningTask);
 
-            return reTask;
+            //return reTask;
+            return null;
         }
 
         public Task PostWithMedia(string text, string mediaFile, ulong? inReplyToStatusId, bool useFooter)
         {
-            if (!File.Exists(mediaFile))
-            {
-                //TODO:エラー通知
-            }
+            //if (!File.Exists(mediaFile))
+            //{
+            //    //TODO:エラー通知
+            //}
 
-            if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
-                text += " " + Settings.Instance.Footer;
+            //if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
+            //    text += " " + Settings.Instance.Footer;
 
-            var cancellation = new CancellationTokenSource();
-            RunningTask runningTask = null;
+            //var cancellation = new CancellationTokenSource();
+            //RunningTask runningTask = null;
 
-            var reTask = TwitterApi.Tweets.UpdateApi
-                .Create(text, new[] { mediaFile }, inReplyToStatusId: inReplyToStatusId)
-                .CallApi(this.token, cancellation.Token)
-                .ContinueWith(t =>
-                {
-                    RunningTasks.Instance.Remove(runningTask);
+            //var reTask = TwitterApi.Tweets.UpdateApi
+            //    .Create(text, new[] { mediaFile }, inReplyToStatusId: inReplyToStatusId)
+            //    .CallApi(this.token, cancellation.Token)
+            //    .ContinueWith(t =>
+            //    {
+            //        RunningTasks.Instance.Remove(runningTask);
 
-                    if (t.Exception == null)
-                    {
-                        TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
-                    }
-                    else
-                    {
-                        //TODO:再試行できるようにする
-                    }
-                });
+            //        if (t.Exception == null)
+            //        {
+            //            TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
+            //        }
+            //        else
+            //        {
+            //            //TODO:再試行できるようにする
+            //        }
+            //    });
 
-            runningTask = new RunningTask("画像投稿中：" + text, reTask, cancellation);
-            RunningTasks.Instance.Add(runningTask);
+            //runningTask = new RunningTask("画像投稿中：" + text, reTask, cancellation);
+            //RunningTasks.Instance.Add(runningTask);
 
-            return reTask;
+            //return reTask;
+            return null;
         }
     }
 }

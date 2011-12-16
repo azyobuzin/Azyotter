@@ -20,23 +20,33 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public override void Receive(int count, int page)
         {
+            int i = 0;
             this.IsRefreshing = true;
-            TwitterApi.Favorites.FavoritesApi
-                .Create(count:count,page:page)
-                .CallApi(this.Token)
-                .ContinueWith(t =>
-                {
-                    if (t.Exception == null)
-                        this.OnReceivedTimeline(
-                            t.Result
-                                .Select(status => TimelineItemCache.Instance.AddOrMergeTweet(status, true))
-                                .ToArray()
-                        );
-                    else
-                        this.OnError(t.Exception.InnerException.GetMessage());
+            Settings.Instance.Accounts.ForEach(a =>
+                TwitterApi.Favorites.FavoritesApi
+                    .Create(count: count, page: page)
+                    .CallApi(new Token()
+                    {
+                        ConsumerKey = Settings.Instance.ConsumerKey,
+                        ConsumerSecret = Settings.Instance.ConsumerSecret,
+                        OAuthToken = a.OAuthToken,
+                        OAuthTokenSecret = a.OAuthTokenSecret
+                    })
+                    .ContinueWith(t =>
+                    {
+                        if (t.Exception == null)
+                            this.OnReceivedTimeline(
+                                t.Result
+                                    .Select(status => TimelineItemCache.Instance.AddOrMergeTweet(status, true))
+                                    .ToArray()
+                            );
+                        else
+                            this.OnError(t.Exception.InnerException.GetMessage());
 
-                    this.IsRefreshing = false;
-                });
+                        if (++i >= Settings.Instance.Accounts.Count)
+                            this.IsRefreshing = false;
+                    })
+            );
         }
     }
 }

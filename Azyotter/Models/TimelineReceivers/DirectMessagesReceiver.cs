@@ -39,10 +39,21 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
             int i = 0;
             this.IsRefreshing = true;
             new[] { TwitterApi.DirectMessages.DirectMessagesApiType.Received, TwitterApi.DirectMessages.DirectMessagesApiType.Sent }
-                .ForEach(type =>
+                .SelectMany(type => Settings.Instance.Accounts.Select(a => new
+                {
+                    type = type,
+                    token = new Token()
+                    {
+                        ConsumerKey = Settings.Instance.ConsumerKey,
+                        ConsumerSecret = Settings.Instance.ConsumerSecret,
+                        OAuthToken = a.OAuthToken,
+                        OAuthTokenSecret = a.OAuthTokenSecret
+                    }
+                }))
+                .ForEach(_ =>
                     TwitterApi.DirectMessages.DirectMessagesApi
-                        .Create(type, count: count, page: page)
-                        .CallApi(this.Token)
+                        .Create(_.type, count: count, page: page)
+                        .CallApi(_.token)
                         .ContinueWith(t =>
                         {
                             if (t.Exception == null)
@@ -50,7 +61,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
                             else
                                 this.OnError(t.Exception.InnerException.GetMessage());
 
-                            if (++i >= 2)
+                            if (++i >= Settings.Instance.Accounts.Count * 2)
                                 this.IsRefreshing = false;
                         })
                 );

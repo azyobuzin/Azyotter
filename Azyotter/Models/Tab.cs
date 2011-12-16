@@ -12,9 +12,8 @@ namespace Azyobuzi.Azyotter.Models
 {
     public class Tab : NotificationObject, IDisposable
     {
-        public Tab(TabSetting setting, Token token)
+        public Tab(TabSetting setting)
         {
-            this.token = token;
             this.Items = new ObservableSynchronizedCollection<ITimelineItem>();
             TimelineItemCache.Instance.CollectionChanged += this.StatusCache_CollectionChanged;
             this.Setting = setting;
@@ -28,7 +27,6 @@ namespace Azyobuzi.Azyotter.Models
         }
 
         public TabSetting Setting { get; private set; }
-        private Token token;
         private Timer timer;
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -41,7 +39,6 @@ namespace Azyobuzi.Azyotter.Models
                 case "Type":
                     var oldReceiver = this.receiver;//UserStream再接続防止
                     this.receiver = TimelineReceiver.CreateTimelineReceiver(this.Setting.Type);
-                    this.receiver.Token = this.token;
                     this.receiver.Args = this.Setting.Args;
                     this.receiver.ReceivedTimeline += this.receiver_ReceivedTimeline;
                     this.receiver.IsRefreshingChanged += this.receiver_IsRefreshingChanged;

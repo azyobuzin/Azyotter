@@ -6,7 +6,6 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
     public interface ITimelineReceiver : IDisposable
     {
         bool UseUserStream { get; }
-        Token Token { get; set; }
         string Args { get; set; }
         void GetFirst();
         void Receive(int count, int page);

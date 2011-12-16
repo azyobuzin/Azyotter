@@ -36,19 +36,29 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public override void Receive(int count, int page)
         {
+            int i = 0;
             this.IsRefreshing = true;
-            TwitterApi.Tweets.TimelinesApi
-                .Create(TwitterApi.Tweets.TimelineType.HomeTimeline, count: count, page: page)
-                .CallApi(this.Token)
-                .ContinueWith(t =>
-                {
-                    if (t.Exception == null)
-                        t.Result.ForEach(status => TimelineItemCache.Instance.AddOrMergeTweet(status, true));
-                    else
-                        this.OnError(t.Exception.InnerException.GetMessage());
+            Settings.Instance.Accounts.ForEach(a =>
+                TwitterApi.Tweets.TimelinesApi
+                    .Create(TwitterApi.Tweets.TimelineType.HomeTimeline, count: count, page: page)
+                    .CallApi(new Token()
+                    {
+                        ConsumerKey = Settings.Instance.ConsumerKey,
+                        ConsumerSecret = Settings.Instance.ConsumerSecret,
+                        OAuthToken = a.OAuthToken,
+                        OAuthTokenSecret = a.OAuthTokenSecret
+                    })
+                    .ContinueWith(t =>
+                    {
+                        if (t.Exception == null)
+                            t.Result.ForEach(status => TimelineItemCache.Instance.AddOrMergeTweet(status, true));
+                        else
+                            this.OnError(t.Exception.InnerException.GetMessage());
 
-                    this.IsRefreshing = false;
-                });
+                        if (++i >= Settings.Instance.Accounts.Count)
+                            this.IsRefreshing = false;
+                    })
+            );
         }
 
         private void TimelineItemCache_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

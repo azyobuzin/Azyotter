@@ -1,5 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Reactive.Linq;
 using Azyobuzi.Azyotter.Models.Caching;
 using Azyobuzi.TaskingTwLib;
 using Azyobuzi.TaskingTwLib.DataModels.UserStreams;
@@ -10,15 +11,29 @@ namespace Azyobuzi.Azyotter.Models
     public static class UserStreams
     {
         private static IDisposable disposable;
-        public static Token Token { get; set; }
 
         public static void Start()
         {
             Stop();
 
-            disposable = TwitterApi.UserStreams.UserStreamApi
-                .Create()
-                .CallApi(Token)
+            disposable = Settings.Instance.Accounts.ToObservable()
+                .SelectMany(a => TwitterApi.UserStreams.UserStreamApi
+                    .Create()
+                    .CallApi(new Token()
+                    {
+                        ConsumerKey = Settings.Instance.ConsumerKey,
+                        ConsumerSecret = Settings.Instance.ConsumerSecret,
+                        OAuthToken = a.OAuthToken,
+                        OAuthTokenSecret = a.OAuthTokenSecret
+                    })
+                    .Catch((Exception ex) =>
+                    {
+                        if (Error != null)
+                            Error(null, new UserStreamsErrorEventArgs(ex));
+                        return Observable.Empty<RawData>();
+                    })
+                    .Repeat()
+                )
                 .Subscribe(
                     (dynamic data) =>
                     {
@@ -41,35 +56,31 @@ namespace Azyobuzi.Azyotter.Models
                         {
                             TimelineItemCache.Instance.AddUserStreamEvent(data);
                         }
-                    },
-                    ex =>
-                    {
-                        var e = new UserStreamsErrorEventArgs(ex);
-                        if (Error != null)
-                            Error(null, e);
-                        if (!e.Cancel)
-                            Start();
-                    },
-                    () =>
-                    {
-                        Start();
                     }
                 );
+
+            Settings.Instance.Accounts.CollectionChanged += Accounts_CollectionChanged;
         }
 
         public static void Stop()
         {
             if (disposable != null)
             {
+                Settings.Instance.Accounts.CollectionChanged -= Accounts_CollectionChanged;
                 disposable.Dispose();
                 disposable = null;
             }
         }
 
         public static event EventHandler<UserStreamsErrorEventArgs> Error;
+
+        private static void Accounts_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Start();
+        }
     }
 
-    public class UserStreamsErrorEventArgs : CancelEventArgs
+    public class UserStreamsErrorEventArgs : EventArgs
     {
         public UserStreamsErrorEventArgs(Exception ex)
         {

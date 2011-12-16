@@ -6,9 +6,7 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
     public abstract class TimelineReceiver : ITimelineReceiver
     {
         public abstract bool UseUserStream { get; }
-
-        public Token Token { get; set; }
-
+        
         public string Args { get; set; }
 
         public abstract void GetFirst();
@@ -54,7 +52,6 @@ namespace Azyobuzi.Azyotter.Models.TimelineReceivers
 
         public virtual void Dispose()
         {
-            this.Token = null;
             GC.SuppressFinalize(this);
         }
 
