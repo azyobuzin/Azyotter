@@ -325,27 +325,51 @@
                         </l:InteractionMessageTrigger>
                     </i:Interaction.Triggers>
                 </TextBox>
-                
+
+                <Button Grid.Column="1"
+                        Grid.RowSpan="2"
+                        Content="ツイート"
+                        IsTabStop="False"
+                        Command="{Binding PostCommand}"/>
+
                 <Grid Grid.Column="0"
                       Grid.Row="1">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
+                    
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Height, ElementName=postGrid}"
+                                             Value="25">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    
+                    <ComboBox Grid.Column="0"
+                              ItemsSource="{Binding Accounts}"
+                              SelectedItem="{Binding UsingAccount}"
+                              ToolTip="使用するアカウント">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding ProfileImageUri}"
+                                           Width="16"/>
+                                    <TextBlock Text="{Binding ScreenName}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-                    <Button Grid.Column="1"
-                            Command="{Binding SelectMediaFileCommand}">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource FlatButton}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Height, ElementName=postGrid}"
-                                                 Value="25">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
+                    <Button Grid.Column="2"
+                            Command="{Binding SelectMediaFileCommand}"
+                            Style="{StaticResource FlatButton}"
+                            ToolTip="画像を添付">
                         <StackPanel>
                             <Image Height="16" Source="/Azyotter;component/Images/image.png">
                                 <Image.Style>
@@ -374,12 +398,6 @@
                         </StackPanel>
                     </Button>
                 </Grid>
-
-                <Button Grid.Column="1"
-                        Grid.RowSpan="2"
-                        Content="ツイート"
-                        IsTabStop="False"
-                        Command="{Binding PostCommand}"/>
                 
                 <i:Interaction.Triggers>
                     <i:EventTrigger SourceObject="{Binding ElementName=postGridOwner}"

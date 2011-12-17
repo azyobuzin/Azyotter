@@ -107,71 +107,85 @@ namespace Azyobuzi.Azyotter.Models
 
         public Task Post(string text, ulong? inReplyToStatusId, bool useFooter)
         {
-            //if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
-            //    text += " " + Settings.Instance.Footer;
+            if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
+                text += " " + Settings.Instance.Footer;
 
-            //var cancellation = new CancellationTokenSource();
-            //RunningTask runningTask = null;
+            var cancellation = new CancellationTokenSource();
+            RunningTask runningTask = null;
 
-            //var reTask = TwitterApi.Tweets.UpdateApi
-            //    .Create(text, inReplyToStatusId)
-            //    .CallApi(this.token, cancellation.Token)
-            //    .ContinueWith(t =>
-            //    {
-            //        RunningTasks.Instance.Remove(runningTask);
+            var token = new Token()
+            {
+                ConsumerKey = Settings.Instance.ConsumerKey,
+                ConsumerSecret = Settings.Instance.ConsumerSecret,
+                OAuthToken = Settings.Instance.GetUsingAccount().OAuthToken,
+                OAuthTokenSecret = Settings.Instance.GetUsingAccount().OAuthTokenSecret
+            };
 
-            //        if (t.Exception == null)
-            //        {
-            //            TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
-            //        }
-            //        else
-            //        {
-            //            //TODO:再試行できるようにする
-            //        }
-            //    });
+            var reTask = TwitterApi.Tweets.UpdateApi
+                .Create(text, inReplyToStatusId)
+                .CallApi(token, cancellation.Token)
+                .ContinueWith(t =>
+                {
+                    RunningTasks.Instance.Remove(runningTask);
 
-            //runningTask = new RunningTask("投稿中：" + text, reTask, cancellation);
-            //RunningTasks.Instance.Add(runningTask);
+                    if (t.Exception == null)
+                    {
+                        TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
+                    }
+                    else
+                    {
+                        //TODO:再試行できるようにする
+                    }
+                });
 
-            //return reTask;
-            return null;
+            runningTask = new RunningTask("投稿中：" + text, reTask, cancellation);
+            RunningTasks.Instance.Add(runningTask);
+
+            return reTask;
         }
 
         public Task PostWithMedia(string text, string mediaFile, ulong? inReplyToStatusId, bool useFooter)
         {
-            //if (!File.Exists(mediaFile))
-            //{
-            //    //TODO:エラー通知
-            //}
+            if (!File.Exists(mediaFile))
+            {
+                //TODO:エラー通知
+            }
 
-            //if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
-            //    text += " " + Settings.Instance.Footer;
+            if (useFooter && !string.IsNullOrEmpty(Settings.Instance.Footer))
+                text += " " + Settings.Instance.Footer;
 
-            //var cancellation = new CancellationTokenSource();
-            //RunningTask runningTask = null;
+            var cancellation = new CancellationTokenSource();
+            RunningTask runningTask = null;
 
-            //var reTask = TwitterApi.Tweets.UpdateApi
-            //    .Create(text, new[] { mediaFile }, inReplyToStatusId: inReplyToStatusId)
-            //    .CallApi(this.token, cancellation.Token)
-            //    .ContinueWith(t =>
-            //    {
-            //        RunningTasks.Instance.Remove(runningTask);
+            var token = new Token()
+            {
+                ConsumerKey = Settings.Instance.ConsumerKey,
+                ConsumerSecret = Settings.Instance.ConsumerSecret,
+                OAuthToken = Settings.Instance.GetUsingAccount().OAuthToken,
+                OAuthTokenSecret = Settings.Instance.GetUsingAccount().OAuthTokenSecret
+            };
 
-            //        if (t.Exception == null)
-            //        {
-            //            TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
-            //        }
-            //        else
-            //        {
-            //            //TODO:再試行できるようにする
-            //        }
-            //    });
+            var reTask = TwitterApi.Tweets.UpdateApi
+                .Create(text, new[] { mediaFile }, inReplyToStatusId: inReplyToStatusId)
+                .CallApi(token, cancellation.Token)
+                .ContinueWith(t =>
+                {
+                    RunningTasks.Instance.Remove(runningTask);
 
-            //runningTask = new RunningTask("画像投稿中：" + text, reTask, cancellation);
-            //RunningTasks.Instance.Add(runningTask);
+                    if (t.Exception == null)
+                    {
+                        TimelineItemCache.Instance.AddOrMergeTweet(t.Result, true);
+                    }
+                    else
+                    {
+                        //TODO:再試行できるようにする
+                    }
+                });
 
-            //return reTask;
-            return null;
+            runningTask = new RunningTask("画像投稿中：" + text, reTask, cancellation);
+            RunningTasks.Instance.Add(runningTask);
+
+            return reTask;
         }
     }
 }

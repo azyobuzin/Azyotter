@@ -100,6 +100,7 @@
     <Compile Include="Models\Update.cs" />
     <Compile Include="Models\UserStreams.cs" />
     <Compile Include="Util\AssemblyUtil.cs" />
+    <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\RunningTaskViewModel.cs" />
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />

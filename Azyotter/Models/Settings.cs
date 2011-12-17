@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xaml;
 using Livet;
@@ -188,5 +189,32 @@ namespace Azyobuzi.Azyotter.Models
         }
         #endregion
 
+        #region UsingAccount変更通知プロパティ
+        private long _UsingAccount;
+
+        public long UsingAccount
+        {
+            get
+            { return _UsingAccount; }
+            set
+            { 
+                if (EqualityComparer<long>.Default.Equals(_UsingAccount, value))
+                    return;
+                _UsingAccount = value;
+                RaisePropertyChanged("UsingAccount");
+            }
+        }
+        #endregion
+
+        public Account GetUsingAccount()
+        {
+            return this.Accounts.FirstOrDefault(a => a.UserId == this.UsingAccount)
+                ?? this.Accounts.FirstOrDefault();
+        }
+
+        public void SetUsingAccount(Account account)
+        {
+            this.UsingAccount = account.UserId;
+        }
     }
 }

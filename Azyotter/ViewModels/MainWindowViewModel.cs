@@ -21,8 +21,15 @@ namespace Azyobuzi.Azyotter.ViewModels
         {
             ViewModelHelper.BindNotifyChanged(Settings.Instance, this, (sender, e) =>
             {
-                if (e.PropertyName == "ShorcutKeys")
-                    this.RaisePropertyChanged(() => this.ShortcutKeys);
+                switch (e.PropertyName)
+                {
+                    case "ShorcutKeys":
+                        this.RaisePropertyChanged(() => this.ShortcutKeys);
+                        break;
+                    case "UsingAccount":
+                        this.RaisePropertyChanged(() => this.UsingAccount);
+                        break;
+                }
             });
             
             Update.CanUpdateChanged += (sender, e) =>
@@ -166,6 +173,12 @@ namespace Azyobuzi.Azyotter.ViewModels
             );
 
             this.SelectedTab = this.Tabs.FirstOrDefault();
+
+            this.Accounts = ViewModelHelper.CreateReadOnlyDispatcherCollection(
+                Settings.Instance.Accounts,
+                (Account a) => new AccountViewModel(a),
+                DispatcherHelper.UIDispatcher
+            );
 
             Task.Factory.StartNew(() =>
             {
@@ -443,7 +456,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             {
                 var msg = this.Messenger.GetResponse(new OpeningFileSelectionMessage("ShowOpenFileDialog")
                 {
-                    Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.gif"
+                    Filter = "画像ファイル|*.jpg;*.jpeg;*.png;*.gif|すべてのファイル|*.*"
                 });
                 this.MediaFile = msg.Response;
             }
@@ -464,6 +477,37 @@ namespace Azyobuzi.Azyotter.ViewModels
             {
                 return "Azyotter " + this.Version
                     + (this.CanUpdate ? "（更新があります）" : string.Empty);
+            }
+        }
+
+        #region Accounts変更通知プロパティ
+        private ReadOnlyDispatcherCollection<AccountViewModel> _Accounts;
+
+        public ReadOnlyDispatcherCollection<AccountViewModel> Accounts
+        {
+            get
+            { return _Accounts; }
+            private set
+            { 
+                if (EqualityComparer<ReadOnlyDispatcherCollection<AccountViewModel>>.Default.Equals(_Accounts, value))
+                    return;
+                _Accounts = value;
+                RaisePropertyChanged("Accounts");
+                RaisePropertyChanged(() => this.UsingAccount);
+            }
+        }
+        #endregion
+
+        public AccountViewModel UsingAccount
+        {
+            get
+            {
+                return this.Accounts.FirstOrDefault(a => a.UserId == Settings.Instance.UsingAccount)
+                    ?? this.Accounts.FirstOrDefault();
+            }
+            set
+            {
+                Settings.Instance.SetUsingAccount(value.Model);
             }
         }
     }
