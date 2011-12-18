@@ -106,6 +106,18 @@
                         </i:Interaction.Triggers>
                     </MenuItem>
 
+                    <MenuItem Header="アカウント管理(_A)...">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <l:TransitionInteractionMessageAction WindowType="v:AccountsManageWindow">
+                                    <l:DirectInteractionMessage>
+                                        <l:TransitionMessage Mode="NewOrActive"/>
+                                    </l:DirectInteractionMessage>
+                                </l:TransitionInteractionMessageAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </MenuItem>
+                    
                     <MenuItem Header="アップデート確認(_U)" Command="{Binding CheckUpdateCommand}"/>
                 </ContextMenu>
             </Button.Resources>

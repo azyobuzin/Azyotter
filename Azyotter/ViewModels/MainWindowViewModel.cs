@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using Azyobuzi.Azyotter.Models;
 using Azyobuzi.Azyotter.Util;
-using Azyobuzi.TaskingTwLib;
 using Livet;
 using Livet.Commands;
 using Livet.Messaging;
 using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
-using TwitterApi = Azyobuzi.TaskingTwLib.Methods;
 
 namespace Azyobuzi.Azyotter.ViewModels
 {
@@ -95,59 +92,18 @@ namespace Azyobuzi.Azyotter.ViewModels
 
         private void Loaded()
         {
-            if (string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthToken) || string.IsNullOrEmpty(Settings.Instance.Accounts.First().OAuthTokenSecret))
+            if (!Settings.Instance.Accounts.Any())
             {
-                Token token = new Token()
+                this.Messenger.Raise(new TransitionMessage("ShowAccountsManageWindow"));
+                if (!Settings.Instance.Accounts.Any())
                 {
-                    ConsumerKey = Settings.Instance.ConsumerKey,
-                    ConsumerSecret = Settings.Instance.ConsumerSecret
-                };
-                TwitterApi.OAuth.RequestTokenApi.Create()
-                    .CallApi(token)
-                    .ContinueWith(t =>
-                    {
-                        token = t.Result;
-
-                        Process.Start("https://api.twitter.com/oauth/authorize?oauth_token=" + token.OAuthToken);
-
-                        var vm = new InputPinWindowViewModel();
-                        ViewModelHelper.BindNotification(vm.CompleteEvent, this, (sender, e) =>
-                        {
-                            Task.Factory.StartNew(() =>
-                            {
-                                if (vm.IsCanceled)
-                                {
-                                    vm.CloseRequest();
-                                    this.Messenger.Raise(new WindowActionMessage("WindowAction", WindowAction.Close));
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        var id = TwitterApi.OAuth.AccessTokenApi
-                                            .Create(vm.Pin)
-                                            .CallApi(token)
-                                            .Result;
-                                        this.model.SaveOAuthToken(id.Item1, id.Item2.Id, id.Item2.ScreenName);
-                                        vm.CloseRequest();
-                                        DispatcherHelper.BeginInvoke(this.Loaded2);
-                                    }
-                                    catch
-                                    {
-                                        vm.InvalidPin();
-                                        vm.IsBusy = false;
-                                    }
-                                }
-                            });
-                        });
-                        this.Messenger.Raise(new TransitionMessage(vm, "ShowInputPinWindow"));
-                    });
-
-
+                    Environment.Exit(0);
+                }
+                this.Loaded2();
             }
             else
             {
-                Loaded2();
+                this.Loaded2();
             }
         }
         #endregion

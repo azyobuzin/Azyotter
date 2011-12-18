@@ -50,5 +50,54 @@ namespace Azyobuzi.Azyotter.ViewModels
                 return this.Model.UserId;
             }
         }
+
+        #region Removedイベント
+        public event EventHandler<EventArgs> Removed;
+        private Notificator<EventArgs> _RemovedEvent;
+        public Notificator<EventArgs> RemovedEvent
+        {
+            get
+            {
+                if (_RemovedEvent == null)
+                {
+                    _RemovedEvent = new Notificator<EventArgs>();
+                }
+                return _RemovedEvent;
+            }
+            set { _RemovedEvent = value; }
+        }
+
+        protected virtual void OnRemoved(EventArgs e)
+        {
+            var threadSafeHandler = System.Threading.Interlocked.CompareExchange(ref Removed, null, null);
+            if (threadSafeHandler != null)
+            {
+                threadSafeHandler(this, e);
+            }
+            RemovedEvent.Raise(e);
+        }
+        #endregion
+
+        #region RemoveCommand
+        private Livet.Commands.ViewModelCommand _RemoveCommand;
+
+        public Livet.Commands.ViewModelCommand RemoveCommand
+        {
+            get
+            {
+                if (_RemoveCommand == null)
+                {
+                    _RemoveCommand = new Livet.Commands.ViewModelCommand(Remove);
+                }
+                return _RemoveCommand;
+            }
+        }
+
+        public void Remove()
+        {
+            this.OnRemoved(EventArgs.Empty);
+        }
+        #endregion
+
     }
 }

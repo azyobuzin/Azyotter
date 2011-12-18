@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Azyobuzi.Azyotter.Views
 {
     /// <summary>
-    /// InputPinWindow.xaml の相互作用ロジック
+    /// AccountsManageWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class InputPinWindow : Window
+    public partial class AccountsManageWindow : Window
     {
-        public InputPinWindow()
+        public AccountsManageWindow()
         {
             InitializeComponent();
         }

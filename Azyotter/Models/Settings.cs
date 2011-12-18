@@ -34,7 +34,6 @@ namespace Azyobuzi.Azyotter.Models
                         instance = new Settings();
                         instance.Tabs.Add(new TabSetting() { Name = "Home", Type = TimelineTypes.Home });
                         instance.Tabs.Add(new TabSetting() { Name = "Mentions", Type = TimelineTypes.Mentions });
-                        instance.Accounts.Add(new Account());
                     }
                 }
 
@@ -82,9 +81,9 @@ namespace Azyobuzi.Azyotter.Models
         #endregion
 
         #region Accounts変更通知プロパティ
-        ObservableCollection<Account> _Accounts = new ObservableCollection<Account>();
+        ObservableSynchronizedCollection<Account> _Accounts = new ObservableSynchronizedCollection<Account>();
 
-        public ObservableCollection<Account> Accounts
+        public ObservableSynchronizedCollection<Account> Accounts
         {
             get
             { return _Accounts; }

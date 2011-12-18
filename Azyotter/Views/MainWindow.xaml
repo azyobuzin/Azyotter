@@ -29,14 +29,14 @@
             <l:WindowInteractionMessageAction/>
         </l:InteractionMessageTrigger>
         
-        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInputPinWindow">
-            <l:TransitionInteractionMessageAction WindowType="v:InputPinWindow" Mode="Modal"/>
-        </l:InteractionMessageTrigger>
-
         <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowTabSettingWindow">
             <l:TransitionInteractionMessageAction WindowType="v:TabSettingWindow" Mode="Normal"/>
         </l:InteractionMessageTrigger>
-        
+
+        <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowAccountsManageWindow">
+            <l:TransitionInteractionMessageAction WindowType="v:AccountsManageWindow" Mode="Modal"/>
+        </l:InteractionMessageTrigger>
+
         <l:InteractionMessageTrigger Messenger="{Binding Messenger}" MessageKey="ShowInformation">
             <l:InformationDialogInteractionMessageAction/>
         </l:InteractionMessageTrigger>
