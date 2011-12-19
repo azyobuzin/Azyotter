@@ -17,6 +17,12 @@ namespace Azyobuzi.Azyotter.ViewModels
             );
         }
 
+        public StatusBarViewModel(InteractionMessenger messenger)
+            : this()
+        {
+            this.Messenger = messenger;
+        }
+
         public ReadOnlyDispatcherCollection<RunningTaskViewModel> RunningTaskViewModels { get; private set; }
 
         #region CheckUpdateCommand

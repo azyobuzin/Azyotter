@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Azyobuzi.Azyotter.Models;
+using Azyobuzi.Azyotter.Util;
 using Livet;
 
 namespace Azyobuzi.Azyotter.ViewModels
@@ -69,7 +69,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                             re.Foreground = Brushes.Blue;
                             re.Inlines.Add(url.Text);
                             re.ToolTip = url.ExpandedUrl;
-                            re.Click += (sender, e) => Process.Start(url.ShortenedUrl);
+                            re.Click += (sender, e) => ProcessHelper.Start(url.ShortenedUrl);
                             return (Inline)re;
                         }
 

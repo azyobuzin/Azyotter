@@ -139,7 +139,7 @@ namespace Azyobuzi.Azyotter.ViewModels
             Task.Factory.StartNew(() =>
             {
                 if (Settings.Instance.AutoUpdate)
-                    new StatusBarViewModel().CheckUpdate(true);
+                    new StatusBarViewModel(this.Messenger).CheckUpdate(true);
                 else
                     Update.GetCanUpdate();
             });

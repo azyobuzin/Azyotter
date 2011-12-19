@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using Azyobuzi.Azyotter.Models;
+using Azyobuzi.Azyotter.Util;
 using Azyobuzi.TaskingTwLib;
 using Livet;
 using Livet.Commands;
@@ -125,7 +125,7 @@ namespace Azyobuzi.Azyotter.ViewModels
                     this.Authenticating = true;
                     this.Messenger.Raise(new InteractionMessage("FocusToPinCodeBox"));
 
-                    Process.Start("https://api.twitter.com/oauth/authorize?oauth_token=" + this.requestToken.OAuthToken);
+                    ProcessHelper.Start("https://api.twitter.com/oauth/authorize?oauth_token=" + this.requestToken.OAuthToken);
                 });
         }
         #endregion
