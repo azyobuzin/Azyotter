@@ -64,10 +64,10 @@ namespace Azyobuzi.TaskingTwLib.Methods.DirectMessages
             switch (type)
             {
                 case DirectMessagesApiType.Received:
-                    re.requestUri = "http://api.twitter.com/1/direct_messages.json";
+                    re.requestUri = "https://api.twitter.com/1.1/direct_messages.json";
                     break;
                 case DirectMessagesApiType.Sent:
-                    re.requestUri = "http://api.twitter.com/1/direct_messages/sent.json";
+                    re.requestUri = "https://api.twitter.com/1.1/direct_messages/sent.json";
                     break;
             }
 

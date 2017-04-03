@@ -57,7 +57,7 @@ namespace Azyobuzi.TaskingTwLib.Methods.Favorites
         public static FavoriteOperationApi Create(FavoriteOperationApiType type, ulong id)
         {
             var re = new FavoriteOperationApi();
-            re.requestUri = string.Format("http://api.twitter.com/1/favorites/{0}/{1}.json", type.ToString().ToLower(), id);
+            re.requestUri = string.Format("https://api.twitter.com/1.1/favorites/{0}/{1}.json", type.ToString().ToLower(), id);
             re.parameters.Add(new FormData("id", id.ToString()));
             re.parameters.Add(new FormData("include_entities", "true"));
 

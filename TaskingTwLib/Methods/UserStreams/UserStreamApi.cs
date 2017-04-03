@@ -14,7 +14,7 @@ namespace Azyobuzi.TaskingTwLib.Methods.UserStreams
     {
         string IStreamingApi<RawData>.RequestUri
         {
-            get { return "https://userstream.twitter.com/2/user.json"; }
+            get { return "https://userstream.twitter.com/1.1/user.json"; }
         }
 
         private List<FormData> parameters = new List<FormData>();

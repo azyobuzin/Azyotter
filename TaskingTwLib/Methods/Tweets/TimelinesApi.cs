@@ -68,31 +68,31 @@ namespace Azyobuzi.TaskingTwLib.Methods.Tweets
             switch (type)
             {
                 case TimelineType.HomeTimeline:
-                    re.requestUri = "http://api.twitter.com/1/statuses/home_timeline.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/home_timeline.json";
                     break;
                 case TimelineType.Mentions:
-                    re.requestUri = "http://api.twitter.com/1/statuses/mentions.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/mentions_timeline.json";
                     break;
                 case TimelineType.PublicTimeline:
-                    re.requestUri = "http://api.twitter.com/1/statuses/public_timeline.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/public_timeline.json";
                     break;
                 case TimelineType.RetweetedByMe:
-                    re.requestUri = "http://api.twitter.com/1/statuses/retweeted_by_me.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/retweeted_by_me.json";
                     break;
                 case TimelineType.RetweetedToMe:
-                    re.requestUri = "http://api.twitter.com/1/statuses/retweeted_to_me.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/retweeted_to_me.json";
                     break;
                 case TimelineType.RetweetsOfMe:
-                    re.requestUri = "http://api.twitter.com/1/statuses/retweets_of_me.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/retweets_of_me.json";
                     break;
                 case TimelineType.UserTimeline:
-                    re.requestUri = "http://api.twitter.com/1/statuses/user_timeline.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/user_timeline.json";
                     break;
                 case TimelineType.RetweetedToUser:
-                    re.requestUri = "http://api.twitter.com/1/statuses/retweeted_to_user.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/retweeted_to_user.json";
                     break;
                 case TimelineType.RetweetedByUser:
-                    re.requestUri = "http://api.twitter.com/1/statuses/retweeted_by_user.json";
+                    re.requestUri = "https://api.twitter.com/1.1/statuses/retweeted_by_user.json";
                     break;
                 default:
                     throw new ArgumentException("不正なtypeです。");

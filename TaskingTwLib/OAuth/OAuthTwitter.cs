@@ -27,7 +27,7 @@ namespace Azyobuzi.TaskingTwLib.OAuth
                 }
                 else
                 {
-                    result.Append('%' + String.Format("{0:X2}", (int)data[i]));
+                    result.Append('%').AppendFormat("{0:X2}", (int)data[i]);
                 }
             }
 
@@ -129,7 +129,7 @@ namespace Azyobuzi.TaskingTwLib.OAuth
                                                        string callback,
                                                        HttpMethodType methodType)
         {
-            var oauthHeaders = GenerateOAuthParameter(token, null, null);
+            var oauthHeaders = GenerateOAuthParameter(token, verifier, callback);
             oauthHeaders.Add("oauth_signature",
                 GenerateSignature(uri,
                     query != null ? query.Concat(oauthHeaders) : oauthHeaders,

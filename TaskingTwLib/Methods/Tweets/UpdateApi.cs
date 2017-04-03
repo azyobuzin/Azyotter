@@ -65,7 +65,7 @@ namespace Azyobuzi.TaskingTwLib.Methods.Tweets
         {
             var re = new UpdateApi();
 
-            re.requestUri = "http://api.twitter.com/1/statuses/update.json";
+            re.requestUri = "https://api.twitter.com/1.1/statuses/update.json";
             re.contentType = HttpContentType.ApplicationXWwwFormUrlencoded;
 
             re.parameters.Add(new FormData("status", status));

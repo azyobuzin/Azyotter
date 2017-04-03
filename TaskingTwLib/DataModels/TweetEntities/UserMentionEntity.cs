@@ -30,7 +30,7 @@ namespace Azyobuzi.TaskingTwLib.DataModels.TweetEntities
         public static UserMentionEntity Create(XElement json)
         {
             var re = new UserMentionEntity();
-            re.Id = (int)json.Element("id");
+            re.Id = (long)json.Element("id");
             re.ScreenName = json.Element("screen_name").Value;
             re.Name = json.Element("name").Value;
             re.Indices = EntityIndices.Create(json.Element("indices"));

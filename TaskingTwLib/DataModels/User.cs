@@ -168,7 +168,7 @@ namespace Azyobuzi.TaskingTwLib.DataModels
          /// <summary>
          /// 外部コンテンツ表示設定ですべて表示するようになっているかどうか
          /// </summary>
-        public bool ShowAllInlineMedia { get; set; }
+        public bool? ShowAllInlineMedia { get; set; }
 
 
         public bool DefaultProfile { get; set; }
@@ -240,7 +240,7 @@ namespace Azyobuzi.TaskingTwLib.DataModels
             if (!string.IsNullOrEmpty(json.Element("follow_request_sent").Value))
                 re.FollowRequestSent = (bool)json.Element("follow_request_sent");
             re.ListedCount = (int)json.Element("listed_count");
-            re.ShowAllInlineMedia = (bool)json.Element("show_all_inline_media");
+            re.ShowAllInlineMedia = (bool?)json.Element("show_all_inline_media");
             re.DefaultProfile = (bool)json.Element("default_profile");
             re.DefaultProfileImage = (bool)json.Element("default_profile_image");
             re.IsTranslator = (bool)json.Element("is_translator");

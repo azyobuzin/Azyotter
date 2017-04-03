@@ -13,7 +13,7 @@ namespace Azyobuzi.TaskingTwLib.Methods.Favorites
 
         string ITwitterApi<Status[]>.RequestUri
         {
-            get { return "http://api.twitter.com/1/favorites.json"; }
+            get { return "https://api.twitter.com/1.1/favorites.json"; }
         }
 
         HttpMethodType ITwitterApi<Status[]>.MethodType
